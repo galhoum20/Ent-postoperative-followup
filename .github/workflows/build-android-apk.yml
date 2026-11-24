@@ -47,7 +47,7 @@ jobs:
           npx cap sync android
 
       - name: Add notification permissions to manifest
-        run: python3 scripts/patch-manifest.py
+        run: python3 patch-manifest.py
 
       - name: Build debug APK
         working-directory: android
