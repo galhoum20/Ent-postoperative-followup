@@ -1,5 +1,5 @@
 
-name: Build Android APK
+name: Build Android APK (V12)
 
 on:
   workflow_dispatch:
@@ -7,49 +7,62 @@ on:
     branches:
       - main
       - V12-build
+    paths:
+      - 'index.html'
+      - 'sw.js'
+      - 'manifest.webmanifest'
+      - 'package.json'
+      - 'capacitor.config.json'
+      - 'scripts/**'
+      - '.github/workflows/build-android-apk.yml'
 
 jobs:
-  build:
+  build-apk:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          ref: V12-build
 
-      - name: Set up Node.js
+      - name: Setup Node.js 20
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: '20'
 
-      - name: Set up Java
+      - name: Setup Java 17
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 21
+          java-version: '17'
 
       - name: Install dependencies
         run: npm install
 
-      - name: Create Android project if needed
+      - name: Copy web files into www
         run: |
-          if [ ! -d android ]; then
-            npx cap add android
-          fi
+          mkdir -p www
+          cp index.html sw.js manifest.webmanifest icon-192.png icon-512.png www/
 
-      - name: Sync Capacitor
-        run: npx cap sync android
-
-      - name: Build APK
+      - name: Add and sync Android platform
         run: |
-          cd android
+          npx cap add android
+          npx cap sync android
+
+      - name: Add notification permissions to manifest
+        run: python3 scripts/patch-manifest.py
+
+      - name: Build debug APK
+        working-directory: android
+        run: |
           chmod +x gradlew
-          ./gradlew assembleDebug
+          ./gradlew assembleDebug --no-daemon
+
+      - name: Print APK signing SHA-1 (needed for the Android OAuth client)
+        run: |
+          keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android | grep -E "SHA1|SHA-1" || true
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: ENT-Followup-APK
-          path: android/app/build/outputs/apk/debug/app-debug.apk
-          
+          name: AlFereh-ENT-Followup-V12-APK
+          path: android/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
