@@ -55,9 +55,13 @@ jobs:
           chmod +x gradlew
           ./gradlew assembleDebug --no-daemon
 
-      - name: Print APK signing SHA-1 (needed for the Android OAuth client)
+      - name: Print APK signing SHA-1
         run: |
-          keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android | grep -E "SHA1|SHA-1" || true
+          find / -name "debug.keystore" 2>/dev/null
+          for K in $(find / -name "debug.keystore" 2>/dev/null); do
+            keytool -list -v -keystore "$K" -alias androiddebugkey -storepass android -keypass android 2>&1 | grep -E "SHA1|SHA-1"
+          done
+        
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
