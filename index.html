@@ -2,426 +2,2008 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#0f766e">
-<title>متابعة ما بعد عمليات الأنف والأذن والحنجرة</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#10A2AE">
+<title>مستشفى الفريح — متابعة ما بعد عمليات الأنف والأذن والحنجرة</title>
 <link rel="manifest" href="manifest.webmanifest">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
-:root{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:#17212b;background:#f4f7f8}
-*{box-sizing:border-box}body{margin:0}header{background:#0f766e;color:white;padding:22px 18px 26px;position:relative}header .lockbtn{float:right;background:#ffffff22;color:white;border:1px solid #ffffff55;padding:8px 11px;font-size:.82rem}
-header h1{margin:0;font-size:1.45rem}header p{margin:6px 0 0;opacity:.9;font-size:.92rem}
-main{max-width:720px;margin:0 auto;padding:16px}
-.card{background:white;border:1px solid #e1e8e9;border-radius:16px;padding:16px;margin:0 0 14px;box-shadow:0 2px 8px #102a3308}
-h2{font-size:1.05rem;margin:0 0 14px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+:root{
+  --teal:#10A2AE;
+  --teal-dark:#0b7f89;
+  --teal-light:#e7f6f8;
+  --purple:#650568;
+  --purple-dark:#4c044f;
+  --purple-light:#f5eaf6;
+  --bg:#f4f7f8;
+  --text:#17212b;
+  --muted:#5e6e77;
+  --border:#dce5e7;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  color:var(--text);
+  background:var(--bg);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg)}
+header{
+  background:linear-gradient(135deg, var(--teal) 0%, var(--purple) 100%);
+  color:white;
+  padding:20px 18px 24px;
+  position:relative;
+  border-bottom:4px solid var(--purple);
+}
+.header-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
+.hospital-badge{
+  display:inline-block;
+  background:rgba(255,255,255,0.18);
+  border:1px solid rgba(255,255,255,0.35);
+  padding:4px 10px;
+  border-radius:999px;
+  font-size:0.8rem;
+  font-weight:700;
+}
+header h1{margin:0;font-size:1.35rem;line-height:1.3}
+header p{margin:6px 0 0;opacity:.92;font-size:.9rem}
+main{max-width:740px;margin:0 auto;padding:16px}
+.card{
+  background:white;
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:16px;
+  margin:0 0 14px;
+  box-shadow:0 2px 10px rgba(16,42,51,0.05);
+}
+.card-accent-purple{border-top:4px solid var(--purple)}
+.card-accent-teal{border-top:4px solid var(--teal)}
+h2{font-size:1.05rem;margin:0 0 12px;color:var(--purple)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 label{display:block;font-size:.85rem;font-weight:650;margin:0 0 6px}
-input,select{width:100%;padding:12px;border:1px solid #cbd5d8;border-radius:10px;font:inherit;background:white;color:inherit}
-.field{margin-bottom:13px}.hint{font-size:.78rem;color:#63727a;margin-top:5px}
-button{border:0;border-radius:10px;padding:12px 14px;font:inherit;font-weight:650;cursor:pointer}
-.primary{background:#0f766e;color:white;width:100%}.secondary{background:#e8f3f2;color:#0f625c}
+input,select,textarea{
+  width:100%;
+  padding:11px 12px;
+  border:1px solid #cbd5d8;
+  border-radius:10px;
+  font:inherit;
+  background:white;
+  color:inherit;
+}
+input:focus,select:focus,textarea:focus{
+  outline:none;
+  border-color:var(--teal);
+  box-shadow:0 0 0 3px rgba(16,162,174,0.15);
+}
+.field{margin-bottom:12px}
+.hint{font-size:.78rem;color:var(--muted);margin-top:5px;line-height:1.45}
+button{
+  border:0;
+  border-radius:10px;
+  padding:11px 14px;
+  font:inherit;
+  font-weight:650;
+  cursor:pointer;
+  transition:opacity .15s, transform .05s;
+}
+button:active{transform:scale(0.99)}
+button:disabled{opacity:0.6;cursor:not-allowed}
+.primary{background:var(--teal);color:white;width:100%}
+.primary:hover{background:var(--teal-dark)}
+.purple-btn{background:var(--purple);color:white}
+.purple-btn:hover{background:var(--purple-dark)}
+.secondary{background:var(--teal-light);color:var(--teal-dark)}
+.secondary-purple{background:var(--purple-light);color:var(--purple)}
 .dates{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
-.datebox{background:#eff7f6;border-radius:12px;padding:12px 8px;text-align:center}
-.datebox b{display:block;color:#0f766e;font-size:.82rem}.datebox span{display:block;font-size:.88rem;margin-top:5px}
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.actions button{flex:1;min-width:125px}
-.patient{border-top:1px solid #edf0f1;padding:13px 0}.patient:first-child{border-top:0}
-.patient strong{display:block}.patient small{color:#63727a}
-.patient .dates{margin:9px 0}.patient .datebox{padding:8px 4px;font-size:.78rem}
-.remove{background:#fff0f0;color:#a12626}.muted{color:#63727a}
-.empty{color:#63727a;text-align:center;padding:12px}.auth-wrap{max-width:440px;margin:9vh auto;padding:16px}.auth-wrap .card{padding:22px}.hidden{display:none!important}.history-tools{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:end}.history-tools .field{margin-bottom:10px}.history-tools label{font-size:.8rem}
+.datebox{background:var(--teal-light);border:1px solid #cbe9ec;border-radius:12px;padding:11px 8px;text-align:center}
+.datebox b{display:block;color:var(--purple);font-size:.82rem}
+.datebox span{display:block;font-size:.86rem;margin-top:5px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.actions button{flex:1;min-width:120px}
+.patient{border-top:1px solid #edf0f1;padding:13px 0}
+.patient:first-child{border-top:0}
+.patient strong{display:block;font-size:1rem}
+.patient small{color:var(--muted)}
+.patient .dates{margin:9px 0}
+.patient .datebox{padding:8px 4px;font-size:.78rem}
+.remove{background:#fff0f0;color:#a12626}
+.empty{color:var(--muted);text-align:center;padding:12px}
+.hidden{display:none!important}
+.history-tools{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:end}
+.history-tools .field{margin-bottom:10px}
+.history-tools label{font-size:.8rem}
+.status-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:5px 10px;
+  border-radius:999px;
+  font-size:0.78rem;
+  font-weight:650;
+  background:#eef3f4;
+  color:#33444d;
+}
+.status-ok{background:#e5f7ed;color:#116b3a}
+.status-warn{background:#fff6e0;color:#855800}
+.status-err{background:#ffecec;color:#9e1c1c}
+.sync-bar{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  padding:10px 12px;
+  background:#f8fbfb;
+  border:1px solid var(--border);
+  border-radius:12px;
+  margin-bottom:12px;
+}
+.conflict-box{
+  background:#fff5f5;
+  border:2px solid #d9383a;
+  border-radius:14px;
+  padding:14px;
+  margin-bottom:14px;
+}
+.conflict-box h3{margin:0 0 8px;color:#9e1c1c;font-size:1rem}
+.conflict-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+.conflict-card{
+  background:white;
+  border:1px solid #eccaca;
+  border-radius:10px;
+  padding:10px;
+  font-size:0.84rem;
+}
+.diff-list{
+  background:#fff;
+  border:1px solid #f0d4d4;
+  border-radius:8px;
+  padding:8px 10px;
+  margin:8px 0;
+  font-size:0.8rem;
+  max-height:180px;
+  overflow:auto;
+}
 footer{text-align:center;color:#68777d;font-size:.75rem;padding:8px 18px 26px}
-@media(max-width:440px){.grid{grid-template-columns:1fr}.dates{gap:5px}.datebox{padding:10px 4px}.datebox span{font-size:.78rem}}
-body[dir="rtl"]{text-align:right}body[dir="rtl"] .actions{direction:rtl}body[dir="rtl"] input,body[dir="rtl"] select,body[dir="rtl"] textarea{text-align:right}body[dir="rtl"] header button{float:left!important}
+@media(max-width:520px){
+  .grid,.conflict-grid,.history-tools{grid-template-columns:1fr}
+  .dates{gap:5px}
+  .datebox{padding:10px 4px}
+  .datebox span{font-size:.78rem}
+}
+body[dir="rtl"]{text-align:right}
+body[dir="rtl"] .actions{direction:rtl}
+body[dir="rtl"] input,body[dir="rtl"] select,body[dir="rtl"] textarea{text-align:right}
 </style>
 </head>
 <body>
-<header><button id="languageToggle" class="secondary" style="float:left;background:#ffffff;color:#0f625c;padding:8px 12px" type="button">English</button><h1>متابعة ما بعد عمليات الأنف والأذن والحنجرة</h1><p>جدولة المتابعة بعد العملية، وسجل المرضى، وحفظ البيانات محليًا.</p></header>
-<div class="hint" style="margin:12px 16px;padding:10px 12px;background:#fff7e6;border:1px solid #f2d49b;border-radius:10px;color:#76520b">Login is disabled. Anyone who can use this browser profile can open patient records. Keep your device locked and protected.</div>
+<header>
+  <div class="header-top">
+    <span class="hospital-badge" data-i18n="hospitalName">مستشفى الفريح</span>
+    <button id="languageToggle" class="secondary" style="background:#ffffff;color:var(--purple);padding:7px 12px;font-size:0.82rem" type="button">English</button>
+  </div>
+  <h1 data-i18n="appTitle">متابعة ما بعد عمليات الأنف والأذن والحنجرة</h1>
+  <p data-i18n="appSubtitle">جدولة المتابعة بعد العملية، وسجل المرضى، والمزامنة المشفرة الآمنة.</p>
+</header>
+
+<div class="hint" style="max-width:740px;margin:12px auto 0;padding:10px 14px;background:#fff7e6;border:1px solid #f2d49b;border-radius:10px;color:#76520b" data-i18n="deviceLockNotice">
+  تسجيل الدخول غير مفعّل. يمكن لأي شخص يستخدم ملف المتصفح هذا فتح سجلات المرضى. يُرجى حماية الهاتف بقفل الشاشة.
+</div>
+
 <div id="appContent"><main>
-<section class="card">
-<h2>New patient / operation</h2>
+
+<!-- Unresolved Sync Conflict Banner (Always visible until user resolves) -->
+<section id="conflictSection" class="conflict-box hidden" aria-live="assertive">
+  <h3 data-i18n="conflictTitle">تعارض في المزامنة: تم الاحتفاظ بالنسختين</h3>
+  <p class="hint" style="color:#5c1d1d;margin:0 0 8px" data-i18n="conflictDesc">
+    تم اكتشاف تعديلات متعارضة بين هذا الجهاز وملف Google Drive المشفر. تم حفظ النسختين ولن يتم الكتابة فوق أي منهما تلقائيًا. يرجى مراجعة الفروقات واختيار النسخة المعتمدة.
+  </p>
+  <div id="conflictComparison" class="conflict-grid"></div>
+  <div id="conflictDiffDetails" class="diff-list"></div>
+  <div class="actions">
+    <button type="button" class="primary" onclick="resolveSyncConflict('local')" data-i18n="keepLocalBtn">اعتماد نسخة هذا الجهاز ورفعها</button>
+    <button type="button" class="purple-btn" onclick="resolveSyncConflict('remote')" data-i18n="keepRemoteBtn">اعتماد نسخة Google Drive</button>
+    <button type="button" class="secondary" onclick="downloadConflictSnapshot()" data-i18n="downloadConflictBtn">تنزيل نسخة احتياطية للتعارض (JSON)</button>
+  </div>
+</section>
+
+<!-- Google Drive Encrypted Sync & Daily 11 AM Reminder Card -->
+<section class="card card-accent-purple">
+  <h2 data-i18n="syncCardTitle">مزامنة Google Drive المشفرة والتذكير اليومي (11:00 صباحًا)</h2>
+  <div class="sync-bar">
+    <div>
+      <span id="syncStatusBadge" class="status-pill status-warn" data-i18n="syncNotConfigured">غير متصل بـ Google Drive</span>
+      <div id="syncMetaText" class="hint" style="margin-top:4px"></div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button type="button" id="connectDriveBtn" class="purple-btn" onclick="connectGoogleDrive()" data-i18n="connectDriveBtn">ربط Google Drive</button>
+      <button type="button" id="syncNowBtn" class="secondary" onclick="triggerDriveSync('manual')" data-i18n="syncNowBtn">مزامنة الآن</button>
+    </div>
+  </div>
+
+  <details id="syncSettingsDetails">
+    <summary style="cursor:pointer;font-weight:650;font-size:0.88rem;color:var(--purple)" data-i18n="syncSettingsSummary">
+      إعدادات عبارة المرور المشتركة بين الأجهزة، ومعرّف OAuth، والتذكير اليومي
+    </summary>
+    <div style="padding-top:12px">
+      <div class="field">
+        <label for="sharedPassphraseInput" data-i18n="sharedPassLabel">عبارة المرور المشتركة لتشفير المزامنة (نفس العبارة على جميع أجهزتك)</label>
+        <div style="display:flex;gap:8px">
+          <input id="sharedPassphraseInput" type="password" autocomplete="off" placeholder="أدخل عبارة مرور قوية (10 أحرف على الأقل)">
+          <button type="button" class="secondary-purple" style="white-space:nowrap" onclick="saveSharedPassphrase()" data-i18n="savePassBtn">حفظ العبارة</button>
+        </div>
+        <div class="hint" data-i18n="sharedPassHint">
+          يتم تشفير بيانات المرضى محليًا باستخدام PBKDF2-SHA256 و AES-GCM قبل رفعها إلى Google Drive. لا يتم إرسال عبارة المرور أو تخزينها في السحابة أبدًا.
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="field">
+          <label for="oauthClientIdInput" data-i18n="oauthClientLabel">معرّف عميل Google OAuth (Web Client ID)</label>
+          <input id="oauthClientIdInput" type="text" dir="ltr" style="text-align:left" value="864184974912-adr3t6ep1pq8kjherh410310elstr1fg.apps.googleusercontent.com">
+          <div class="hint" data-i18n="oauthClientHint">معرّف عام فقط (بدون Client Secret). النطاق المستخدم: drive.file.</div>
+          <label for="androidClientIdInput" data-i18n="androidClientLabel">معرّف عميل Android OAuth (لتطبيق APK فقط)</label>
+          <input id="androidClientIdInput" type="text" dir="ltr" style="text-align:left" placeholder="xxxx.apps.googleusercontent.com">
+          <div class="hint" data-i18n="androidClientHint">مطلوب فقط داخل تطبيق Android. معرّف عام بدون سر. اسم الحزمة: com.alfereh.entfollowup</div>
+        </div>
+        <div class="field">
+          <label data-i18n="dailyNotifLabel">تذكير المتابعات اليومي (11:00 صباحًا)</label>
+          <button type="button" id="notifSetupBtn" class="secondary" style="width:100%" onclick="configureDailyReminder()" data-i18n="enableNotifBtn">تفعيل / اختبار إشعار 11:00 ص</button>
+          <div id="notifStatusHint" class="hint" data-i18n="notifHintWeb">يعمل الإشعار المجدول في الخلفية عبر تطبيق Android (Capacitor).</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+        <button type="button" class="secondary" onclick="saveSyncConfig()" data-i18n="saveConfigBtn">حفظ الإعدادات</button>
+        <button type="button" class="remove" onclick="disconnectGoogleDrive()" data-i18n="disconnectDriveBtn">فصل حساب Google Drive</button>
+      </div>
+    </div>
+  </details>
+</section>
+
+<!-- New / Edit Patient Form -->
+<section class="card card-accent-teal">
+<h2 data-i18n="newPatientTitle">إضافة مريض / عملية جديدة</h2>
 <form id="patientForm">
 <div class="grid">
-<div class="field"><label for="patientName">Patient name</label><input id="patientName" placeholder="Patient name" required></div>
-<div class="field"><label for="fileNumber">Hospital file number (manual)</label><input id="fileNumber" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder="Numbers only"><div class="hint">Numbers only.</div></div>
-<div class="field"><label for="phone">WhatsApp number</label><input id="phone" type="tel" inputmode="tel" placeholder="9665XXXXXXXX" required><div class="hint">Country code, numbers only (no + sign).</div></div>
+<div class="field"><label for="patientName" data-i18n="patientNameLabel">اسم المريض</label><input id="patientName" placeholder="اسم المريض" required></div>
+<div class="field"><label for="fileNumber" data-i18n="fileNumberLabel">رقم ملف المستشفى (يدوي)</label><input id="fileNumber" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder="أرقام فقط"><div class="hint" data-i18n="numbersOnlyHint">أرقام فقط.</div></div>
+<div class="field"><label for="phone" data-i18n="phoneLabel">رقم الواتساب</label><input id="phone" type="tel" inputmode="tel" placeholder="9665XXXXXXXX" required><div class="hint" data-i18n="phoneHint">أدخل رمز الدولة والأرقام فقط (بدون علامة +).</div></div>
 </div>
 <div class="grid">
-<div class="field"><label for="procedure">Operation</label>
+<div class="field"><label for="procedure" data-i18n="procedureLabel">العملية</label>
 <select id="procedure">
 <option value="Adenotonsillectomy">Adenotonsillectomy</option>
 <option value="Adenoidectomy">Adenoidectomy</option>
 <option value="Tonsillectomy">Tonsillectomy</option>
 <option value="Septoplasty + Turbinate Reduction">Septoplasty + Turbinate Reduction</option>
 </select></div>
-<div class="field"><label for="operationDate">Date of operation</label><input id="operationDate" type="date" required></div>
+<div class="field"><label for="operationDate" data-i18n="opDateLabel">تاريخ العملية</label><input id="operationDate" type="date" required></div>
 </div>
 <div class="grid">
-<div class="field"><label for="age">Patient age (years)</label><input id="age" type="number" min="0" max="120" step="1" placeholder="Age"></div>
-<div class="field"><label for="ctImage">CT / clinical image (optional)</label><input id="ctImage" type="file" accept="image/*"><div class="hint">Image is saved on this device with the patient record.</div></div>
+<div class="field"><label for="age" data-i18n="ageLabel">عمر المريض (بالسنوات)</label><input id="age" type="number" min="0" max="120" step="1" placeholder="العمر"></div>
+<div class="field"><label for="ctImage" data-i18n="ctImageLabel">صورة أشعة مقطعية / صورة إكلينيكية (اختياري)</label><input id="ctImage" type="file" accept="image/*"><div class="hint" data-i18n="ctImageHint">يتم حفظ الصورة على هذا الجهاز مع سجل المريض.</div></div>
 </div>
-<div class="field"><label for="notes">Clinical notes</label><textarea id="notes" rows="3" style="width:100%;padding:12px;border:1px solid #cbd5d8;border-radius:10px;font:inherit" placeholder="Enter clinical notes..."></textarea></div>
-<div class="field"><label for="complications">Complications</label><textarea id="complications" rows="3" style="width:100%;padding:12px;border:1px solid #cbd5d8;border-radius:10px;font:inherit" placeholder="Enter complications, or write None"></textarea></div>
+<div class="field"><label for="notes" data-i18n="notesLabel">ملاحظات إكلينيكية</label><textarea id="notes" rows="3" placeholder="أدخل الملاحظات الإكلينيكية..."></textarea></div>
+<div class="field"><label for="complications" data-i18n="complicationsLabel">المضاعفات</label><textarea id="complications" rows="3" placeholder="أدخل المضاعفات أو اكتب لا يوجد"></textarea></div>
 <div id="preview" aria-live="polite"></div>
-<button class="primary" type="submit">Save patient</button>
+<button class="primary" type="submit" id="submitPatientBtn" data-i18n="savePatientBtn">حفظ بيانات المريض</button>
 </form>
 </section>
-<section class="card">
-<h2>Today's follow-ups</h2>
-<div class="hint" style="margin:-8px 0 10px">Patients whose scheduled postoperative review falls today.</div>
-<div id="todayDashboard"><div class="empty">No follow-ups due today.</div></div>
+
+<!-- Today's Follow-ups -->
+<section class="card card-accent-teal">
+<h2 data-i18n="todayTitle">متابعات اليوم</h2>
+<div class="hint" style="margin:-8px 0 10px" data-i18n="todaySubtitle">المرضى الذين يحين موعد متابعتهم بعد العملية اليوم.</div>
+<div id="todayDashboard"><div class="empty">لا توجد متابعات مستحقة اليوم.</div></div>
 </section>
-<section class="card">
-<h2>Tomorrow's follow-ups</h2>
-<div class="hint" style="margin:-8px 0 10px">Patients whose scheduled postoperative review falls tomorrow.</div>
-<div id="tomorrowDashboard"><div class="empty">No follow-ups due tomorrow.</div></div>
+
+<!-- Tomorrow's Follow-ups -->
+<section class="card card-accent-purple">
+<h2 data-i18n="tomorrowTitle">متابعات الغد</h2>
+<div class="hint" style="margin:-8px 0 10px" data-i18n="tomorrowSubtitle">المرضى الذين يحين موعد متابعتهم بعد العملية غدًا.</div>
+<div id="tomorrowDashboard"><div class="empty">لا توجد متابعات مستحقة غدًا.</div></div>
 </section>
+
+<!-- Patient History & Backup -->
 <section class="card">
-<h2>Patient history</h2>
-<div class="hint" style="margin:-8px 0 12px">Browse all previous patients, filter by operation, and sort by operation date. Select a patient record to review or edit it.</div>
+<h2 data-i18n="historyTitle">سجل المرضى</h2>
+<div class="hint" style="margin:-8px 0 12px" data-i18n="historySubtitle">تصفح جميع المرضى، والتصفية حسب نوع العملية، والترتيب حسب تاريخ العملية. اختر سجل المريض للمراجعة أو التعديل.</div>
 <div class="history-tools">
- <div class="field"><label for="historyProcedure">Filter by operation</label><select id="historyProcedure"><option value="all">All operations</option><option>Adenotonsillectomy</option><option>Adenoidectomy</option><option>Tonsillectomy</option><option>Septoplasty + Turbinate Reduction</option></select></div>
- <div class="field"><label for="historySort">Sort by operation date</label><select id="historySort"><option value="newest">Newest first</option><option value="oldest">Oldest first</option></select></div>
+ <div class="field"><label for="historyProcedure" data-i18n="filterOpLabel">تصفية حسب العملية</label><select id="historyProcedure"><option value="all">All operations</option><option>Adenotonsillectomy</option><option>Adenoidectomy</option><option>Tonsillectomy</option><option>Septoplasty + Turbinate Reduction</option></select></div>
+ <div class="field"><label for="historySort" data-i18n="sortDateLabel">الترتيب حسب تاريخ العملية</label><select id="historySort"><option value="newest">Newest first</option><option value="oldest">Oldest first</option></select></div>
 </div>
 <div class="grid" style="align-items:end">
- <div class="field"><label for="searchPatients">Search patients</label><input id="searchPatients" type="search" placeholder="Name, file number, phone, notes..."></div>
- <div class="field"><button type="button" class="secondary" style="width:100%" onclick="exportPatients()">Export for Excel (CSV)</button></div>
+ <div class="field"><label for="searchPatients" data-i18n="searchLabel">البحث عن المرضى</label><input id="searchPatients" type="search" placeholder="الاسم أو رقم الملف أو الهاتف أو الملاحظات..."></div>
+ <div class="field"><button type="button" class="secondary" style="width:100%" onclick="exportPatients()" data-i18n="exportCsvBtn">تصدير إلى Excel (CSV)</button></div>
 </div>
 <div class="grid" style="align-items:end">
- <div class="field"><button type="button" class="primary" style="width:100%" onclick="createEncryptedBackup()">Download encrypted backup</button></div>
- <div class="field"><button type="button" class="secondary" style="width:100%" onclick="document.getElementById('backupFile').click()">Restore backup</button><input id="backupFile" type="file" accept=".json,application/json" class="hidden"></div>
+ <div class="field"><button type="button" class="primary" style="width:100%" onclick="createEncryptedBackup()" data-i18n="downloadBackupBtn">تنزيل نسخة احتياطية مشفرة</button></div>
+ <div class="field"><button type="button" class="secondary-purple" style="width:100%" onclick="document.getElementById('backupFile').click()" data-i18n="restoreBackupBtn">استعادة نسخة احتياطية</button><input id="backupFile" type="file" accept=".json,application/json" class="hidden"></div>
 </div>
-<div class="hint">Manual backup is encrypted with a password you choose when creating it. Keep that password safe; it is required to restore the backup on this or another device.</div>
-<div id="historyCount" class="hint"></div><div id="patientList"><div class="empty">No patients saved yet.</div></div>
+<div class="hint" data-i18n="backupHint">يتم تشفير النسخة الاحتياطية اليدوية بكلمة مرور تختارها عند إنشائها. احتفظ بكلمة المرور؛ ستحتاج إليها لاستعادة النسخة على هذا الجهاز أو جهاز آخر.</div>
+<div id="historyCount" class="hint"></div><div id="patientList"><div class="empty">لا توجد سجلات مرضى محفوظة حتى الآن.</div></div>
 </section>
+
+<!-- Important Notes -->
 <section class="card">
-<h2>Important</h2>
-<div class="hint">The operation date is day 0. Follow-up dates are calculated automatically; appointments falling on Friday are moved to Saturday. You can browse and filter patient history, view patients due today, export CSV, and create encrypted manual backups. WhatsApp opens with a prepared message; you review and tap Send.</div>
+<h2 data-i18n="importantTitle">مهم</h2>
+<div class="hint" data-i18n="importantBody">يُعتبر يوم العملية هو اليوم صفر. تُحسب مواعيد المتابعة تلقائيًا، وإذا وافق الموعد يوم الجمعة يتم نقله إلى السبت. يمكنك تصفح سجل المرضى والتصفية والاطلاع على متابعات اليوم وتصدير CSV وإنشاء نسخ احتياطية مشفرة والمزامنة المشفرة عبر Google Drive. يفتح واتساب برسالة جاهزة لمراجعتها ثم إرسالها.</div>
 </section>
 </main></div>
-<footer>ENT Follow-up V11 • Arabic / English • Local storage</footer>
+
+<footer>مستشفى الفريح • ENT Follow-up V12 • العربية / English</footer>
+
 <script>
-const $ = id => document.getElementById(id);
-const today = new Date();
-$('operationDate').value = [today.getFullYear(),String(today.getMonth()+1).padStart(2,'0'),String(today.getDate()).padStart(2,'0')].join('-');
-function addDays(iso,n){
-  const [y,m,d]=iso.split('-').map(Number);
-  const dt=new Date(y,m-1,d); dt.setDate(dt.getDate()+n);
-  return [dt.getFullYear(),String(dt.getMonth()+1).padStart(2,'0'),String(dt.getDate()).padStart(2,'0')].join('-');
-}
-function pretty(iso){
- const [y,m,d]=iso.split('-').map(Number);
- return new Date(y,m-1,d).toLocaleDateString(undefined,{day:'2-digit',month:'short',year:'numeric',weekday:'short'});
-}
-function followups(iso, procedure){
-  // The operation date is day 0. If a calculated follow-up falls on Friday,
-  // move the appointment to Saturday because Friday is a non-working day.
-  // Keep the postoperative day number unchanged.
-  const days = procedure.startsWith('Septoplasty') ? [7,14,21,28] : [3,7,14];
-  return days.map(n=>{
-    const originalDate=addDays(iso,n);
-    const [y,m,d]=originalDate.split('-').map(Number);
-    const weekday=new Date(y,m-1,d).getDay(); // Friday = 5
-    const date=weekday===5 ? addDays(originalDate,1) : originalDate;
-    return {day:n,date,originalDate,movedFromFriday:weekday===5};
+// ============================================================================
+// 1. BILINGUAL DICTIONARY & HELPERS (Arabic default, English toggle)
+// ============================================================================
+const I18N = {
+  ar: {
+    hospitalName: 'مستشفى الفريح',
+    appTitle: 'متابعة ما بعد عمليات الأنف والأذن والحنجرة',
+    appSubtitle: 'جدولة المتابعة بعد العملية، وسجل المرضى، والمزامنة المشفرة الآمنة.',
+    deviceLockNotice: 'تسجيل الدخول غير مفعّل. يمكن لأي شخص يستخدم ملف المتصفح هذا فتح سجلات المرضى. يُرجى حماية الهاتف بقفل الشاشة.',
+    conflictTitle: 'تعارض في المزامنة: تم الاحتفاظ بالنسختين',
+    conflictDesc: 'تم اكتشاف تعديلات متعارضة بين هذا الجهاز وملف Google Drive المشفر. تم حفظ النسختين ولن يتم الكتابة فوق أي منهما تلقائيًا. يرجى مراجعة الفروقات واختيار النسخة المعتمدة.',
+    keepLocalBtn: 'اعتماد نسخة هذا الجهاز ورفعها',
+    keepRemoteBtn: 'اعتماد نسخة Google Drive',
+    downloadConflictBtn: 'تنزيل نسخة احتياطية للتعارض (JSON)',
+    syncCardTitle: 'مزامنة Google Drive المشفرة والتذكير اليومي (11:00 صباحًا)',
+    syncNotConfigured: 'غير متصل بـ Google Drive',
+    syncReady: 'متصل وجاهز للمزامنة',
+    syncingNow: 'جارٍ المزامنة المشفرة...',
+    syncSuccess: 'تمت المزامنة بنجاح',
+    syncOffline: 'غير متصل بالإنترنت — محفوظ محليًا',
+    syncNeedPass: 'أدخل عبارة المرور المشتركة لتفعيل المزامنة',
+    syncConflictState: 'يوجد تعارض غير محلول — يرجى الاختيار أعلاه',
+    syncAuthExpired: 'انتهت جلسة Google — اضغط ربط للمتابعة',
+    connectDriveBtn: 'ربط Google Drive',
+    syncNowBtn: 'مزامنة الآن',
+    syncSettingsSummary: 'إعدادات عبارة المرور المشتركة بين الأجهزة، ومعرّف OAuth، والتذكير اليومي',
+    sharedPassLabel: 'عبارة المرور المشتركة لتشفير المزامنة (نفس العبارة على جميع أجهزتك)',
+    savePassBtn: 'حفظ العبارة',
+    sharedPassHint: 'يتم تشفير بيانات المرضى محليًا باستخدام PBKDF2-SHA256 و AES-GCM قبل رفعها إلى Google Drive. لا يتم إرسال عبارة المرور أو تخزينها في السحابة أبدًا.',
+    oauthClientLabel: 'معرّف عميل Google OAuth (Web Client ID)',
+    oauthClientHint: 'معرّف عام فقط (بدون Client Secret). النطاق المستخدم: drive.file.',
+    androidClientLabel: 'معرّف عميل Android OAuth (لتطبيق APK فقط)',
+    androidClientHint: 'مطلوب فقط داخل تطبيق Android. معرّف عام بدون سر. اسم الحزمة: com.alfereh.entfollowup',
+    dailyNotifLabel: 'تذكير المتابعات اليومي (11:00 صباحًا)',
+    enableNotifBtn: 'تفعيل / اختبار إشعار 11:00 ص',
+    notifHintWeb: 'يعمل الإشعار المجدول في الخلفية عبر تطبيق Android (Capacitor).',
+    notifHintNativeActive: 'التذكير اليومي مفعّل الساعة 11:00 صباحًا (يعمل حتى عند إغلاق التطبيق).',
+    saveConfigBtn: 'حفظ الإعدادات',
+    disconnectDriveBtn: 'فصل حساب Google Drive',
+    newPatientTitle: 'إضافة مريض / عملية جديدة',
+    patientNameLabel: 'اسم المريض',
+    fileNumberLabel: 'رقم ملف المستشفى (يدوي)',
+    numbersOnlyHint: 'أرقام فقط.',
+    phoneLabel: 'رقم الواتساب',
+    phoneHint: 'أدخل رمز الدولة والأرقام فقط (بدون علامة +).',
+    procedureLabel: 'العملية',
+    opDateLabel: 'تاريخ العملية',
+    ageLabel: 'عمر المريض (بالسنوات)',
+    ctImageLabel: 'صورة أشعة مقطعية / صورة إكلينيكية (اختياري)',
+    ctImageHint: 'يتم حفظ الصورة على هذا الجهاز مع سجل المريض.',
+    notesLabel: 'ملاحظات إكلينيكية',
+    complicationsLabel: 'المضاعفات',
+    savePatientBtn: 'حفظ بيانات المريض',
+    updatePatientBtn: 'تحديث بيانات المريض',
+    savingBtn: 'جارٍ الحفظ...',
+    todayTitle: 'متابعات اليوم',
+    todaySubtitle: 'المرضى الذين يحين موعد متابعتهم بعد العملية اليوم.',
+    tomorrowTitle: 'متابعات الغد',
+    tomorrowSubtitle: 'المرضى الذين يحين موعد متابعتهم بعد العملية غدًا.',
+    historyTitle: 'سجل المرضى',
+    historySubtitle: 'تصفح جميع المرضى، والتصفية حسب نوع العملية، والترتيب حسب تاريخ العملية. اختر سجل المريض للمراجعة أو التعديل.',
+    filterOpLabel: 'تصفية حسب العملية',
+    sortDateLabel: 'الترتيب حسب تاريخ العملية',
+    searchLabel: 'البحث عن المرضى',
+    exportCsvBtn: 'تصدير إلى Excel (CSV)',
+    downloadBackupBtn: 'تنزيل نسخة احتياطية مشفرة',
+    restoreBackupBtn: 'استعادة نسخة احتياطية',
+    backupHint: 'يتم تشفير النسخة الاحتياطية اليدوية بكلمة مرور تختارها عند إنشائها. احتفظ بكلمة المرور؛ ستحتاج إليها لاستعادة النسخة على هذا الجهاز أو جهاز آخر.',
+    importantTitle: 'مهم',
+    importantBody: 'يُعتبر يوم العملية هو اليوم صفر. تُحسب مواعيد المتابعة تلقائيًا، وإذا وافق الموعد يوم الجمعة يتم نقله إلى السبت. يمكنك تصفح سجل المرضى والتصفية والاطلاع على متابعات اليوم وتصدير CSV وإنشاء نسخ احتياطية مشفرة والمزامنة المشفرة عبر Google Drive. يفتح واتساب برسالة جاهزة لمراجعتها ثم إرسالها.',
+    procedures: {
+      'All operations': 'جميع العمليات',
+      'Adenotonsillectomy': 'استئصال اللوزتين واللحمية',
+      'Adenoidectomy': 'استئصال اللحمية',
+      'Tonsillectomy': 'استئصال اللوزتين',
+      'Septoplasty + Turbinate Reduction': 'تقويم الحاجز الأنفي وتصغير القرنيات'
+    },
+    sortOptions: {
+      newest: 'الأحدث أولًا',
+      oldest: 'الأقدم أولًا'
+    }
+  },
+  en: {
+    hospitalName: 'Al Fereh Hospital',
+    appTitle: 'ENT Postoperative Follow-up',
+    appSubtitle: 'Postoperative scheduling, patient history and secure encrypted sync.',
+    deviceLockNotice: 'Login is disabled. Anyone who can use this browser profile can open patient records. Keep your device locked and protected.',
+    conflictTitle: 'Sync Conflict Detected: Both Versions Preserved',
+    conflictDesc: 'Conflicting changes were found between this device and the encrypted Google Drive file. Both versions have been preserved and neither was overwritten. Review the differences below and choose which version to keep.',
+    keepLocalBtn: 'Keep This Device Version & Upload',
+    keepRemoteBtn: 'Keep Google Drive Version',
+    downloadConflictBtn: 'Download Conflict Snapshot (JSON)',
+    syncCardTitle: 'Google Drive Encrypted Sync & Daily 11:00 AM Reminder',
+    syncNotConfigured: 'Not connected to Google Drive',
+    syncReady: 'Connected & ready to sync',
+    syncingNow: 'Encrypted sync in progress...',
+    syncSuccess: 'Synced successfully',
+    syncOffline: 'Offline — saved locally',
+    syncNeedPass: 'Enter shared sync passphrase to enable sync',
+    syncConflictState: 'Unresolved conflict — please choose above',
+    syncAuthExpired: 'Google session expired — tap Connect to reauthorize',
+    connectDriveBtn: 'Connect Google Drive',
+    syncNowBtn: 'Sync Now',
+    syncSettingsSummary: 'Cross-device shared passphrase, OAuth Client ID, and daily notification settings',
+    sharedPassLabel: 'Shared encryption passphrase across your devices',
+    savePassBtn: 'Save Passphrase',
+    sharedPassHint: 'Patient records are encrypted locally with PBKDF2-SHA256 and AES-GCM before upload. Your passphrase is never sent to or stored in the cloud.',
+    oauthClientLabel: 'Google OAuth Web Client ID',
+    oauthClientHint: 'Public client identifier only (never embed Client Secret). Scope: drive.file.',
+    androidClientLabel: 'Android OAuth Client ID (APK only)',
+    androidClientHint: 'Needed only inside the Android app. Public ID, no secret. Package name: com.alfereh.entfollowup',
+    dailyNotifLabel: 'Daily follow-up reminder (11:00 AM)',
+    enableNotifBtn: 'Enable / Test 11:00 AM Notification',
+    notifHintWeb: 'Background 11:00 AM scheduling runs natively via the Android APK (Capacitor).',
+    notifHintNativeActive: 'Daily 11:00 AM reminders are scheduled for the next 30 days (work when the app is closed; refreshed whenever you open the app).',
+    saveConfigBtn: 'Save Settings',
+    disconnectDriveBtn: 'Disconnect Google Drive',
+    newPatientTitle: 'New patient / operation',
+    patientNameLabel: 'Patient name',
+    fileNumberLabel: 'Hospital file number (manual)',
+    numbersOnlyHint: 'Numbers only.',
+    phoneLabel: 'WhatsApp number',
+    phoneHint: 'Country code, numbers only (no + sign).',
+    procedureLabel: 'Operation',
+    opDateLabel: 'Date of operation',
+    ageLabel: 'Patient age (years)',
+    ctImageLabel: 'CT / clinical image (optional)',
+    ctImageHint: 'Image is saved on this device with the patient record.',
+    notesLabel: 'Clinical notes',
+    complicationsLabel: 'Complications',
+    savePatientBtn: 'Save patient',
+    updatePatientBtn: 'Update patient',
+    savingBtn: 'Saving...',
+    todayTitle: "Today's follow-ups",
+    todaySubtitle: 'Patients whose scheduled postoperative review falls today.',
+    tomorrowTitle: "Tomorrow's follow-ups",
+    tomorrowSubtitle: 'Patients whose scheduled postoperative review falls tomorrow.',
+    historyTitle: 'Patient history',
+    historySubtitle: 'Browse all previous patients, filter by operation, and sort by operation date. Select a patient record to review or edit it.',
+    filterOpLabel: 'Filter by operation',
+    sortDateLabel: 'Sort by operation date',
+    searchLabel: 'Search patients',
+    exportCsvBtn: 'Export for Excel (CSV)',
+    downloadBackupBtn: 'Download encrypted backup',
+    restoreBackupBtn: 'Restore backup',
+    backupHint: 'Manual backup is encrypted with a password you choose when creating it. Keep that password safe; it is required to restore the backup on this or another device.',
+    importantTitle: 'Important',
+    importantBody: 'The operation date is day 0. Follow-up dates are calculated automatically; appointments falling on Friday are moved to Saturday. You can browse and filter patient history, view patients due today, export CSV, create encrypted manual backups, and sync encrypted data via Google Drive. WhatsApp opens with a prepared message; you review and tap Send.',
+    procedures: {
+      'All operations': 'All operations',
+      'Adenotonsillectomy': 'Adenotonsillectomy',
+      'Adenoidectomy': 'Adenoidectomy',
+      'Tonsillectomy': 'Tonsillectomy',
+      'Septoplasty + Turbinate Reduction': 'Septoplasty + Turbinate Reduction'
+    },
+    sortOptions: {
+      newest: 'Newest first',
+      oldest: 'Oldest first'
+    }
+  }
+};
+
+let appLanguage = localStorage.getItem('entFollowupLanguage') || 'ar';
+function t(key) { return (I18N[appLanguage] && I18N[appLanguage][key]) || I18N.en[key] || key; }
+function tProc(proc) { return (I18N[appLanguage]?.procedures?.[proc]) || proc; }
+
+function applyLanguageStatic() {
+  document.documentElement.lang = appLanguage;
+  document.documentElement.dir = appLanguage === 'ar' ? 'rtl' : 'ltr';
+  document.body.dir = document.documentElement.dir;
+  document.body.style.textAlign = appLanguage === 'ar' ? 'right' : 'left';
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.getAttribute('data-i18n');
+    if (t(k)) el.textContent = t(k);
+  });
+  const langBtn = document.getElementById('languageToggle');
+  if (langBtn) langBtn.textContent = appLanguage === 'ar' ? 'English' : 'العربية';
+
+  if (appLanguage === 'ar') {
+    $('patientName').placeholder = 'اسم المريض';
+    $('fileNumber').placeholder = 'أرقام فقط';
+    $('age').placeholder = 'العمر';
+    $('notes').placeholder = 'أدخل الملاحظات الإكلينيكية...';
+    $('complications').placeholder = 'أدخل المضاعفات أو اكتب لا يوجد';
+    $('searchPatients').placeholder = 'الاسم أو رقم الملف أو الهاتف أو الملاحظات...';
+    $('sharedPassphraseInput').placeholder = 'أدخل عبارة مرور قوية (10 أحرف على الأقل)';
+  } else {
+    $('patientName').placeholder = 'Patient name';
+    $('fileNumber').placeholder = 'Numbers only';
+    $('age').placeholder = 'Age';
+    $('notes').placeholder = 'Enter clinical notes...';
+    $('complications').placeholder = 'Enter complications, or write None';
+    $('searchPatients').placeholder = 'Name, file number, phone, notes...';
+    $('sharedPassphraseInput').placeholder = 'Enter strong passphrase (min 10 chars)';
+  }
+
+  document.querySelectorAll('#procedure option, #historyProcedure option').forEach(opt => {
+    const val = opt.value === 'all' ? 'All operations' : opt.value;
+    opt.textContent = tProc(val);
+  });
+  document.querySelectorAll('#historySort option').forEach(opt => {
+    opt.textContent = I18N[appLanguage].sortOptions[opt.value] || opt.textContent;
   });
 }
-function followupDateLabel(item){
-  return pretty(item.date)+(item.movedFromFriday?' (moved from Friday to Saturday)':'');
+
+document.getElementById('languageToggle')?.addEventListener('click', () => {
+  appLanguage = appLanguage === 'ar' ? 'en' : 'ar';
+  localStorage.setItem('entFollowupLanguage', appLanguage);
+  applyLanguageStatic();
+  renderPreview();
+  render();
+  renderConflictBanner();
+});
+
+// ============================================================================
+// 2. DATE, FOLLOW-UP & CLINICAL SCHEDULE LOGIC (Day 0 = Op Date, Friday -> Sat)
+// ============================================================================
+const $ = id => document.getElementById(id);
+
+function localToday() {
+  const d = new Date();
+  return [d.getFullYear(), String(d.getMonth() + 1).padStart(2, '0'), String(d.getDate()).padStart(2, '0')].join('-');
 }
-function renderPreview(){
- const iso=$('operationDate').value;
- if(!iso){$('preview').innerHTML='';return}
- $('preview').innerHTML='<div class="dates">'+followups(iso,$('procedure').value).map(x=>`<div class="datebox"><b>DAY ${x.day}</b><span>${followupDateLabel(x)}</span></div>`).join('')+'</div>';
+
+$('operationDate').value = localToday();
+
+function addDays(iso, n) {
+  const [y, m, d] = iso.split('-').map(Number);
+  const dt = new Date(y, m - 1, d);
+  dt.setDate(dt.getDate() + n);
+  return [dt.getFullYear(), String(dt.getMonth() + 1).padStart(2, '0'), String(dt.getDate()).padStart(2, '0')].join('-');
 }
-$('fileNumber').addEventListener('input',e=>{e.target.value=e.target.value.replace(/\D/g,'');});
-$('operationDate').addEventListener('change',renderPreview);
-$('procedure').addEventListener('change',renderPreview);
-renderPreview();
-let patients=[];
-let sessionKey=null;
-let sessionPassword=null;
-const ENCRYPTED_KEY='entFollowupEncryptedV5';
-const SALT_KEY='entFollowupSaltV5';
-const AUTO_SECRET_KEY='entFollowupAutoSyncSecretV7';
-// Remove obsolete cloud-sync settings left by earlier builds; this version has no Drive integration.
-['entFollowupGoogleClientIdV7','entFollowupGoogleFileIdV7','entFollowupDriveModifiedTimeV7','entFollowupSyncDirtyV7','entFollowupDeviceIdV7'].forEach(k=>localStorage.removeItem(k));
-const LEGACY_KEY='entFollowupPatients';
+
+function pretty(iso) {
+  if (!iso) return '';
+  const [y, m, d] = iso.split('-').map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString(appLanguage === 'ar' ? 'ar-SA' : 'en-GB', {
+    day: '2-digit', month: 'short', year: 'numeric', weekday: 'short'
+  });
+}
+
+function followups(iso, procedure) {
+  // Day 0 is the operation date. Friday (weekday === 5) shifts to Saturday.
+  const days = (procedure || '').startsWith('Septoplasty') ? [7, 14, 21, 28] : [3, 7, 14];
+  return days.map(n => {
+    const originalDate = addDays(iso, n);
+    const [y, m, d] = originalDate.split('-').map(Number);
+    const weekday = new Date(y, m - 1, d).getDay(); // Friday = 5
+    const date = weekday === 5 ? addDays(originalDate, 1) : originalDate;
+    return { day: n, date, originalDate, movedFromFriday: weekday === 5 };
+  });
+}
+
+function followupDateLabel(item) {
+  if (!item.movedFromFriday) return pretty(item.date);
+  return pretty(item.date) + (appLanguage === 'ar' ? ' (تم النقل من الجمعة إلى السبت)' : ' (moved from Friday to Saturday)');
+}
+
+function renderPreview() {
+  const iso = $('operationDate').value;
+  if (!iso) { $('preview').innerHTML = ''; return; }
+  const dayWord = appLanguage === 'ar' ? 'اليوم' : 'DAY';
+  $('preview').innerHTML = '<div class="dates">' + followups(iso, $('procedure').value).map(x =>
+    `<div class="datebox"><b>${dayWord} ${x.day}</b><span>${followupDateLabel(x)}</span></div>`
+  ).join('') + '</div>';
+}
+
+// Enforce digits-only on manual hospital file number
+$('fileNumber').addEventListener('input', e => {
+  e.target.value = e.target.value.replace(/\D/g, '');
+});
+$('operationDate').addEventListener('change', renderPreview);
+$('procedure').addEventListener('change', renderPreview);
+
+// ============================================================================
+// 3. LOCAL ENCRYPTED STORAGE (PRESERVING V11 KEYS & FORMAT) & V8 BACKUPS
+// ============================================================================
+let patients = [];
+let sessionKey = null;
+let sessionPassword = null;
+
+// Exact V11 localStorage keys preserved for non-destructive continuity:
+const ENCRYPTED_KEY = 'entFollowupEncryptedV5';
+const SALT_KEY = 'entFollowupSaltV5';
+const AUTO_SECRET_KEY = 'entFollowupAutoSyncSecretV7';
+const LEGACY_KEY = 'entFollowupPatients';
+
+// V12 Sync & Conflict Metadata Keys (separate from V11 encrypted records):
+const V12_CONFIG_KEY = 'entFollowupV12SyncConfig';
+const V12_SYNC_META_KEY = 'entFollowupV12SyncMeta';
+const V12_CONFLICT_KEY = 'entFollowupV12ConflictState';
+const V12_SHARED_PASS_SESSION_KEY = 'entFollowupV12SharedPassLocal';
+
+const DEFAULT_WEB_CLIENT_ID = '864184974912-adr3t6ep1pq8kjherh410310elstr1fg.apps.googleusercontent.com';
+const DRIVE_FILE_NAME = 'AlFereh_ENT_Followup_Encrypted_V12.json';
+const DRIVE_SCOPE = 'https://www.googleapis.com/auth/drive.file';
+
 const enc = new TextEncoder();
 const dec = new TextDecoder();
-function bytesToB64(bytes){let binary='';bytes.forEach(b=>binary+=String.fromCharCode(b));return btoa(binary);}
-function b64ToBytes(value){return Uint8Array.from(atob(value),c=>c.charCodeAt(0));}
-async function deriveKey(password,salt){
- const material=await crypto.subtle.importKey('raw',enc.encode(password),'PBKDF2',false,['deriveKey']);
- return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:310000,hash:'SHA-256'},material,{name:'AES-GCM',length:256},false,['encrypt','decrypt']);
-}
-async function encryptRecords(){
- if(!sessionKey)throw new Error('The app encryption key is not initialized. Reload the app.');
- const iv=crypto.getRandomValues(new Uint8Array(12));
- const cipher=await crypto.subtle.encrypt({name:'AES-GCM',iv},sessionKey,enc.encode(JSON.stringify(patients)));
- localStorage.setItem(ENCRYPTED_KEY,JSON.stringify({iv:bytesToB64(iv),data:bytesToB64(new Uint8Array(cipher))}));
-}
-async function decryptRecords(key){
- const packed=JSON.parse(localStorage.getItem(ENCRYPTED_KEY));
- const plain=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64ToBytes(packed.iv)},key,b64ToBytes(packed.data));
- return JSON.parse(dec.decode(plain));
-}
-async function save(){ await encryptRecords(); }
-function downloadJsonFile(data, filename){
- const blob=new Blob([JSON.stringify(data)],{type:'application/json'});
- const url=URL.createObjectURL(blob);const a=document.createElement('a');
- a.href=url;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
-}
-window.createEncryptedBackup=async()=>{
- try{
-  if(!sessionKey)throw new Error('The app is still initializing. Reload and try again.');
-  const password=prompt('Create a backup password (at least 10 characters). This is only for this backup file, not an app login. You will need it to restore the file:');
-  if(password===null)return;
-  if(password.length<10)throw new Error('Choose a backup password with at least 10 characters.');
-  const confirmation=prompt('Re-enter the backup password to confirm:');
-  if(confirmation===null)return;
-  if(password!==confirmation)throw new Error('The passwords do not match. No backup was created.');
-  const salt=crypto.getRandomValues(new Uint8Array(16));
-  const key=await deriveKey(password,salt);
-  const iv=crypto.getRandomValues(new Uint8Array(12));
-  const cipher=await crypto.subtle.encrypt({name:'AES-GCM',iv},key,enc.encode(JSON.stringify(patients)));
-  const backup={format:'ENT-FOLLOWUP-ENCRYPTED-BACKUP',version:8,createdAt:new Date().toISOString(),kdf:'PBKDF2-SHA256-310000',salt:bytesToB64(salt),iv:bytesToB64(iv),data:bytesToB64(new Uint8Array(cipher))};
-  downloadJsonFile(backup,'ENT_Followup_Encrypted_Backup_'+localToday()+'.json');
-  alert('Encrypted backup downloaded. Store the file and backup password safely.');
- }catch(err){alert(err.message||'Could not create the backup.');}
-};
-$('backupFile').addEventListener('change',async e=>{
- const file=e.target.files?.[0];e.target.value='';if(!file)return;
- try{
-  const backup=JSON.parse(await file.text());
-  if(backup.format!=='ENT-FOLLOWUP-ENCRYPTED-BACKUP'||!backup.salt||!backup.iv||!backup.data)throw new Error('This is not a valid ENT Follow-up encrypted backup.');
-  if(!confirm('Restore this backup? Your current patient records on this device will be replaced.'))return;
-  let key, restored;
-  if(backup.version>=8){
-   const password=prompt('Enter the backup password:');if(password===null)return;
-   key=await deriveKey(password,b64ToBytes(backup.salt));
-  }else{
-   // Compatibility with Version 7 backups created on this same browser profile.
-   if(!sessionPassword)throw new Error('This older backup can only be restored on the original device profile.');
-   key=await deriveKey(sessionPassword,b64ToBytes(backup.salt));
+
+function bytesToB64(bytes) {
+  let binary = '';
+  const chunk = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunk) {
+    binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunk));
   }
-  try{
-   const plain=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64ToBytes(backup.iv)},key,b64ToBytes(backup.data));
-   restored=JSON.parse(dec.decode(plain));
-  }catch(_){throw new Error('The backup password is incorrect, or the backup file is damaged.');}
-  if(!Array.isArray(restored))throw new Error('Backup contents are invalid.');
-  const oldPatients=patients;const oldSalt=localStorage.getItem(SALT_KEY);const oldPacked=localStorage.getItem(ENCRYPTED_KEY);
-  try{
-   patients=restored;
-   // Keep the app's own local encryption key; only the backup's contents are decrypted with its backup password.
-   await encryptRecords();render();
-  }catch(err){patients=oldPatients;if(oldSalt!==null)localStorage.setItem(SALT_KEY,oldSalt);if(oldPacked!==null)localStorage.setItem(ENCRYPTED_KEY,oldPacked);throw err;}
-  alert('Backup restored successfully. Your patient records are now available on this device.');
- }catch(err){alert(err.message||'Could not restore the backup.');}
-});
-
-let editingIndex = null;
-function localToday(){
- const d=new Date();
- return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');
-}
-function whatsappUrl(p, day=null){
- const all=followups(p.operationDate,p.procedure);
- const selected=day ? all.filter(x=>x.day===day) : all;
- const schedule=selected.map(x=>`• Postoperative day ${x.day}: ${followupDateLabel(x)}`).join('\n');
- const msg=`Dear ${p.name},\n\nYour postoperative follow-up schedule:\nOperation: ${p.procedure}\nDate of surgery: ${pretty(p.operationDate)}\n\n${schedule}\n\nPlease attend as scheduled. Thank you.`;
- return 'https://wa.me/'+p.phone.replace(/\D/g,'')+'?text='+encodeURIComponent(msg);
-}
-function validPhone(phone){return /^\d{8,15}$/.test(phone.replace(/\D/g,''))}
-function render(){
- const root=$('patientList');
- const query=($('searchPatients')?.value||'').trim().toLowerCase();
- const procedureFilter=$('historyProcedure')?.value||'all';
- const sortOrder=$('historySort')?.value||'newest';
- const matches=patients.map((p,i)=>({p,i})).filter(({p})=>
-   (procedureFilter==='all'||p.procedure===procedureFilter) && [p.name,p.fileNumber,p.phone,p.procedure,p.operationDate,p.age,p.notes,p.complications].join(' ').toLowerCase().includes(query)
- ).sort((a,b)=>sortOrder==='oldest'?a.p.operationDate.localeCompare(b.p.operationDate):b.p.operationDate.localeCompare(a.p.operationDate));
- $('historyCount').textContent=`Showing ${matches.length} of ${patients.length} patient records`;
- if(!patients.length){root.innerHTML='<div class="empty">No patients saved yet.</div>';}
- else if(!matches.length){root.innerHTML='<div class="empty">No matching patients found.</div>';}
- else {
-  root.innerHTML=matches.map(({p,i})=>{
-   const ds=followups(p.operationDate,p.procedure);
-   return `<details class="patient"><summary style="cursor:pointer"><strong>${escapeHtml(p.name)}</strong><small>${p.fileNumber ? 'File No: '+escapeHtml(p.fileNumber)+' · ' : ''}${escapeHtml(p.procedure)} · Surgery: ${pretty(p.operationDate)} · Age: ${p.age ? escapeHtml(String(p.age))+' years' : 'Not entered'} · WhatsApp: ${escapeHtml(p.phone)}</small><span class="hint">Tap to view full patient record</span></summary><div style="padding-top:8px">
-   ${p.ctImage ? `<p><a href="${p.ctImage}" target="_blank" rel="noopener">View saved CT / clinical image</a></p>` : ''}
-   ${p.notes ? `<p><b>Notes:</b> ${escapeHtml(p.notes)}</p>` : ''}
-   ${p.complications ? `<p><b>Complications:</b> ${escapeHtml(p.complications)}</p>` : ''}
-   <div class="dates">${ds.map(x=>`<div class="datebox"><b>DAY ${x.day}</b><span>${followupDateLabel(x)}</span></div>`).join('')}</div>
-   <div class="actions"><button class="secondary" onclick="editPatient(${i})">Edit</button><button class="secondary" onclick="sendAll(${i})">WhatsApp all dates</button>${ds.map(x=>`<button class="secondary" onclick="sendDay(${i},${x.day})">Day ${x.day}</button>`).join('')}<button class="remove" onclick="removePatient(${i})">Delete</button></div></div></details>`;
-  }).join('');
- }
- renderDashboard();
-}
-function renderDashboard(){
- const today=localToday();
- const tomorrow=addDays(today,1);
- renderDueList('todayDashboard',today,'today');
- renderDueList('tomorrowDashboard',tomorrow,'tomorrow');
-}
-function renderDueList(elementId,targetDate,label){
- const root=$(elementId);
- const due=[];
- patients.forEach((p,i)=>followups(p.operationDate,p.procedure).forEach(f=>{
-   if(f.date===targetDate) due.push({p,i,day:f.day,movedFromFriday:f.movedFromFriday});
- }));
- if(!due.length){root.innerHTML=`<div class="empty">No follow-ups due ${label}.</div>`;return;}
- root.innerHTML=due.map(({p,i,day,movedFromFriday})=>`<div class="patient"><strong>${escapeHtml(p.name)}</strong><small>${p.fileNumber?'File No: '+escapeHtml(p.fileNumber)+' · ':''}${escapeHtml(p.procedure)} · Postoperative day ${day} · ${escapeHtml(p.phone)}${movedFromFriday?' · Rescheduled from Friday':''}</small><div class="actions"><button class="secondary" onclick="sendDay(${i},${day})">WhatsApp reminder</button><button class="secondary" onclick="editPatient(${i})">Open record</button></div></div>`).join('');
+  return btoa(binary);
 }
 
-window.editPatient=i=>{
- const p=patients[i]; if(!p)return;
- editingIndex=i;
- $('patientName').value=p.name||''; $('fileNumber').value=p.fileNumber||''; $('phone').value=p.phone||'';
- $('procedure').value=p.procedure||'Adenotonsillectomy';
- $('operationDate').value=p.operationDate||'';
- $('age').value=p.age||''; $('notes').value=p.notes||'';
- $('complications').value=p.complications||'';
- $('ctImage').value='';
- $('patientForm').querySelector('button[type="submit"]').textContent='Update patient';
- $('preview').dataset.existingImage=p.ctImage||'';
- renderPreview();
- $('patientForm').scrollIntoView({behavior:'smooth',block:'start'});
-};
-window.exportPatients=()=>{
- if(!patients.length){alert('There are no patient records to export.');return;}
- const columns=['Patient name','Hospital file number','Age (years)','WhatsApp number','Operation','Operation date','Follow-up day 1','Follow-up date 1','Follow-up day 2','Follow-up date 2','Follow-up day 3','Follow-up date 3','Follow-up day 4','Follow-up date 4','Clinical notes','Complications','CT / clinical image attached'];
- const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
- const rows=patients.map(p=>{
-   const fs=followups(p.operationDate,p.procedure);
-   const fvals=[];
-   for(let n=0;n<4;n++){fvals.push(fs[n]?.day||'',fs[n]?.date||'');}
-   return [p.name,p.fileNumber||'',p.age,p.phone,p.procedure,p.operationDate,...fvals,p.notes,p.complications,p.ctImage?'Yes':'No'].map(q).join(',');
- });
- const csv='\uFEFF'+[columns.map(q).join(','),...rows].join('\r\n');
- const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
- const url=URL.createObjectURL(blob); const a=document.createElement('a');
- a.href=url;a.download='ENT_patient_followups_'+localToday()+'.csv';a.click();
- URL.revokeObjectURL(url);
-};
-function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-window.sendAll=i=>window.open(whatsappUrl(patients[i]),'_blank','noopener');
-window.sendDay=(i,d)=>window.open(whatsappUrl(patients[i],d),'_blank','noopener');
-window.removePatient=async i=>{if(confirm('Delete this patient record from this device?')){const removed=patients.splice(i,1)[0];if(editingIndex===i){editingIndex=null;$('patientForm').reset();$('patientForm').querySelector('button[type="submit"]').textContent='Save patient';}try{await save();render();}catch(err){patients.splice(i,0,removed);alert('Could not save the deletion. Check available device storage.');render();}}};
-async function imageToDataUrl(file){
- if(!file) return '';
- if(!file.type.startsWith('image/')) throw new Error('Please select an image file.');
- // Resize/compress the selected CT screenshot or clinical image before local storage.
- const dataUrl = await new Promise((resolve,reject)=>{
-   const reader=new FileReader();
-   reader.onload=()=>resolve(reader.result);
-   reader.onerror=()=>reject(new Error('Could not read image.'));
-   reader.readAsDataURL(file);
- });
- const img=await new Promise((resolve,reject)=>{
-   const image=new Image(); image.onload=()=>resolve(image); image.onerror=()=>reject(new Error('Could not load image.'));
-   image.src=dataUrl;
- });
- const scale=Math.min(1,1400/Math.max(img.width,img.height));
- const canvas=document.createElement('canvas');
- canvas.width=Math.round(img.width*scale); canvas.height=Math.round(img.height*scale);
- canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);
- return canvas.toDataURL('image/jpeg',0.72);
+function b64ToBytes(value) {
+  return Uint8Array.from(atob(value), c => c.charCodeAt(0));
 }
-$('patientForm').addEventListener('submit',async e=>{
- e.preventDefault();
- const phone=$('phone').value.trim();
- const operationDate=$('operationDate').value;
- if(!validPhone(phone)){alert('Enter a valid WhatsApp number with country code (8–15 digits).');return}
- if(!operationDate){alert('Please select the operation date.');return}
- const submitButton=$('patientForm').querySelector('button[type="submit"]');
- submitButton.disabled=true; submitButton.textContent='Saving...';
- try{
-  const chosenImage=$('ctImage').files[0];
-  const ctImage=chosenImage ? await imageToDataUrl(chosenImage) : (editingIndex!==null ? ($('preview').dataset.existingImage||patients[editingIndex].ctImage||'') : '');
-  const patient={name:$('patientName').value.trim(),fileNumber:$('fileNumber').value.trim(),phone,procedure:$('procedure').value,operationDate,
-    age:$('age').value,notes:$('notes').value.trim(),complications:$('complications').value.trim(),ctImage};
-  if(editingIndex!==null){
-    const old=patients[editingIndex]; patients[editingIndex]={...old,...patient};
-    try{await save();}catch(storageError){patients[editingIndex]=old;throw new Error('Device storage is full. Use a smaller image or remove the image, then try again.');}
-  } else {
-    patients.unshift(patient);
-    try{await save();}catch(storageError){patients.shift();throw new Error('Device storage is full. Use a smaller image or remove the image, then try again.');}
+
+async function deriveKey(password, salt, iterations = 310000) {
+  const material = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey(
+    { name: 'PBKDF2', salt, iterations, hash: 'SHA-256' },
+    material,
+    { name: 'AES-GCM', length: 256 },
+    false,
+    ['encrypt', 'decrypt']
+  );
+}
+
+function ensurePatientIds(list) {
+  let mutated = false;
+  list.forEach((p, idx) => {
+    if (!p.id) {
+      p.id = 'pt_' + Date.now().toString(36) + '_' + idx + '_' + Math.random().toString(36).slice(2, 7);
+      mutated = true;
+    }
+    if (!p.updatedAt) {
+      p.updatedAt = p.operationDate ? (p.operationDate + 'T00:00:00.000Z') : new Date().toISOString();
+      mutated = true;
+    }
+  });
+  return mutated;
+}
+
+async function encryptRecords() {
+  if (!sessionKey) throw new Error('Encryption key not initialized. Reload the app.');
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const cipher = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, sessionKey, enc.encode(JSON.stringify(patients)));
+  localStorage.setItem(ENCRYPTED_KEY, JSON.stringify({ iv: bytesToB64(iv), data: bytesToB64(new Uint8Array(cipher)) }));
+}
+
+async function decryptRecords(key) {
+  const packed = JSON.parse(localStorage.getItem(ENCRYPTED_KEY));
+  const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64ToBytes(packed.iv) }, key, b64ToBytes(packed.data));
+  return JSON.parse(dec.decode(plain));
+}
+
+function getSyncMeta() {
+  try {
+    return JSON.parse(localStorage.getItem(V12_SYNC_META_KEY)) || {
+      deviceId: 'dev_' + crypto.getRandomValues(new Uint8Array(6)).reduce((a, b) => a + b.toString(16).padStart(2, '0'), ''),
+      localRevision: 0,
+      lastSyncedRevision: 0,
+      driveFileId: null,
+      lastKnownRemoteModifiedTime: null,
+      lastKnownRemoteRevision: 0,
+      lastSyncAt: null,
+      dirty: false
+    };
+  } catch (_) {
+    return {
+      deviceId: 'dev_' + Date.now().toString(36),
+      localRevision: 0,
+      lastSyncedRevision: 0,
+      driveFileId: null,
+      lastKnownRemoteModifiedTime: null,
+      lastKnownRemoteRevision: 0,
+      lastSyncAt: null,
+      dirty: false
+    };
   }
-  editingIndex=null;
-  render();
-  $('patientForm').reset();
-  $('preview').dataset.existingImage='';
-  $('patientForm').querySelector('button[type="submit"]').textContent='Save patient';
-  $('operationDate').value=[today.getFullYear(),String(today.getMonth()+1).padStart(2,'0'),String(today.getDate()).padStart(2,'0')].join('-');
-  renderPreview();
- }catch(err){alert(err.message||'Could not save this patient.');}
- finally{submitButton.disabled=false;if(editingIndex===null)submitButton.textContent='Save patient';}
-});
+}
 
-async function initializeAuth(){
- // No login screen: create a random local encryption secret automatically.
- // The secret is stored in this browser, so this is convenience encryption, not device-user authentication.
- if(!window.crypto?.subtle){alert('This browser does not support secure encryption. Open the app using HTTPS or a modern browser.');return;}
- let secret=localStorage.getItem(AUTO_SECRET_KEY);
- const encrypted=localStorage.getItem(ENCRYPTED_KEY);
- if(encrypted && !secret){
-  const oldPassword=prompt('Existing encrypted patient records were found. Enter your previous app password once to migrate them. No password will be required afterward.');
-  if(oldPassword===null)return;
-  try{
-   const oldSalt=b64ToBytes(localStorage.getItem(SALT_KEY));
-   const oldKey=await deriveKey(oldPassword,oldSalt);
-   patients=await decryptRecords(oldKey);
-  }catch(_){alert('Could not migrate the existing records: the previous password was incorrect or the data is damaged. Your original records have not been changed.');return;}
-  secret=bytesToB64(crypto.getRandomValues(new Uint8Array(32)));
-  localStorage.setItem(AUTO_SECRET_KEY,secret);
-  const salt=crypto.getRandomValues(new Uint8Array(16));
-  localStorage.setItem(SALT_KEY,bytesToB64(salt));
-  sessionPassword=secret;sessionKey=await deriveKey(secret,salt);
+function setSyncMeta(meta) {
+  localStorage.setItem(V12_SYNC_META_KEY, JSON.stringify(meta));
+}
+
+async function save(markDirty = true) {
+  ensurePatientIds(patients);
   await encryptRecords();
- }else{
-  if(!secret){secret=bytesToB64(crypto.getRandomValues(new Uint8Array(32)));localStorage.setItem(AUTO_SECRET_KEY,secret);}
-  sessionPassword=secret;
-  let saltValue=localStorage.getItem(SALT_KEY);
-  if(!saltValue){saltValue=bytesToB64(crypto.getRandomValues(new Uint8Array(16)));localStorage.setItem(SALT_KEY,saltValue);}
-  sessionKey=await deriveKey(secret,b64ToBytes(saltValue));
-  if(encrypted){
-   try{patients=await decryptRecords(sessionKey);}catch(_){alert('Could not open the locally stored patient records. Do not clear browser data; contact support before proceeding.');return;}
-  }else{
-   const legacy=localStorage.getItem(LEGACY_KEY);
-   try{patients=legacy?JSON.parse(legacy):[];}catch(_){patients=[];}
-   await encryptRecords();
-   if(legacy!==null)localStorage.removeItem(LEGACY_KEY);
+  if (markDirty) {
+    const meta = getSyncMeta();
+    meta.localRevision = (meta.localRevision || 0) + 1;
+    meta.dirty = true;
+    meta.lastLocalChangeAt = new Date().toISOString();
+    setSyncMeta(meta);
   }
- }
- $('appContent').classList.remove('hidden');
- render();
- 
+  await syncAndroid11AMNotificationSchedule();
+  if (markDirty && canAutoSync()) {
+    // Immediate two-way sync after local change (non-blocking)
+    triggerDriveSync('local-change').catch(() => {});
+  }
 }
-$('searchPatients').addEventListener('input',render);
-$('historyProcedure').addEventListener('change',render);
-$('historySort').addEventListener('change',render);
-initializeAuth().catch(err=>alert(err.message||'Could not initialize the app.'));
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));}
-</script>
-<script>
-// Bilingual interface. Arabic is the default; patient data itself is never translated.
-const I18N={
- 'ENT Postoperative Follow-up':'متابعة ما بعد عمليات الأنف والأذن والحنجرة',
- 'Postoperative scheduling, patient history and secure local records.':'جدولة المتابعة بعد العملية، وسجل المرضى، وحفظ البيانات محليًا.',
- 'Login is disabled. Anyone who can use this browser profile can open patient records. Keep your device locked and protected.':'تسجيل الدخول غير مفعّل. يمكن لأي شخص يستخدم ملف المتصفح هذا فتح سجلات المرضى. يُرجى حماية الهاتف بقفل الشاشة.',
- 'New patient / operation':'إضافة مريض / عملية جديدة','Patient name':'اسم المريض','Hospital file number (manual)':'رقم ملف المستشفى (يدوي)','Numbers only.':'أرقام فقط.','WhatsApp number':'رقم الواتساب','Country code, numbers only (no + sign).':'أدخل رمز الدولة والأرقام فقط (بدون علامة +).','Operation':'العملية','Adenotonsillectomy':'استئصال اللوزتين واللحمية','Adenoidectomy':'استئصال اللحمية','Tonsillectomy':'استئصال اللوزتين','Septoplasty + Turbinate Reduction':'تقويم الحاجز الأنفي وتصغير القرنيات','Date of operation':'تاريخ العملية','Patient age (years)':'عمر المريض (بالسنوات)','Age':'العمر','CT / clinical image (optional)':'صورة أشعة مقطعية / صورة إكلينيكية (اختياري)','Image is saved on this device with the patient record.':'يتم حفظ الصورة على هذا الجهاز مع سجل المريض.','Clinical notes':'ملاحظات إكلينيكية','Enter clinical notes...':'أدخل الملاحظات الإكلينيكية...','Complications':'المضاعفات','Enter complications, or write None':'أدخل المضاعفات أو اكتب لا يوجد','Save patient':'حفظ بيانات المريض','Update patient':'تحديث بيانات المريض','Saving...':'جارٍ الحفظ...','Today\'s follow-ups':'متابعات اليوم','Patients whose scheduled postoperative review falls today.':'المرضى الذين يحين موعد متابعتهم بعد العملية اليوم.','Tomorrow\'s follow-ups':'متابعات الغد','Patients whose scheduled postoperative review falls tomorrow.':'المرضى الذين يحين موعد متابعتهم بعد العملية غدًا.','No follow-ups due today.':'لا توجد متابعات مستحقة اليوم.','No follow-ups due tomorrow.':'لا توجد متابعات مستحقة غدًا.','Patient history':'سجل المرضى','Browse all previous patients, filter by operation, and sort by operation date. Select a patient record to review or edit it.':'تصفح جميع المرضى، والتصفية حسب نوع العملية، والترتيب حسب تاريخ العملية. اختر سجل المريض للمراجعة أو التعديل.','Filter by operation':'تصفية حسب العملية','All operations':'جميع العمليات','Sort by operation date':'الترتيب حسب تاريخ العملية','Newest first':'الأحدث أولًا','Oldest first':'الأقدم أولًا','Search patients':'البحث عن المرضى','Name, file number, phone, notes...':'الاسم أو رقم الملف أو الهاتف أو الملاحظات...','Export for Excel (CSV)':'تصدير إلى Excel (CSV)','Download encrypted backup':'تنزيل نسخة احتياطية مشفرة','Restore backup':'استعادة نسخة احتياطية','Manual backup is encrypted with a password you choose when creating it. Keep that password safe; it is required to restore the backup on this or another device.':'يتم تشفير النسخة الاحتياطية اليدوية بكلمة مرور تختارها عند إنشائها. احتفظ بكلمة المرور؛ ستحتاج إليها لاستعادة النسخة على هذا الجهاز أو جهاز آخر.','No patients saved yet.':'لا توجد سجلات مرضى محفوظة حتى الآن.','No matching patients found.':'لم يتم العثور على مرضى مطابقين.','Important':'مهم','The operation date is day 0. Follow-up dates are calculated automatically; appointments falling on Friday are moved to Saturday. You can browse and filter patient history, view patients due today, export CSV, and create encrypted manual backups. WhatsApp opens with a prepared message; you review and tap Send.':'يُعتبر يوم العملية هو اليوم صفر. تُحسب مواعيد المتابعة تلقائيًا، وإذا وافق الموعد يوم الجمعة يتم نقله إلى السبت. يمكنك تصفح سجل المرضى والتصفية والاطلاع على متابعات اليوم وتصدير CSV وإنشاء نسخ احتياطية مشفرة. يفتح واتساب برسالة جاهزة لمراجعتها ثم إرسالها.','Tap to view full patient record':'اضغط لعرض سجل المريض كاملًا','View saved CT / clinical image':'عرض صورة الأشعة / الصورة الإكلينيكية المحفوظة','Notes:':'الملاحظات:','Edit':'تعديل','WhatsApp all dates':'واتساب - كل المواعيد','Delete':'حذف','WhatsApp reminder':'تذكير واتساب','Open record':'فتح السجل','File No:':'رقم الملف:','Surgery:':'العملية:','Age:':'العمر:','years':'سنوات','Not entered':'غير مدخل','Postoperative day':'اليوم بعد العملية','Rescheduled from Friday':'تم تغيير الموعد من الجمعة','Showing':'عرض','of':'من','patient records':'سجل مريض','None':'لا يوجد','moved from Friday to Saturday':'تم النقل من الجمعة إلى السبت','Please select the operation date.':'يرجى تحديد تاريخ العملية.','Enter a valid WhatsApp number with country code (8–15 digits).':'يرجى إدخال رقم واتساب صحيح مع رمز الدولة (من 8 إلى 15 رقمًا).','There are no patient records to export.':'لا توجد سجلات مرضى لتصديرها.','Delete this patient record from this device?':'هل تريد حذف سجل هذا المريض من هذا الجهاز؟','Could not save the deletion. Check available device storage.':'تعذر حفظ الحذف. تحقق من مساحة التخزين المتاحة على الجهاز.','Please select an image file.':'يرجى اختيار ملف صورة.','Could not read image.':'تعذرت قراءة الصورة.','Could not load image.':'تعذر تحميل الصورة.','Device storage is full. Use a smaller image or remove the image, then try again.':'مساحة تخزين الجهاز ممتلئة. استخدم صورة أصغر أو احذف الصورة ثم حاول مرة أخرى.','Could not save this patient.':'تعذر حفظ بيانات المريض.','Could not open the locally stored patient records. Do not clear browser data; contact support before proceeding.':'تعذر فتح سجلات المرضى المحفوظة محليًا. لا تمسح بيانات المتصفح؛ اطلب المساعدة قبل المتابعة.'
+
+function downloadJsonFile(data, filename) {
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1500);
+}
+
+// Manual encrypted backup (100% compatible with V11 / V8 format)
+window.createEncryptedBackup = async () => {
+  try {
+    if (!sessionKey) throw new Error('The app is still initializing. Reload and try again.');
+    const promptMsg = appLanguage === 'ar'
+      ? 'أنشئ كلمة مرور للنسخة الاحتياطية (10 أحرف على الأقل). ستحتاجها لاستعادة الملف:'
+      : 'Create a backup password (at least 10 characters). You will need it to restore the file:';
+    const password = prompt(promptMsg);
+    if (password === null) return;
+    if (password.length < 10) throw new Error(appLanguage === 'ar' ? 'يجب أن تكون كلمة المرور 10 أحرف على الأقل.' : 'Choose a backup password with at least 10 characters.');
+    const confirmMsg = appLanguage === 'ar' ? 'أعد إدخال كلمة مرور النسخة الاحتياطية للتأكيد:' : 'Re-enter the backup password to confirm:';
+    const confirmation = prompt(confirmMsg);
+    if (confirmation === null) return;
+    if (password !== confirmation) throw new Error(appLanguage === 'ar' ? 'كلمتا المرور غير متطابقتين.' : 'The passwords do not match. No backup was created.');
+
+    const salt = crypto.getRandomValues(new Uint8Array(16));
+    const key = await deriveKey(password, salt);
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const cipher = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, enc.encode(JSON.stringify(patients)));
+    const backup = {
+      format: 'ENT-FOLLOWUP-ENCRYPTED-BACKUP',
+      version: 8,
+      createdAt: new Date().toISOString(),
+      kdf: 'PBKDF2-SHA256-310000',
+      salt: bytesToB64(salt),
+      iv: bytesToB64(iv),
+      data: bytesToB64(new Uint8Array(cipher))
+    };
+    downloadJsonFile(backup, 'ENT_Followup_Encrypted_Backup_' + localToday() + '.json');
+    alert(appLanguage === 'ar' ? 'تم تنزيل النسخة الاحتياطية المشفرة بنجاح.' : 'Encrypted backup downloaded. Store the file and backup password safely.');
+  } catch (err) {
+    alert(err.message || 'Could not create the backup.');
+  }
 };
-let appLanguage=localStorage.getItem('entFollowupLanguage')||'ar';
-function translateText(s){let out=s;for(const [en,ar] of Object.entries(I18N)){if(appLanguage==='ar')out=out.split(en).join(ar);else out=out.split(ar).join(en);}return out;}
-function applyLanguage(){document.documentElement.lang=appLanguage;document.documentElement.dir=appLanguage==='ar'?'rtl':'ltr';document.body.dir=document.documentElement.dir;document.body.style.textAlign=appLanguage==='ar'?'right':'left';
- const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let n;while(n=walker.nextNode()){if(n.parentElement?.closest('script,style'))continue; n.nodeValue=translateText(n.nodeValue);}
- document.querySelectorAll('[placeholder]').forEach(el=>{el.placeholder=translateText(el.placeholder)});
- document.querySelectorAll('option').forEach(el=>{el.textContent=translateText(el.textContent)});
- const b=document.getElementById('languageToggle');if(b)b.textContent=appLanguage==='ar'?'English':'العربية';
+
+// Manual backup restore (supports V8+ and legacy V7 backups)
+$('backupFile').addEventListener('change', async e => {
+  const file = e.target.files?.[0];
+  e.target.value = '';
+  if (!file) return;
+  try {
+    const backup = JSON.parse(await file.text());
+    if (backup.format !== 'ENT-FOLLOWUP-ENCRYPTED-BACKUP' || !backup.salt || !backup.iv || !backup.data) {
+      throw new Error(appLanguage === 'ar' ? 'ملف النسخة الاحتياطية غير صالح.' : 'This is not a valid ENT Follow-up encrypted backup.');
+    }
+    const warnMsg = appLanguage === 'ar'
+      ? 'تحذير: استعادة هذه النسخة ستستبدل سجلات المرضى الحالية على هذا الجهاز. هل تريد المتابعة؟'
+      : 'Warning: Restore this backup? Your current patient records on this device will be replaced.';
+    if (!confirm(warnMsg)) return;
+
+    let key, restored;
+    if ((backup.version || 8) >= 8) {
+      const password = prompt(appLanguage === 'ar' ? 'أدخل كلمة مرور النسخة الاحتياطية:' : 'Enter the backup password:');
+      if (password === null) return;
+      key = await deriveKey(password, b64ToBytes(backup.salt));
+    } else {
+      if (!sessionPassword) throw new Error('This older backup can only be restored on the original device profile.');
+      key = await deriveKey(sessionPassword, b64ToBytes(backup.salt));
+    }
+    try {
+      const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64ToBytes(backup.iv) }, key, b64ToBytes(backup.data));
+      restored = JSON.parse(dec.decode(plain));
+    } catch (_) {
+      throw new Error(appLanguage === 'ar' ? 'كلمة المرور غير صحيحة أو الملف تالف.' : 'The backup password is incorrect, or the backup file is damaged.');
+    }
+    if (!Array.isArray(restored)) throw new Error('Backup contents are invalid.');
+
+    const oldPatients = patients;
+    const oldSalt = localStorage.getItem(SALT_KEY);
+    const oldPacked = localStorage.getItem(ENCRYPTED_KEY);
+    try {
+      patients = restored;
+      ensurePatientIds(patients);
+      await save(true);
+      render();
+    } catch (err) {
+      patients = oldPatients;
+      if (oldSalt !== null) localStorage.setItem(SALT_KEY, oldSalt);
+      if (oldPacked !== null) localStorage.setItem(ENCRYPTED_KEY, oldPacked);
+      throw err;
+    }
+    alert(appLanguage === 'ar' ? 'تمت استعادة النسخة الاحتياطية بنجاح.' : 'Backup restored successfully. Your patient records are now available on this device.');
+  } catch (err) {
+    alert(err.message || 'Could not restore the backup.');
+  }
+});
+
+// ============================================================================
+// 4. GOOGLE DRIVE TWO-WAY ENCRYPTED SYNC & NON-DESTRUCTIVE CONFLICT ENGINE
+// ============================================================================
+let googleAccessToken = null;
+let googleTokenExpiryMs = 0;
+let tokenClient = null;
+let syncInProgress = false;
+let periodicSyncTimer = null;
+
+function getSyncConfig() {
+  try {
+    const cfg = JSON.parse(localStorage.getItem(V12_CONFIG_KEY)) || {};
+    return {
+      clientId: cfg.clientId || DEFAULT_WEB_CLIENT_ID,
+      nativeClientId: cfg.nativeClientId || '',
+      driveEnabled: Boolean(cfg.driveEnabled)
+    };
+  } catch (_) {
+    return { clientId: DEFAULT_WEB_CLIENT_ID, nativeClientId: '', driveEnabled: false };
+  }
 }
-document.getElementById('languageToggle')?.addEventListener('click',()=>{appLanguage=appLanguage==='ar'?'en':'ar';localStorage.setItem('entFollowupLanguage',appLanguage);location.reload();});
-// Translate newly rendered dashboard/history entries as well.
-new MutationObserver(()=>{if(!window.__translating){window.__translating=true;requestAnimationFrame(()=>{applyLanguage();window.__translating=false;});}}).observe(document.body,{childList:true,subtree:true,characterData:true});
-const oldPretty=pretty;pretty=function(iso){const [y,m,d]=iso.split('-').map(Number);return new Date(y,m-1,d).toLocaleDateString(appLanguage==='ar'?'ar-SA':'en-GB',{day:'2-digit',month:'short',year:'numeric',weekday:'short'});};
-const oldWhatsappUrl=whatsappUrl;whatsappUrl=function(p,day=null){if(appLanguage!=='ar')return oldWhatsappUrl(p,day);const all=followups(p.operationDate,p.procedure),selected=day?all.filter(x=>x.day===day):all;const schedule=selected.map(x=>`• اليوم ${x.day} بعد العملية: ${followupDateLabel(x)}`).join('\n');const msg=`عزيزي/عزيزتي ${p.name}،\n\nمواعيد المتابعة بعد العملية:\nالعملية: ${I18N[p.procedure]||p.procedure}\nتاريخ العملية: ${pretty(p.operationDate)}\n\n${schedule}\n\nيرجى الحضور في المواعيد المحددة. شكرًا لكم.`;return 'https://wa.me/'+p.phone.replace(/\D/g,'')+'?text='+encodeURIComponent(msg);};
-applyLanguage();
+
+function setSyncConfig(cfg) {
+  localStorage.setItem(V12_CONFIG_KEY, JSON.stringify(cfg));
+}
+
+function getSharedPassphrase() {
+  return localStorage.getItem(V12_SHARED_PASS_SESSION_KEY) || '';
+}
+
+function saveSharedPassphrase() {
+  const val = $('sharedPassphraseInput').value.trim();
+  if (val.length < 10) {
+    alert(appLanguage === 'ar' ? 'يرجى إدخال عبارة مرور لا تقل عن 10 أحرف.' : 'Please enter a shared passphrase with at least 10 characters.');
+    return;
+  }
+  localStorage.setItem(V12_SHARED_PASS_SESSION_KEY, val);
+  updateSyncStatusUI();
+  alert(appLanguage === 'ar' ? 'تم حفظ عبارة المرور المشتركة محليًا على هذا الجهاز.' : 'Shared encryption passphrase saved locally on this device.');
+  if (canAutoSync()) triggerDriveSync('passphrase-saved');
+}
+
+function saveSyncConfig() {
+  const cid = $('oauthClientIdInput').value.trim() || DEFAULT_WEB_CLIENT_ID;
+  const cfg = getSyncConfig();
+  cfg.clientId = cid;
+  cfg.nativeClientId = ($('androidClientIdInput')?.value || '').trim();
+  setSyncConfig(cfg);
+  tokenClient = null; // Re-init GIS client with updated ID
+  updateSyncStatusUI();
+  alert(appLanguage === 'ar' ? 'تم حفظ إعدادات المزامنة.' : 'Sync settings saved.');
+}
+
+function disconnectGoogleDrive() {
+  const msg = appLanguage === 'ar'
+    ? 'هل تريد فصل حساب Google Drive؟ ستبقى سجلات المرضى محفوظة محليًا على هذا الجهاز.'
+    : 'Disconnect Google Drive? Your patient records will remain safely stored locally on this device.';
+  if (!confirm(msg)) return;
+  if (googleAccessToken && window.google?.accounts?.oauth2?.revoke) {
+    try { window.google.accounts.oauth2.revoke(googleAccessToken, () => {}); } catch (_) {}
+  }
+  const rt = localStorage.getItem(NATIVE_REFRESH_KEY);
+  if (rt) { fetch('https://oauth2.googleapis.com/revoke?token=' + encodeURIComponent(rt), { method: 'POST' }).catch(() => {}); localStorage.removeItem(NATIVE_REFRESH_KEY); }
+  googleAccessToken = null;
+  googleTokenExpiryMs = 0;
+  const cfg = getSyncConfig();
+  cfg.driveEnabled = false;
+  setSyncConfig(cfg);
+  updateSyncStatusUI();
+}
+
+function hasValidToken() {
+  return Boolean(googleAccessToken && Date.now() < (googleTokenExpiryMs - 30000));
+}
+
+function canAutoSync() {
+  const cfg = getSyncConfig();
+  return cfg.driveEnabled && navigator.onLine && Boolean(getSharedPassphrase()) && !getUnresolvedConflict();
+}
+
+function updateSyncStatusUI(overrideKey = null, badgeClass = null) {
+  const badge = $('syncStatusBadge');
+  const metaText = $('syncMetaText');
+  const cfg = getSyncConfig();
+  const meta = getSyncMeta();
+  const conflict = getUnresolvedConflict();
+
+  if (overrideKey) {
+    badge.textContent = t(overrideKey);
+    badge.className = 'status-pill ' + (badgeClass || 'status-warn');
+  } else if (conflict) {
+    badge.textContent = t('syncConflictState');
+    badge.className = 'status-pill status-err';
+  } else if (!navigator.onLine) {
+    badge.textContent = t('syncOffline');
+    badge.className = 'status-pill status-warn';
+  } else if (!cfg.driveEnabled) {
+    badge.textContent = t('syncNotConfigured');
+    badge.className = 'status-pill status-warn';
+  } else if (!getSharedPassphrase()) {
+    badge.textContent = t('syncNeedPass');
+    badge.className = 'status-pill status-warn';
+  } else if (!hasValidToken()) {
+    badge.textContent = t('syncAuthExpired');
+    badge.className = 'status-pill status-warn';
+  } else {
+    badge.textContent = t('syncReady');
+    badge.className = 'status-pill status-ok';
+  }
+
+  const lastStr = meta.lastSyncAt
+    ? new Date(meta.lastSyncAt).toLocaleString(appLanguage === 'ar' ? 'ar-SA' : 'en-GB')
+    : (appLanguage === 'ar' ? 'لم تتم المزامنة بعد' : 'Never synced yet');
+  const dirtyNote = meta.dirty ? (appLanguage === 'ar' ? ' • توجد تعديلات بانتظار الرفع' : ' • Pending local changes') : '';
+  metaText.textContent = (appLanguage === 'ar' ? 'آخر مزامنة: ' : 'Last sync: ') + lastStr + dirtyNote;
+}
+
+// ============================================================================
+// NATIVE (Android APK) GOOGLE DRIVE AUTH — system-browser OAuth + PKCE
+// Google blocks sign-in inside embedded WebViews, so in the APK we open the
+// system browser, receive the code via the custom scheme, and exchange it
+// (no client secret; Android-type OAuth client + PKCE). Web/PWA keeps using GIS.
+// ============================================================================
+const NATIVE_REDIRECT_URI = 'com.alfereh.entfollowup:/oauth2redirect';
+const NATIVE_REFRESH_KEY = 'entFollowupV12DriveRefresh';
+
+function isNativeApp() {
+  return Boolean(window.Capacitor?.isNativePlatform?.());
+}
+
+function b64url(bytes) {
+  return bytesToB64(bytes).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+async function nativeTokenRequest(params) {
+  const res = await fetch('https://oauth2.googleapis.com/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams(params).toString()
+  });
+  const j = await res.json().catch(() => ({}));
+  if (!res.ok || j.error) throw new Error(j.error_description || j.error || ('HTTP ' + res.status));
+  return j;
+}
+
+function applyNativeToken(j) {
+  googleAccessToken = j.access_token;
+  googleTokenExpiryMs = Date.now() + ((Number(j.expires_in) || 3600) * 1000);
+  if (j.refresh_token) localStorage.setItem(NATIVE_REFRESH_KEY, j.refresh_token);
+  const cfg = getSyncConfig();
+  cfg.driveEnabled = true;
+  setSyncConfig(cfg);
+  updateSyncStatusUI();
+  return googleAccessToken;
+}
+
+async function nativeSilentRefresh() {
+  const cfg = getSyncConfig();
+  const rt = localStorage.getItem(NATIVE_REFRESH_KEY);
+  if (!rt || !cfg.nativeClientId) return null;
+  try {
+    const j = await nativeTokenRequest({ client_id: cfg.nativeClientId, grant_type: 'refresh_token', refresh_token: rt });
+    return applyNativeToken(j);
+  } catch (err) {
+    if (/invalid_grant/i.test(String(err.message))) localStorage.removeItem(NATIVE_REFRESH_KEY);
+    return null;
+  }
+}
+
+async function nativeInteractiveAuth() {
+  const cfg = getSyncConfig();
+  const App = window.Capacitor?.Plugins?.App;
+  const Browser = window.Capacitor?.Plugins?.Browser;
+  if (!App || !Browser) throw new Error('Native App/Browser plugins not available.');
+  if (!cfg.nativeClientId) {
+    throw new Error(appLanguage === 'ar'
+      ? 'أدخل معرّف عميل Android OAuth في الإعدادات أولًا.'
+      : 'Enter the Android OAuth Client ID in Settings first.');
+  }
+  const verifier = b64url(crypto.getRandomValues(new Uint8Array(32)));
+  const challenge = b64url(new Uint8Array(await crypto.subtle.digest('SHA-256', enc.encode(verifier))));
+  const state = b64url(crypto.getRandomValues(new Uint8Array(16)));
+  const authUrl = 'https://accounts.google.com/o/oauth2/v2/auth?' + new URLSearchParams({
+    client_id: cfg.nativeClientId,
+    redirect_uri: NATIVE_REDIRECT_URI,
+    response_type: 'code',
+    scope: DRIVE_SCOPE,
+    code_challenge: challenge,
+    code_challenge_method: 'S256',
+    state,
+    access_type: 'offline',
+    prompt: 'consent'
+  }).toString();
+
+  return new Promise(async (resolve, reject) => {
+    let finished = false;
+    const handles = [];
+    const finish = async (err, token) => {
+      if (finished) return;
+      finished = true;
+      clearTimeout(timer);
+      handles.forEach(h => { try { h.remove(); } catch (_) {} });
+      try { await Browser.close(); } catch (_) {}
+      err ? reject(err) : resolve(token);
+    };
+    const timer = setTimeout(() => finish(new Error('Sign-in timed out.')), 5 * 60 * 1000);
+    try {
+      handles.push(await App.addListener('appUrlOpen', async ev => {
+        if (!ev.url || !ev.url.startsWith(NATIVE_REDIRECT_URI)) return;
+        try {
+          const q = new URL(ev.url).searchParams;
+          if (q.get('error')) throw new Error(q.get('error'));
+          if (q.get('state') !== state) throw new Error('OAuth state mismatch.');
+          const j = await nativeTokenRequest({
+            client_id: cfg.nativeClientId,
+            code: q.get('code'),
+            code_verifier: verifier,
+            grant_type: 'authorization_code',
+            redirect_uri: NATIVE_REDIRECT_URI
+          });
+          finish(null, applyNativeToken(j));
+        } catch (e) { finish(e); }
+      }));
+      // User closed the browser tab without finishing (give the redirect a moment to arrive first)
+      handles.push(await Browser.addListener('browserFinished', () => {
+        setTimeout(() => finish(new Error('Sign-in cancelled.')), 1500);
+      }));
+      await Browser.open({ url: authUrl });
+    } catch (e) { finish(e); }
+  });
+}
+
+async function nativeRequestAccessToken(interactive) {
+  const silent = await nativeSilentRefresh();
+  if (silent) return silent;
+  if (!interactive) {
+    updateSyncStatusUI('syncAuthExpired', 'status-warn');
+    throw new Error('Reauthorization required.');
+  }
+  return nativeInteractiveAuth();
+}
+
+function initGoogleTokenClient(callback) {
+  const cfg = getSyncConfig();
+  if (!window.google?.accounts?.oauth2) {
+    throw new Error(appLanguage === 'ar'
+      ? 'مكتبة Google OAuth غير متاحة حاليًا (تحقق من الاتصال بالإنترنت).'
+      : 'Google OAuth library not loaded yet. Check your internet connection.');
+  }
+  tokenClient = window.google.accounts.oauth2.initTokenClient({
+    client_id: cfg.clientId,
+    scope: DRIVE_SCOPE,
+    callback
+  });
+}
+
+function requestAccessToken(promptMode = '') {
+  if (isNativeApp()) return nativeRequestAccessToken(promptMode === 'consent');
+  return new Promise((resolve, reject) => {
+    try {
+      initGoogleTokenClient(resp => {
+        if (resp.error) {
+          reject(new Error(resp.error_description || resp.error));
+          return;
+        }
+        googleAccessToken = resp.access_token;
+        googleTokenExpiryMs = Date.now() + ((Number(resp.expires_in) || 3600) * 1000);
+        const cfg = getSyncConfig();
+        cfg.driveEnabled = true;
+        setSyncConfig(cfg);
+        updateSyncStatusUI();
+        resolve(googleAccessToken);
+      });
+      tokenClient.requestAccessToken({ prompt: promptMode });
+    } catch (err) {
+      reject(err);
+    }
+  });
+}
+
+async function ensureDriveAccessToken(interactive = false) {
+  if (hasValidToken()) return googleAccessToken;
+  if (!navigator.onLine) throw new Error('Offline');
+  // Try silent token refresh first if previously enabled, else prompt if interactive
+  try {
+    return await requestAccessToken(interactive ? 'consent' : '');
+  } catch (err) {
+    if (!interactive) {
+      updateSyncStatusUI('syncAuthExpired', 'status-warn');
+      throw err;
+    }
+    throw err;
+  }
+}
+
+async function connectGoogleDrive() {
+  try {
+    if (!getSharedPassphrase()) {
+      $('syncSettingsDetails').open = true;
+      $('sharedPassphraseInput').focus();
+      alert(appLanguage === 'ar'
+        ? 'يرجى إدخال وحفظ عبارة المرور المشتركة أولًا قبل ربط Google Drive.'
+        : 'Please enter and save your shared encryption passphrase first before connecting Google Drive.');
+      return;
+    }
+    await ensureDriveAccessToken(true);
+    await triggerDriveSync('connect');
+  } catch (err) {
+    alert((appLanguage === 'ar' ? 'تعذر ربط Google Drive: ' : 'Google Drive connection failed: ') + (err.message || err));
+  }
+}
+
+// Encrypt & Decrypt Drive Envelope with Shared Passphrase (PBKDF2-SHA256 + AES-GCM)
+async function buildEncryptedDriveEnvelope(records, revision, deviceId) {
+  const pass = getSharedPassphrase();
+  if (!pass || pass.length < 10) {
+    throw new Error('Shared encryption passphrase (min 10 chars) is required.');
+  }
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const key = await deriveKey(pass, salt, 310000);
+  const plainPayload = JSON.stringify({
+    records,
+    revision,
+    deviceId,
+    exportedAt: new Date().toISOString()
+  });
+  const cipher = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, enc.encode(plainPayload));
+  return {
+    format: 'ALFEREH-ENT-DRIVE-SYNC-V12',
+    version: 12,
+    kdf: 'PBKDF2-SHA256-310000',
+    salt: bytesToB64(salt),
+    iv: bytesToB64(iv),
+    revision,
+    deviceId,
+    updatedAt: new Date().toISOString(),
+    recordCount: records.length,
+    ciphertext: bytesToB64(new Uint8Array(cipher))
+  };
+}
+
+async function decryptDriveEnvelope(envelope) {
+  if (!envelope || envelope.format !== 'ALFEREH-ENT-DRIVE-SYNC-V12' || !envelope.salt || !envelope.iv || !envelope.ciphertext) {
+    throw new Error('Invalid encrypted Drive sync envelope.');
+  }
+  const pass = getSharedPassphrase();
+  if (!pass) throw new Error('Shared passphrase missing.');
+  const key = await deriveKey(pass, b64ToBytes(envelope.salt), 310000);
+  const plainBuf = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64ToBytes(envelope.iv) }, key, b64ToBytes(envelope.ciphertext));
+  return JSON.parse(dec.decode(plainBuf));
+}
+
+async function driveApiFetch(url, options = {}) {
+  const token = await ensureDriveAccessToken(false);
+  const headers = new Headers(options.headers || {});
+  headers.set('Authorization', 'Bearer ' + token);
+  const res = await fetch(url, { ...options, headers });
+  if (res.status === 401) {
+    googleAccessToken = null;
+    googleTokenExpiryMs = 0;
+    updateSyncStatusUI('syncAuthExpired', 'status-warn');
+    throw new Error('OAuth token expired. Please reauthorize.');
+  }
+  if (!res.ok) {
+    const errText = await res.text().catch(() => '');
+    throw new Error('Google Drive API error (' + res.status + '): ' + errText.slice(0, 160));
+  }
+  return res;
+}
+
+async function findOrCreateDriveFile(meta) {
+  if (meta.driveFileId) {
+    try {
+      const check = await driveApiFetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(meta.driveFileId)}?fields=id,name,modifiedTime,trashed`);
+      const info = await check.json();
+      if (info && info.id && !info.trashed) return info;
+    } catch (_) {
+      meta.driveFileId = null;
+    }
+  }
+  const q = encodeURIComponent(`name='${DRIVE_FILE_NAME}' and trashed=false`);
+  const listRes = await driveApiFetch(`https://www.googleapis.com/drive/v3/files?q=${q}&spaces=drive&fields=files(id,name,modifiedTime)&orderBy=modifiedTime desc`);
+  const listData = await listRes.json();
+  if (listData.files && listData.files.length > 0) {
+    meta.driveFileId = listData.files[0].id;
+    setSyncMeta(meta);
+    return listData.files[0];
+  }
+  return null;
+}
+
+async function uploadDriveEnvelope(fileId, envelope) {
+  const metadata = { name: DRIVE_FILE_NAME, mimeType: 'application/json' };
+  const boundary = 'ent_v12_boundary_' + Date.now().toString(36);
+  const body =
+    `--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n` +
+    JSON.stringify(metadata) +
+    `\r\n--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n` +
+    JSON.stringify(envelope) +
+    `\r\n--${boundary}--`;
+
+  const url = fileId
+    ? `https://www.googleapis.com/upload/drive/v3/files/${encodeURIComponent(fileId)}?uploadType=multipart&fields=id,modifiedTime`
+    : `https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,modifiedTime`;
+  const method = fileId ? 'PATCH' : 'POST';
+
+  const res = await driveApiFetch(url, {
+    method,
+    headers: { 'Content-Type': `multipart/related; boundary=${boundary}` },
+    body
+  });
+  return res.json();
+}
+
+function summarizeRecordDiff(localList, remoteList) {
+  const localMap = new Map(localList.map(p => [p.id || (p.name + '|' + p.operationDate), p]));
+  const remoteMap = new Map(remoteList.map(p => [p.id || (p.name + '|' + p.operationDate), p]));
+  const diffs = [];
+
+  localMap.forEach((lp, key) => {
+    if (!remoteMap.has(key)) {
+      diffs.push({ type: 'only-local', label: `${lp.name} (${lp.operationDate})` });
+    } else {
+      const rp = remoteMap.get(key);
+      const lClean = JSON.stringify({ ...lp, ctImage: lp.ctImage ? '[image]' : '' });
+      const rClean = JSON.stringify({ ...rp, ctImage: rp.ctImage ? '[image]' : '' });
+      if (lClean !== rClean) {
+        diffs.push({ type: 'modified', label: `${lp.name} (${lp.operationDate})` });
+      }
+    }
+  });
+
+  remoteMap.forEach((rp, key) => {
+    if (!localMap.has(key)) {
+      diffs.push({ type: 'only-remote', label: `${rp.name} (${rp.operationDate})` });
+    }
+  });
+  return diffs;
+}
+
+function getUnresolvedConflict() {
+  try {
+    return JSON.parse(localStorage.getItem(V12_CONFLICT_KEY)) || null;
+  } catch (_) {
+    return null;
+  }
+}
+
+function setUnresolvedConflict(conflictObj) {
+  if (!conflictObj) {
+    localStorage.removeItem(V12_CONFLICT_KEY);
+  } else {
+    localStorage.setItem(V12_CONFLICT_KEY, JSON.stringify(conflictObj));
+  }
+  renderConflictBanner();
+  updateSyncStatusUI();
+}
+
+function renderConflictBanner() {
+  const conflict = getUnresolvedConflict();
+  const sec = $('conflictSection');
+  if (!conflict) {
+    sec.classList.add('hidden');
+    return;
+  }
+  sec.classList.remove('hidden');
+
+  const localInfo = conflict.localSnapshot;
+  const remoteInfo = conflict.remoteSnapshot;
+  $('conflictComparison').innerHTML = `
+    <div class="conflict-card">
+      <strong>${appLanguage === 'ar' ? 'نسخة هذا الجهاز (المحلية)' : 'This Device Version (Local)'}</strong>
+      <div>${appLanguage === 'ar' ? 'عدد المرضى:' : 'Patient count:'} <b>${localInfo.records.length}</b></div>
+      <div>${appLanguage === 'ar' ? 'آخر تعديل:' : 'Last modified:'} ${new Date(localInfo.timestamp).toLocaleString(appLanguage === 'ar' ? 'ar-SA' : 'en-GB')}</div>
+    </div>
+    <div class="conflict-card">
+      <strong>${appLanguage === 'ar' ? 'نسخة Google Drive (السحابية)' : 'Google Drive Version (Remote)'}</strong>
+      <div>${appLanguage === 'ar' ? 'عدد المرضى:' : 'Patient count:'} <b>${remoteInfo.records.length}</b></div>
+      <div>${appLanguage === 'ar' ? 'آخر تعديل:' : 'Last modified:'} ${new Date(remoteInfo.timestamp).toLocaleString(appLanguage === 'ar' ? 'ar-SA' : 'en-GB')}</div>
+    </div>
+  `;
+
+  const diffs = summarizeRecordDiff(localInfo.records, remoteInfo.records);
+  if (!diffs.length) {
+    $('conflictDiffDetails').innerHTML = appLanguage === 'ar'
+      ? 'تطابق في عدد السجلات مع اختلاف في وقت المزامنة.'
+      : 'Record contents match, but revision timestamps diverged.';
+  } else {
+    $('conflictDiffDetails').innerHTML = '<b>' + (appLanguage === 'ar' ? 'السجلات المختلفة:' : 'Differing records:') + '</b><ul style="margin:6px 0 0;padding-inline-start:18px">' +
+      diffs.map(d => {
+        const tag = d.type === 'only-local'
+          ? (appLanguage === 'ar' ? '[موجود محليًا فقط]' : '[Local only]')
+          : d.type === 'only-remote'
+            ? (appLanguage === 'ar' ? '[موجود في Drive فقط]' : '[Drive only]')
+            : (appLanguage === 'ar' ? '[معدّل في النسختين]' : '[Modified in both]');
+        return `<li>${tag} ${escapeHtml(d.label)}</li>`;
+      }).join('') + '</ul>';
+  }
+}
+
+window.downloadConflictSnapshot = () => {
+  const conflict = getUnresolvedConflict();
+  if (!conflict) return;
+  downloadJsonFile(conflict, 'ENT_Sync_Conflict_Both_Versions_' + localToday() + '.json');
+};
+
+window.resolveSyncConflict = async (choice) => {
+  const conflict = getUnresolvedConflict();
+  if (!conflict) return;
+  const confirmText = choice === 'local'
+    ? (appLanguage === 'ar' ? 'تأكيد اعتماد نسخة هذا الجهاز ورفعها إلى Google Drive؟' : 'Confirm keeping this device version and uploading it to Google Drive?')
+    : (appLanguage === 'ar' ? 'تأكيد استبدال السجلات المحلية بنسخة Google Drive؟' : 'Confirm replacing local records with the Google Drive version?');
+  if (!confirm(confirmText)) return;
+
+  try {
+    const meta = getSyncMeta();
+    if (choice === 'local') {
+      patients = conflict.localSnapshot.records;
+      ensurePatientIds(patients);
+      await encryptRecords();
+      const nextRev = Math.max(meta.localRevision || 0, conflict.remoteSnapshot.revision || 0) + 1;
+      const env = await buildEncryptedDriveEnvelope(patients, nextRev, meta.deviceId);
+      const uploaded = await uploadDriveEnvelope(meta.driveFileId, env);
+      meta.driveFileId = uploaded.id;
+      meta.localRevision = nextRev;
+      meta.lastSyncedRevision = nextRev;
+      meta.lastKnownRemoteRevision = nextRev;
+      meta.lastKnownRemoteModifiedTime = uploaded.modifiedTime;
+      meta.lastSyncAt = new Date().toISOString();
+      meta.dirty = false;
+      setSyncMeta(meta);
+    } else {
+      patients = conflict.remoteSnapshot.records;
+      ensurePatientIds(patients);
+      await encryptRecords();
+      const remRev = conflict.remoteSnapshot.revision || 1;
+      meta.localRevision = remRev;
+      meta.lastSyncedRevision = remRev;
+      meta.lastKnownRemoteRevision = remRev;
+      meta.lastKnownRemoteModifiedTime = conflict.remoteSnapshot.modifiedTime || new Date().toISOString();
+      meta.lastSyncAt = new Date().toISOString();
+      meta.dirty = false;
+      setSyncMeta(meta);
+    }
+    setUnresolvedConflict(null);
+    render();
+    await syncAndroid11AMNotificationSchedule();
+    alert(appLanguage === 'ar' ? 'تم حل التعارض وتحديث البيانات بنجاح.' : 'Conflict resolved and records updated successfully.');
+  } catch (err) {
+    alert((appLanguage === 'ar' ? 'تعذر إتمام حل التعارض: ' : 'Failed to resolve conflict: ') + (err.message || err));
+  }
+};
+
+async function triggerDriveSync(reason = 'auto') {
+  if (syncInProgress) return;
+  const cfg = getSyncConfig();
+  if (!cfg.driveEnabled) {
+    if (reason === 'manual') {
+      alert(appLanguage === 'ar' ? 'يرجى الضغط على "ربط Google Drive" أولًا.' : 'Please tap "Connect Google Drive" first.');
+    }
+    updateSyncStatusUI();
+    return;
+  }
+  if (getUnresolvedConflict()) {
+    updateSyncStatusUI('syncConflictState', 'status-err');
+    return;
+  }
+  if (!navigator.onLine) {
+    updateSyncStatusUI('syncOffline', 'status-warn');
+    return;
+  }
+  if (!getSharedPassphrase()) {
+    updateSyncStatusUI('syncNeedPass', 'status-warn');
+    return;
+  }
+
+  syncInProgress = true;
+  updateSyncStatusUI('syncingNow', 'status-warn');
+
+  try {
+    // Interactive prompt only when user explicitly tapped "Sync Now"
+    await ensureDriveAccessToken(reason === 'manual');
+    const meta = getSyncMeta();
+    const remoteFile = await findOrCreateDriveFile(meta);
+
+    if (!remoteFile) {
+      // First-time upload: no remote file exists yet
+      const nextRev = (meta.localRevision || 0) + 1;
+      const env = await buildEncryptedDriveEnvelope(patients, nextRev, meta.deviceId);
+      const created = await uploadDriveEnvelope(null, env);
+      meta.driveFileId = created.id;
+      meta.localRevision = nextRev;
+      meta.lastSyncedRevision = nextRev;
+      meta.lastKnownRemoteRevision = nextRev;
+      meta.lastKnownRemoteModifiedTime = created.modifiedTime;
+      meta.lastSyncAt = new Date().toISOString();
+      meta.dirty = false;
+      setSyncMeta(meta);
+      updateSyncStatusUI('syncSuccess', 'status-ok');
+      return;
+    }
+
+    // Download remote encrypted envelope
+    const dlRes = await driveApiFetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(remoteFile.id)}?alt=media`);
+    const remoteEnvelope = await dlRes.json();
+    const remoteDecrypted = await decryptDriveEnvelope(remoteEnvelope);
+    const remoteRecords = Array.isArray(remoteDecrypted.records) ? remoteDecrypted.records : [];
+    ensurePatientIds(remoteRecords);
+
+    const remoteRev = Number(remoteEnvelope.revision || remoteDecrypted.revision || 0);
+    const remoteChangedSinceLastSync =
+      (meta.lastKnownRemoteModifiedTime && remoteFile.modifiedTime !== meta.lastKnownRemoteModifiedTime) ||
+      (remoteRev > (meta.lastKnownRemoteRevision || 0)) ||
+      (!meta.lastKnownRemoteModifiedTime && remoteRecords.length > 0);
+
+    const localChangedSinceLastSync = Boolean(meta.dirty);
+
+    // CASE A: Both local and remote changed independently -> KEEP BOTH & ASK USER
+    if (localChangedSinceLastSync && remoteChangedSinceLastSync) {
+      const localClean = JSON.stringify(patients.map(p => ({ ...p, ctImage: p.ctImage ? 'img' : '' })));
+      const remoteClean = JSON.stringify(remoteRecords.map(p => ({ ...p, ctImage: p.ctImage ? 'img' : '' })));
+      if (localClean !== remoteClean) {
+        setUnresolvedConflict({
+          detectedAt: new Date().toISOString(),
+          localSnapshot: {
+            revision: meta.localRevision || 0,
+            timestamp: meta.lastLocalChangeAt || new Date().toISOString(),
+            records: JSON.parse(JSON.stringify(patients))
+          },
+          remoteSnapshot: {
+            revision: remoteRev,
+            modifiedTime: remoteFile.modifiedTime,
+            timestamp: remoteEnvelope.updatedAt || remoteFile.modifiedTime,
+            records: remoteRecords
+          }
+        });
+        return;
+      }
+    }
+
+    // CASE B: Remote has newer changes and local has no unsynced edits -> Pull remote
+    if (remoteChangedSinceLastSync && !localChangedSinceLastSync) {
+      patients = remoteRecords;
+      await encryptRecords();
+      meta.localRevision = remoteRev;
+      meta.lastSyncedRevision = remoteRev;
+      meta.lastKnownRemoteRevision = remoteRev;
+      meta.lastKnownRemoteModifiedTime = remoteFile.modifiedTime;
+      meta.lastSyncAt = new Date().toISOString();
+      meta.dirty = false;
+      setSyncMeta(meta);
+      render();
+      await syncAndroid11AMNotificationSchedule();
+      updateSyncStatusUI('syncSuccess', 'status-ok');
+      return;
+    }
+
+    // CASE C: Local has unsynced edits and remote did not change -> Push local
+    if (localChangedSinceLastSync && !remoteChangedSinceLastSync) {
+      const nextRev = Math.max(meta.localRevision || 0, remoteRev) + 1;
+      const env = await buildEncryptedDriveEnvelope(patients, nextRev, meta.deviceId);
+      const updated = await uploadDriveEnvelope(remoteFile.id, env);
+      meta.driveFileId = updated.id;
+      meta.localRevision = nextRev;
+      meta.lastSyncedRevision = nextRev;
+      meta.lastKnownRemoteRevision = nextRev;
+      meta.lastKnownRemoteModifiedTime = updated.modifiedTime;
+      meta.lastSyncAt = new Date().toISOString();
+      meta.dirty = false;
+      setSyncMeta(meta);
+      updateSyncStatusUI('syncSuccess', 'status-ok');
+      return;
+    }
+
+    // CASE D: Already in sync
+    meta.lastKnownRemoteModifiedTime = remoteFile.modifiedTime;
+    meta.lastKnownRemoteRevision = remoteRev;
+    meta.lastSyncAt = new Date().toISOString();
+    setSyncMeta(meta);
+    updateSyncStatusUI('syncSuccess', 'status-ok');
+  } catch (err) {
+    if (reason === 'manual') {
+      alert((appLanguage === 'ar' ? 'تعذرت المزامنة: ' : 'Sync failed: ') + (err.message || err));
+    }
+    updateSyncStatusUI();
+  } finally {
+    syncInProgress = false;
+  }
+}
+
+function startPeriodicSyncLoop() {
+  if (periodicSyncTimer) clearInterval(periodicSyncTimer);
+  // Check/sync every 5 minutes while app is open
+  periodicSyncTimer = setInterval(() => {
+    if (canAutoSync()) triggerDriveSync('interval-5m');
+  }, 5 * 60 * 1000);
+}
+
+window.addEventListener('online', () => {
+  updateSyncStatusUI();
+  if (canAutoSync()) triggerDriveSync('online-reconnect');
+});
+window.addEventListener('offline', () => updateSyncStatusUI('syncOffline', 'status-warn'));
+
+// ============================================================================
+// 5. ANDROID CAPACITOR DAILY 11:00 AM LOCAL NOTIFICATION SCHEDULER
+// ============================================================================
+function buildDailySummaryNotificationPayload(forDate) {
+  // PRIVACY: counts only. No patient names or file numbers ever go into a notification.
+  const todayStr = forDate || localToday();
+  const tomorrowStr = addDays(todayStr, 1);
+  let nToday = 0, nTomorrow = 0;
+  patients.forEach(p => {
+    followups(p.operationDate, p.procedure).forEach(f => {
+      if (f.date === todayStr) nToday++;
+      if (f.date === tomorrowStr) nTomorrow++;
+    });
+  });
+  if (appLanguage === 'ar') {
+    return {
+      title: 'مستشفى الفريح — متابعات الأنف والأذن والحنجرة',
+      body: `متابعات اليوم: ${nToday || 'لا يوجد'}\nمتابعات الغد: ${nTomorrow || 'لا يوجد'}`,
+      dueTodayCount: nToday, dueTomorrowCount: nTomorrow
+    };
+  }
+  return {
+    title: 'Al Fereh Hospital — ENT Follow-ups',
+    body: `Today: ${nToday || 'none due'}\nTomorrow: ${nTomorrow || 'none due'}`,
+    dueTodayCount: nToday, dueTomorrowCount: nTomorrow
+  };
+}
+
+const NOTIF_CHANNEL_ID = 'ent_followups_11am_v2';
+const NOTIF_ID_FIRST = 1100;   // reserved id range 1100-1199 for daily summaries
+const NOTIF_ID_TEST = 1999;
+const NOTIF_DAYS_AHEAD = 30;
+
+// Schedules one notification per day for the next 30 days, each with its own
+// "today / tomorrow" text computed for THAT day (a single repeating notification
+// would show stale text). Re-run on app open and after every data change.
+async function syncAndroid11AMNotificationSchedule() {
+  const LocalNotifications = window.Capacitor?.Plugins?.LocalNotifications;
+  if (!LocalNotifications) return false;
+  try {
+    const perm = await LocalNotifications.checkPermissions();
+    if (perm.display !== 'granted') return false;
+
+    // visibility 0 = private (notification text contains counts only, no patient data)
+    await LocalNotifications.createChannel({
+      id: NOTIF_CHANNEL_ID, name: 'ENT Daily 11 AM Follow-ups', importance: 4, visibility: 0
+    }).catch(() => {});
+
+    const pending = await LocalNotifications.getPending().catch(() => ({ notifications: [] }));
+    const old = (pending.notifications || [])
+      .filter(n => n.id >= NOTIF_ID_FIRST && n.id < NOTIF_ID_FIRST + 100)
+      .map(n => ({ id: n.id }));
+    if (old.length) await LocalNotifications.cancel({ notifications: old });
+
+    const now = new Date();
+    const todayStr = localToday();
+    const list = [];
+    for (let i = 0; i < NOTIF_DAYS_AHEAD; i++) {
+      const dayStr = addDays(todayStr, i);
+      const [y, m, d] = dayStr.split('-').map(Number);
+      const at = new Date(y, m - 1, d, 11, 0, 0, 0);
+      if (at <= now) continue;
+      const payload = buildDailySummaryNotificationPayload(dayStr);
+      list.push({
+        id: NOTIF_ID_FIRST + i,
+        title: payload.title,
+        body: payload.body,
+        schedule: { at, allowWhileIdle: true },
+        channelId: NOTIF_CHANNEL_ID
+      });
+    }
+    if (list.length) await LocalNotifications.schedule({ notifications: list });
+    const hint = $('notifStatusHint');
+    if (hint) hint.textContent = t('notifHintNativeActive');
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+
+window.configureDailyReminder = async () => {
+  const LocalNotifications = window.Capacitor?.Plugins?.LocalNotifications;
+  if (!LocalNotifications) {
+    alert(appLanguage === 'ar'
+      ? 'جدولة إشعار 11:00 صباحًا في الخلفية تعمل داخل تطبيق Android APK فقط.'
+      : 'Background 11:00 AM scheduling only works inside the native Android APK.');
+    return;
+  }
+  try {
+    const perm = await LocalNotifications.requestPermissions();
+    if (perm.display !== 'granted') {
+      alert(appLanguage === 'ar' ? 'يرجى السماح بالإشعارات من إعدادات الهاتف.' : 'Please allow notification permissions in Android settings.');
+      return;
+    }
+    // Android 12+/14: exact alarms may be denied by default; without them the
+    // reminder can fire a few minutes late. Open the system setting if denied.
+    if (LocalNotifications.checkExactNotificationSetting) {
+      const ex = await LocalNotifications.checkExactNotificationSetting().catch(() => null);
+      if (ex && ex.exact_alarm === 'denied' && LocalNotifications.changeExactNotificationSetting) {
+        alert(appLanguage === 'ar'
+          ? 'للحصول على توقيت دقيق، فعّل "المنبهات والتذكيرات" لهذا التطبيق في الشاشة التالية.'
+          : 'For on-time delivery, enable "Alarms & reminders" for this app on the next screen.');
+        await LocalNotifications.changeExactNotificationSetting().catch(() => {});
+      }
+    }
+    const ok = await syncAndroid11AMNotificationSchedule();
+    const payload = buildDailySummaryNotificationPayload();
+    await LocalNotifications.schedule({
+      notifications: [{
+        id: NOTIF_ID_TEST,
+        title: payload.title,
+        body: payload.body,
+        schedule: { at: new Date(Date.now() + 3000), allowWhileIdle: true },
+        channelId: NOTIF_CHANNEL_ID
+      }]
+    });
+    alert(ok
+      ? (appLanguage === 'ar'
+          ? 'تمت جدولة التذكير اليومي الساعة 11:00 صباحًا للأيام الثلاثين القادمة. سيصلك إشعار تجريبي خلال 3 ثوانٍ. افتح التطبيق مرة كل أسبوعين على الأقل لتجديد الجدولة.'
+          : 'Daily 11:00 AM reminders scheduled for the next 30 days. A test notification will appear in 3 seconds. Open the app at least every two weeks to refresh the schedule.')
+      : (appLanguage === 'ar' ? 'تعذرت جدولة التذكير.' : 'Could not schedule the reminder.'));
+  } catch (err) {
+    alert('Notification setup error: ' + (err.message || err));
+  }
+};
+
+// ============================================================================
+// 6. WHATSAPP, DASHBOARDS, PATIENT LIST, CSV EXPORT & IMAGE COMPRESSION
+// ============================================================================
+let editingIndex = null;
+
+function whatsappUrl(p, day = null) {
+  const all = followups(p.operationDate, p.procedure);
+  const selected = day ? all.filter(x => x.day === day) : all;
+  if (appLanguage === 'ar') {
+    const schedule = selected.map(x => `• اليوم ${x.day} بعد العملية: ${followupDateLabel(x)}`).join('\n');
+    const msg = `عزيزي/عزيزتي ${p.name}،\n\nمواعيد المتابعة بعد العملية (مستشفى الفريح):\nالعملية: ${tProc(p.procedure)}\nتاريخ العملية: ${pretty(p.operationDate)}\n\n${schedule}\n\nيرجى الحضور في المواعيد المحددة. شكرًا لكم.`;
+    return 'https://wa.me/' + p.phone.replace(/\D/g, '') + '?text=' + encodeURIComponent(msg);
+  }
+  const schedule = selected.map(x => `• Postoperative day ${x.day}: ${followupDateLabel(x)}`).join('\n');
+  const msg = `Dear ${p.name},\n\nYour postoperative follow-up schedule (Al Fereh Hospital):\nOperation: ${p.procedure}\nDate of surgery: ${pretty(p.operationDate)}\n\n${schedule}\n\nPlease attend as scheduled. Thank you.`;
+  return 'https://wa.me/' + p.phone.replace(/\D/g, '') + '?text=' + encodeURIComponent(msg);
+}
+
+function validPhone(phone) {
+  return /^\d{8,15}$/.test(phone.replace(/\D/g, ''));
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+function render() {
+  const root = $('patientList');
+  const query = ($('searchPatients')?.value || '').trim().toLowerCase();
+  const procedureFilter = $('historyProcedure')?.value || 'all';
+  const sortOrder = $('historySort')?.value || 'newest';
+
+  const matches = patients.map((p, i) => ({ p, i })).filter(({ p }) =>
+    (procedureFilter === 'all' || p.procedure === procedureFilter) &&
+    [p.name, p.fileNumber, p.phone, p.procedure, p.operationDate, p.age, p.notes, p.complications].join(' ').toLowerCase().includes(query)
+  ).sort((a, b) => sortOrder === 'oldest'
+    ? a.p.operationDate.localeCompare(b.p.operationDate)
+    : b.p.operationDate.localeCompare(a.p.operationDate));
+
+  $('historyCount').textContent = appLanguage === 'ar'
+    ? `عرض ${matches.length} من ${patients.length} سجل مريض`
+    : `Showing ${matches.length} of ${patients.length} patient records`;
+
+  if (!patients.length) {
+    root.innerHTML = `<div class="empty">${appLanguage === 'ar' ? 'لا توجد سجلات مرضى محفوظة حتى الآن.' : 'No patients saved yet.'}</div>`;
+  } else if (!matches.length) {
+    root.innerHTML = `<div class="empty">${appLanguage === 'ar' ? 'لم يتم العثور على مرضى مطابقين.' : 'No matching patients found.'}</div>`;
+  } else {
+    const dayWord = appLanguage === 'ar' ? 'اليوم' : 'DAY';
+    root.innerHTML = matches.map(({ p, i }) => {
+      const ds = followups(p.operationDate, p.procedure);
+      const fileLabel = p.fileNumber ? (appLanguage === 'ar' ? `رقم الملف: ${escapeHtml(p.fileNumber)} · ` : `File No: ${escapeHtml(p.fileNumber)} · `) : '';
+      const ageLabel = p.age ? (appLanguage === 'ar' ? `${escapeHtml(String(p.age))} سنوات` : `${escapeHtml(String(p.age))} years`) : (appLanguage === 'ar' ? 'غير مدخل' : 'Not entered');
+      return `<details class="patient"><summary style="cursor:pointer"><strong>${escapeHtml(p.name)}</strong><small>${fileLabel}${escapeHtml(tProc(p.procedure))} · ${appLanguage === 'ar' ? 'العملية:' : 'Surgery:'} ${pretty(p.operationDate)} · ${appLanguage === 'ar' ? 'العمر:' : 'Age:'} ${ageLabel} · WhatsApp: ${escapeHtml(p.phone)}</small><span class="hint">${appLanguage === 'ar' ? 'اضغط لعرض سجل المريض كاملًا' : 'Tap to view full patient record'}</span></summary><div style="padding-top:8px">
+      ${p.ctImage ? `<p><a href="${p.ctImage}" target="_blank" rel="noopener">${appLanguage === 'ar' ? 'عرض صورة الأشعة / الصورة الإكلينيكية المحفوظة' : 'View saved CT / clinical image'}</a></p>` : ''}
+      ${p.notes ? `<p><b>${appLanguage === 'ar' ? 'الملاحظات:' : 'Notes:'}</b> ${escapeHtml(p.notes)}</p>` : ''}
+      ${p.complications ? `<p><b>${appLanguage === 'ar' ? 'المضاعفات:' : 'Complications:'}</b> ${escapeHtml(p.complications)}</p>` : ''}
+      <div class="dates">${ds.map(x => `<div class="datebox"><b>${dayWord} ${x.day}</b><span>${followupDateLabel(x)}</span></div>`).join('')}</div>
+      <div class="actions">
+        <button class="secondary" onclick="editPatient(${i})">${appLanguage === 'ar' ? 'تعديل' : 'Edit'}</button>
+        <button class="secondary" onclick="sendAll(${i})">${appLanguage === 'ar' ? 'واتساب - كل المواعيد' : 'WhatsApp all dates'}</button>
+        ${ds.map(x => `<button class="secondary" onclick="sendDay(${i},${x.day})">${appLanguage === 'ar' ? 'اليوم ' + x.day : 'Day ' + x.day}</button>`).join('')}
+        <button class="remove" onclick="removePatient(${i})">${appLanguage === 'ar' ? 'حذف' : 'Delete'}</button>
+      </div></div></details>`;
+    }).join('');
+  }
+  renderDashboard();
+}
+
+function renderDashboard() {
+  const todayStr = localToday();
+  const tomorrowStr = addDays(todayStr, 1);
+  renderDueList('todayDashboard', todayStr, 'today');
+  renderDueList('tomorrowDashboard', tomorrowStr, 'tomorrow');
+}
+
+function renderDueList(elementId, targetDate, kind) {
+  const root = $(elementId);
+  const due = [];
+  patients.forEach((p, i) => followups(p.operationDate, p.procedure).forEach(f => {
+    if (f.date === targetDate) due.push({ p, i, day: f.day, movedFromFriday: f.movedFromFriday });
+  }));
+  if (!due.length) {
+    const emptyMsg = appLanguage === 'ar'
+      ? (kind === 'today' ? 'لا توجد متابعات مستحقة اليوم.' : 'لا توجد متابعات مستحقة غدًا.')
+      : `No follow-ups due ${kind}.`;
+    root.innerHTML = `<div class="empty">${emptyMsg}</div>`;
+    return;
+  }
+  root.innerHTML = due.map(({ p, i, day, movedFromFriday }) => {
+    const fileTxt = p.fileNumber ? (appLanguage === 'ar' ? `رقم الملف: ${escapeHtml(p.fileNumber)} · ` : `File No: ${escapeHtml(p.fileNumber)} · `) : '';
+    const dayTxt = appLanguage === 'ar' ? `اليوم ${day} بعد العملية` : `Postoperative day ${day}`;
+    const friTxt = movedFromFriday ? (appLanguage === 'ar' ? ' · تم تغيير الموعد من الجمعة' : ' · Rescheduled from Friday') : '';
+    return `<div class="patient"><strong>${escapeHtml(p.name)}</strong><small>${fileTxt}${escapeHtml(tProc(p.procedure))} · ${dayTxt} · ${escapeHtml(p.phone)}${friTxt}</small><div class="actions"><button class="secondary" onclick="sendDay(${i},${day})">${appLanguage === 'ar' ? 'تذكير واتساب' : 'WhatsApp reminder'}</button><button class="secondary" onclick="editPatient(${i})">${appLanguage === 'ar' ? 'فتح السجل' : 'Open record'}</button></div></div>`;
+  }).join('');
+}
+
+window.editPatient = i => {
+  const p = patients[i];
+  if (!p) return;
+  editingIndex = i;
+  $('patientName').value = p.name || '';
+  $('fileNumber').value = p.fileNumber || '';
+  $('phone').value = p.phone || '';
+  $('procedure').value = p.procedure || 'Adenotonsillectomy';
+  $('operationDate').value = p.operationDate || '';
+  $('age').value = p.age || '';
+  $('notes').value = p.notes || '';
+  $('complications').value = p.complications || '';
+  $('ctImage').value = '';
+  $('submitPatientBtn').textContent = t('updatePatientBtn');
+  $('preview').dataset.existingImage = p.ctImage || '';
+  renderPreview();
+  $('patientForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+};
+
+window.exportPatients = () => {
+  if (!patients.length) {
+    alert(appLanguage === 'ar' ? 'لا توجد سجلات مرضى لتصديرها.' : 'There are no patient records to export.');
+    return;
+  }
+  const columns = ['Patient name', 'Hospital file number', 'Age (years)', 'WhatsApp number', 'Operation', 'Operation date', 'Follow-up day 1', 'Follow-up date 1', 'Follow-up day 2', 'Follow-up date 2', 'Follow-up day 3', 'Follow-up date 3', 'Follow-up day 4', 'Follow-up date 4', 'Clinical notes', 'Complications', 'CT / clinical image attached'];
+  const q = v => '"' + String(v ?? '').replace(/"/g, '""') + '"';
+  const rows = patients.map(p => {
+    const fs = followups(p.operationDate, p.procedure);
+    const fvals = [];
+    for (let n = 0; n < 4; n++) { fvals.push(fs[n]?.day || '', fs[n]?.date || ''); }
+    return [p.name, p.fileNumber || '', p.age, p.phone, p.procedure, p.operationDate, ...fvals, p.notes, p.complications, p.ctImage ? 'Yes' : 'No'].map(q).join(',');
+  });
+  const csv = '\uFEFF' + [columns.map(q).join(','), ...rows].join('\r\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'ENT_patient_followups_' + localToday() + '.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
+window.sendAll = i => window.open(whatsappUrl(patients[i]), '_blank', 'noopener');
+window.sendDay = (i, d) => window.open(whatsappUrl(patients[i], d), '_blank', 'noopener');
+
+window.removePatient = async i => {
+  const msg = appLanguage === 'ar' ? 'هل تريد حذف سجل هذا المريض من هذا الجهاز؟' : 'Delete this patient record from this device?';
+  if (!confirm(msg)) return;
+  const removed = patients.splice(i, 1)[0];
+  if (editingIndex === i) {
+    editingIndex = null;
+    $('patientForm').reset();
+    $('submitPatientBtn').textContent = t('savePatientBtn');
+  }
+  try {
+    await save(true);
+    render();
+  } catch (_) {
+    patients.splice(i, 0, removed);
+    alert(appLanguage === 'ar' ? 'تعذر حفظ الحذف. تحقق من مساحة التخزين المتاحة على الجهاز.' : 'Could not save the deletion. Check available device storage.');
+    render();
+  }
+};
+
+async function imageToDataUrl(file) {
+  if (!file) return '';
+  if (!file.type.startsWith('image/')) throw new Error(appLanguage === 'ar' ? 'يرجى اختيار ملف صورة.' : 'Please select an image file.');
+  const dataUrl = await new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(new Error('Could not read image.'));
+    reader.readAsDataURL(file);
+  });
+  const img = await new Promise((resolve, reject) => {
+    const image = new Image();
+    image.onload = () => resolve(image);
+    image.onerror = () => reject(new Error('Could not load image.'));
+    image.src = dataUrl;
+  });
+  const scale = Math.min(1, 1400 / Math.max(img.width, img.height));
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.round(img.width * scale);
+  canvas.height = Math.round(img.height * scale);
+  canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+  return canvas.toDataURL('image/jpeg', 0.72);
+}
+
+$('patientForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const phone = $('phone').value.trim();
+  const fileNumber = $('fileNumber').value.replace(/\D/g, '');
+  const operationDate = $('operationDate').value;
+  if (!validPhone(phone)) {
+    alert(appLanguage === 'ar' ? 'يرجى إدخال رقم واتساب صحيح مع رمز الدولة (من 8 إلى 15 رقمًا).' : 'Enter a valid WhatsApp number with country code (8–15 digits).');
+    return;
+  }
+  if (!operationDate) {
+    alert(appLanguage === 'ar' ? 'يرجى تحديد تاريخ العملية.' : 'Please select the operation date.');
+    return;
+  }
+  const submitButton = $('submitPatientBtn');
+  submitButton.disabled = true;
+  submitButton.textContent = t('savingBtn');
+  try {
+    const chosenImage = $('ctImage').files[0];
+    const ctImage = chosenImage
+      ? await imageToDataUrl(chosenImage)
+      : (editingIndex !== null ? ($('preview').dataset.existingImage || patients[editingIndex].ctImage || '') : '');
+    const existingId = editingIndex !== null ? patients[editingIndex].id : ('pt_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 7));
+    const patient = {
+      id: existingId,
+      name: $('patientName').value.trim(),
+      fileNumber,
+      phone,
+      procedure: $('procedure').value,
+      operationDate,
+      age: $('age').value,
+      notes: $('notes').value.trim(),
+      complications: $('complications').value.trim(),
+      ctImage,
+      updatedAt: new Date().toISOString()
+    };
+    if (editingIndex !== null) {
+      const old = patients[editingIndex];
+      patients[editingIndex] = { ...old, ...patient };
+      try {
+        await save(true);
+      } catch (_) {
+        patients[editingIndex] = old;
+        throw new Error(appLanguage === 'ar' ? 'مساحة تخزين الجهاز ممتلئة. استخدم صورة أصغر أو احذف الصورة ثم حاول مرة أخرى.' : 'Device storage is full. Use a smaller image or remove the image, then try again.');
+      }
+    } else {
+      patients.unshift(patient);
+      try {
+        await save(true);
+      } catch (_) {
+        patients.shift();
+        throw new Error(appLanguage === 'ar' ? 'مساحة تخزين الجهاز ممتلئة. استخدم صورة أصغر أو احذف الصورة ثم حاول مرة أخرى.' : 'Device storage is full. Use a smaller image or remove the image, then try again.');
+      }
+    }
+    editingIndex = null;
+    render();
+    $('patientForm').reset();
+    $('preview').dataset.existingImage = '';
+    submitButton.textContent = t('savePatientBtn');
+    $('operationDate').value = localToday();
+    renderPreview();
+  } catch (err) {
+    alert(err.message || (appLanguage === 'ar' ? 'تعذر حفظ بيانات المريض.' : 'Could not save this patient.'));
+  } finally {
+    submitButton.disabled = false;
+    if (editingIndex === null) submitButton.textContent = t('savePatientBtn');
+  }
+});
+
+// ============================================================================
+// 7. APP INITIALIZATION (PRESERVING V11 ENCRYPTED STORAGE SEAMLESSLY)
+// ============================================================================
+async function initializeAuth() {
+  if (!window.crypto?.subtle) {
+    alert('This browser does not support secure encryption. Open the app using HTTPS or a modern browser.');
+    return;
+  }
+  let secret = localStorage.getItem(AUTO_SECRET_KEY);
+  const encrypted = localStorage.getItem(ENCRYPTED_KEY);
+
+  if (encrypted && !secret) {
+    const oldPassword = prompt('Existing encrypted patient records were found. Enter your previous app password once to migrate them. No password will be required afterward.');
+    if (oldPassword === null) return;
+    try {
+      const oldSalt = b64ToBytes(localStorage.getItem(SALT_KEY));
+      const oldKey = await deriveKey(oldPassword, oldSalt);
+      patients = await decryptRecords(oldKey);
+    } catch (_) {
+      alert('Could not migrate the existing records: the previous password was incorrect or the data is damaged. Your original records have not been changed.');
+      return;
+    }
+    secret = bytesToB64(crypto.getRandomValues(new Uint8Array(32)));
+    localStorage.setItem(AUTO_SECRET_KEY, secret);
+    const salt = crypto.getRandomValues(new Uint8Array(16));
+    localStorage.setItem(SALT_KEY, bytesToB64(salt));
+    sessionPassword = secret;
+    sessionKey = await deriveKey(secret, salt);
+    ensurePatientIds(patients);
+    await encryptRecords();
+  } else {
+    if (!secret) {
+      secret = bytesToB64(crypto.getRandomValues(new Uint8Array(32)));
+      localStorage.setItem(AUTO_SECRET_KEY, secret);
+    }
+    sessionPassword = secret;
+    let saltValue = localStorage.getItem(SALT_KEY);
+    if (!saltValue) {
+      saltValue = bytesToB64(crypto.getRandomValues(new Uint8Array(16)));
+      localStorage.setItem(SALT_KEY, saltValue);
+    }
+    sessionKey = await deriveKey(secret, b64ToBytes(saltValue));
+    if (encrypted) {
+      try {
+        patients = await decryptRecords(sessionKey);
+        if (ensurePatientIds(patients)) await encryptRecords();
+      } catch (_) {
+        alert(appLanguage === 'ar'
+          ? 'تعذر فتح سجلات المرضى المحفوظة محليًا. لا تمسح بيانات المتصفح؛ اطلب المساعدة قبل المتابعة.'
+          : 'Could not open the locally stored patient records. Do not clear browser data; contact support before proceeding.');
+        return;
+      }
+    } else {
+      const legacy = localStorage.getItem(LEGACY_KEY);
+      try { patients = legacy ? JSON.parse(legacy) : []; } catch (_) { patients = []; }
+      ensurePatientIds(patients);
+      await encryptRecords();
+      if (legacy !== null) localStorage.removeItem(LEGACY_KEY);
+    }
+  }
+
+  // Hydrate V12 sync settings inputs
+  const cfg = getSyncConfig();
+  $('oauthClientIdInput').value = cfg.clientId;
+  if ($('androidClientIdInput')) $('androidClientIdInput').value = cfg.nativeClientId || '';
+  $('sharedPassphraseInput').value = getSharedPassphrase();
+
+  applyLanguageStatic();
+  renderPreview();
+  render();
+  renderConflictBanner();
+  updateSyncStatusUI();
+
+  // Schedule Android native 11 AM daily notification if running in Capacitor APK
+  await syncAndroid11AMNotificationSchedule();
+
+  // Trigger two-way sync on app open & start 5-minute interval loop
+  startPeriodicSyncLoop();
+  if (canAutoSync()) {
+    triggerDriveSync('app-open');
+  }
+}
+
+$('searchPatients').addEventListener('input', render);
+$('historyProcedure').addEventListener('change', render);
+$('historySort').addEventListener('change', render);
+
+initializeAuth().catch(err => alert(err.message || 'Could not initialize the app.'));
+
+// Register Service Worker only on HTTP/HTTPS web (not inside Capacitor file:// / localhost shell if undesired, though safe on https)
+if ('serviceWorker' in navigator && !window.Capacitor?.isNativePlatform?.()) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+}
 </script>
-</body></html>
+</body>
+</html>

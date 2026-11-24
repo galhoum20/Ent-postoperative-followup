@@ -1,10 +1,10 @@
 {
-  "name": "ENT Postoperative Follow-up",
+  "name": "Al Fereh Hospital \u2014 ENT Follow-up",
   "short_name": "ENT Follow-up",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#f4f7f8",
-  "theme_color": "#0f766e",
+  "theme_color": "#10A2AE",
   "icons": [
     {
       "src": "icon-192.png",

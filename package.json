@@ -1,0 +1,16 @@
+{
+  "name": "alfereh-ent-followup",
+  "version": "12.1.0",
+  "description": "Al Fereh Hospital - ENT Postoperative Follow-up (V12)",
+  "private": true,
+  "dependencies": {
+    "@capacitor/android": "^6.1.2",
+    "@capacitor/core": "^6.1.2",
+    "@capacitor/local-notifications": "^6.1.0",
+    "@capacitor/app": "^6.0.1",
+    "@capacitor/browser": "^6.0.2"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.1.2"
+  }
+}
