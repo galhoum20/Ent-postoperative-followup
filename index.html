@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#0f766e">
-<title>ENT Follow-up</title>
+<title>متابعة ما بعد عمليات الأنف والأذن والحنجرة</title>
 <link rel="manifest" href="manifest.webmanifest">
 <style>
 :root{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:#17212b;background:#f4f7f8}
@@ -29,10 +29,11 @@ button{border:0;border-radius:10px;padding:12px 14px;font:inherit;font-weight:65
 .empty{color:#63727a;text-align:center;padding:12px}.auth-wrap{max-width:440px;margin:9vh auto;padding:16px}.auth-wrap .card{padding:22px}.hidden{display:none!important}.history-tools{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:end}.history-tools .field{margin-bottom:10px}.history-tools label{font-size:.8rem}
 footer{text-align:center;color:#68777d;font-size:.75rem;padding:8px 18px 26px}
 @media(max-width:440px){.grid{grid-template-columns:1fr}.dates{gap:5px}.datebox{padding:10px 4px}.datebox span{font-size:.78rem}}
+body[dir="rtl"]{text-align:right}body[dir="rtl"] .actions{direction:rtl}body[dir="rtl"] input,body[dir="rtl"] select,body[dir="rtl"] textarea{text-align:right}body[dir="rtl"] header button{float:left!important}
 </style>
 </head>
 <body>
-<header><h1>ENT Postoperative Follow-up</h1><p>Postoperative scheduling, patient history and secure local records.</p></header>
+<header><button id="languageToggle" class="secondary" style="float:left;background:#ffffff;color:#0f625c;padding:8px 12px" type="button">English</button><h1>متابعة ما بعد عمليات الأنف والأذن والحنجرة</h1><p>جدولة المتابعة بعد العملية، وسجل المرضى، وحفظ البيانات محليًا.</p></header>
 <div class="hint" style="margin:12px 16px;padding:10px 12px;background:#fff7e6;border:1px solid #f2d49b;border-radius:10px;color:#76520b">Login is disabled. Anyone who can use this browser profile can open patient records. Keep your device locked and protected.</div>
 <div id="appContent"><main>
 <section class="card">
@@ -96,7 +97,7 @@ footer{text-align:center;color:#68777d;font-size:.75rem;padding:8px 18px 26px}
 <div class="hint">The operation date is day 0. Follow-up dates are calculated automatically; appointments falling on Friday are moved to Saturday. You can browse and filter patient history, view patients due today, export CSV, and create encrypted manual backups. WhatsApp opens with a prepared message; you review and tap Send.</div>
 </section>
 </main></div>
-<footer>ENT Follow-up V10 • Local storage • Friday follow-ups move to Saturday</footer>
+<footer>ENT Follow-up V11 • Arabic / English • Local storage</footer>
 <script>
 const $ = id => document.getElementById(id);
 const today = new Date();
@@ -399,5 +400,28 @@ $('historyProcedure').addEventListener('change',render);
 $('historySort').addEventListener('change',render);
 initializeAuth().catch(err=>alert(err.message||'Could not initialize the app.'));
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));}
+</script>
+<script>
+// Bilingual interface. Arabic is the default; patient data itself is never translated.
+const I18N={
+ 'ENT Postoperative Follow-up':'متابعة ما بعد عمليات الأنف والأذن والحنجرة',
+ 'Postoperative scheduling, patient history and secure local records.':'جدولة المتابعة بعد العملية، وسجل المرضى، وحفظ البيانات محليًا.',
+ 'Login is disabled. Anyone who can use this browser profile can open patient records. Keep your device locked and protected.':'تسجيل الدخول غير مفعّل. يمكن لأي شخص يستخدم ملف المتصفح هذا فتح سجلات المرضى. يُرجى حماية الهاتف بقفل الشاشة.',
+ 'New patient / operation':'إضافة مريض / عملية جديدة','Patient name':'اسم المريض','Hospital file number (manual)':'رقم ملف المستشفى (يدوي)','Numbers only.':'أرقام فقط.','WhatsApp number':'رقم الواتساب','Country code, numbers only (no + sign).':'أدخل رمز الدولة والأرقام فقط (بدون علامة +).','Operation':'العملية','Adenotonsillectomy':'استئصال اللوزتين واللحمية','Adenoidectomy':'استئصال اللحمية','Tonsillectomy':'استئصال اللوزتين','Septoplasty + Turbinate Reduction':'تقويم الحاجز الأنفي وتصغير القرنيات','Date of operation':'تاريخ العملية','Patient age (years)':'عمر المريض (بالسنوات)','Age':'العمر','CT / clinical image (optional)':'صورة أشعة مقطعية / صورة إكلينيكية (اختياري)','Image is saved on this device with the patient record.':'يتم حفظ الصورة على هذا الجهاز مع سجل المريض.','Clinical notes':'ملاحظات إكلينيكية','Enter clinical notes...':'أدخل الملاحظات الإكلينيكية...','Complications':'المضاعفات','Enter complications, or write None':'أدخل المضاعفات أو اكتب لا يوجد','Save patient':'حفظ بيانات المريض','Update patient':'تحديث بيانات المريض','Saving...':'جارٍ الحفظ...','Today\'s follow-ups':'متابعات اليوم','Patients whose scheduled postoperative review falls today.':'المرضى الذين يحين موعد متابعتهم بعد العملية اليوم.','Tomorrow\'s follow-ups':'متابعات الغد','Patients whose scheduled postoperative review falls tomorrow.':'المرضى الذين يحين موعد متابعتهم بعد العملية غدًا.','No follow-ups due today.':'لا توجد متابعات مستحقة اليوم.','No follow-ups due tomorrow.':'لا توجد متابعات مستحقة غدًا.','Patient history':'سجل المرضى','Browse all previous patients, filter by operation, and sort by operation date. Select a patient record to review or edit it.':'تصفح جميع المرضى، والتصفية حسب نوع العملية، والترتيب حسب تاريخ العملية. اختر سجل المريض للمراجعة أو التعديل.','Filter by operation':'تصفية حسب العملية','All operations':'جميع العمليات','Sort by operation date':'الترتيب حسب تاريخ العملية','Newest first':'الأحدث أولًا','Oldest first':'الأقدم أولًا','Search patients':'البحث عن المرضى','Name, file number, phone, notes...':'الاسم أو رقم الملف أو الهاتف أو الملاحظات...','Export for Excel (CSV)':'تصدير إلى Excel (CSV)','Download encrypted backup':'تنزيل نسخة احتياطية مشفرة','Restore backup':'استعادة نسخة احتياطية','Manual backup is encrypted with a password you choose when creating it. Keep that password safe; it is required to restore the backup on this or another device.':'يتم تشفير النسخة الاحتياطية اليدوية بكلمة مرور تختارها عند إنشائها. احتفظ بكلمة المرور؛ ستحتاج إليها لاستعادة النسخة على هذا الجهاز أو جهاز آخر.','No patients saved yet.':'لا توجد سجلات مرضى محفوظة حتى الآن.','No matching patients found.':'لم يتم العثور على مرضى مطابقين.','Important':'مهم','The operation date is day 0. Follow-up dates are calculated automatically; appointments falling on Friday are moved to Saturday. You can browse and filter patient history, view patients due today, export CSV, and create encrypted manual backups. WhatsApp opens with a prepared message; you review and tap Send.':'يُعتبر يوم العملية هو اليوم صفر. تُحسب مواعيد المتابعة تلقائيًا، وإذا وافق الموعد يوم الجمعة يتم نقله إلى السبت. يمكنك تصفح سجل المرضى والتصفية والاطلاع على متابعات اليوم وتصدير CSV وإنشاء نسخ احتياطية مشفرة. يفتح واتساب برسالة جاهزة لمراجعتها ثم إرسالها.','Tap to view full patient record':'اضغط لعرض سجل المريض كاملًا','View saved CT / clinical image':'عرض صورة الأشعة / الصورة الإكلينيكية المحفوظة','Notes:':'الملاحظات:','Edit':'تعديل','WhatsApp all dates':'واتساب - كل المواعيد','Delete':'حذف','WhatsApp reminder':'تذكير واتساب','Open record':'فتح السجل','File No:':'رقم الملف:','Surgery:':'العملية:','Age:':'العمر:','years':'سنوات','Not entered':'غير مدخل','Postoperative day':'اليوم بعد العملية','Rescheduled from Friday':'تم تغيير الموعد من الجمعة','Showing':'عرض','of':'من','patient records':'سجل مريض','None':'لا يوجد','moved from Friday to Saturday':'تم النقل من الجمعة إلى السبت','Please select the operation date.':'يرجى تحديد تاريخ العملية.','Enter a valid WhatsApp number with country code (8–15 digits).':'يرجى إدخال رقم واتساب صحيح مع رمز الدولة (من 8 إلى 15 رقمًا).','There are no patient records to export.':'لا توجد سجلات مرضى لتصديرها.','Delete this patient record from this device?':'هل تريد حذف سجل هذا المريض من هذا الجهاز؟','Could not save the deletion. Check available device storage.':'تعذر حفظ الحذف. تحقق من مساحة التخزين المتاحة على الجهاز.','Please select an image file.':'يرجى اختيار ملف صورة.','Could not read image.':'تعذرت قراءة الصورة.','Could not load image.':'تعذر تحميل الصورة.','Device storage is full. Use a smaller image or remove the image, then try again.':'مساحة تخزين الجهاز ممتلئة. استخدم صورة أصغر أو احذف الصورة ثم حاول مرة أخرى.','Could not save this patient.':'تعذر حفظ بيانات المريض.','Could not open the locally stored patient records. Do not clear browser data; contact support before proceeding.':'تعذر فتح سجلات المرضى المحفوظة محليًا. لا تمسح بيانات المتصفح؛ اطلب المساعدة قبل المتابعة.'
+};
+let appLanguage=localStorage.getItem('entFollowupLanguage')||'ar';
+function translateText(s){let out=s;for(const [en,ar] of Object.entries(I18N)){if(appLanguage==='ar')out=out.split(en).join(ar);else out=out.split(ar).join(en);}return out;}
+function applyLanguage(){document.documentElement.lang=appLanguage;document.documentElement.dir=appLanguage==='ar'?'rtl':'ltr';document.body.dir=document.documentElement.dir;document.body.style.textAlign=appLanguage==='ar'?'right':'left';
+ const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let n;while(n=walker.nextNode()){if(n.parentElement?.closest('script,style'))continue; n.nodeValue=translateText(n.nodeValue);}
+ document.querySelectorAll('[placeholder]').forEach(el=>{el.placeholder=translateText(el.placeholder)});
+ document.querySelectorAll('option').forEach(el=>{el.textContent=translateText(el.textContent)});
+ const b=document.getElementById('languageToggle');if(b)b.textContent=appLanguage==='ar'?'English':'العربية';
+}
+document.getElementById('languageToggle')?.addEventListener('click',()=>{appLanguage=appLanguage==='ar'?'en':'ar';localStorage.setItem('entFollowupLanguage',appLanguage);location.reload();});
+// Translate newly rendered dashboard/history entries as well.
+new MutationObserver(()=>{if(!window.__translating){window.__translating=true;requestAnimationFrame(()=>{applyLanguage();window.__translating=false;});}}).observe(document.body,{childList:true,subtree:true,characterData:true});
+const oldPretty=pretty;pretty=function(iso){const [y,m,d]=iso.split('-').map(Number);return new Date(y,m-1,d).toLocaleDateString(appLanguage==='ar'?'ar-SA':'en-GB',{day:'2-digit',month:'short',year:'numeric',weekday:'short'});};
+const oldWhatsappUrl=whatsappUrl;whatsappUrl=function(p,day=null){if(appLanguage!=='ar')return oldWhatsappUrl(p,day);const all=followups(p.operationDate,p.procedure),selected=day?all.filter(x=>x.day===day):all;const schedule=selected.map(x=>`• اليوم ${x.day} بعد العملية: ${followupDateLabel(x)}`).join('\n');const msg=`عزيزي/عزيزتي ${p.name}،\n\nمواعيد المتابعة بعد العملية:\nالعملية: ${I18N[p.procedure]||p.procedure}\nتاريخ العملية: ${pretty(p.operationDate)}\n\n${schedule}\n\nيرجى الحضور في المواعيد المحددة. شكرًا لكم.`;return 'https://wa.me/'+p.phone.replace(/\D/g,'')+'?text='+encodeURIComponent(msg);};
+applyLanguage();
 </script>
 </body></html>
