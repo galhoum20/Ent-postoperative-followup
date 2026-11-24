@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0f766e">
+<title>ENT Follow-up</title>
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+:root{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:#17212b;background:#f4f7f8}
+*{box-sizing:border-box}body{margin:0}header{background:#0f766e;color:white;padding:22px 18px 26px;position:relative}header .lockbtn{float:right;background:#ffffff22;color:white;border:1px solid #ffffff55;padding:8px 11px;font-size:.82rem}
+header h1{margin:0;font-size:1.45rem}header p{margin:6px 0 0;opacity:.9;font-size:.92rem}
+main{max-width:720px;margin:0 auto;padding:16px}
+.card{background:white;border:1px solid #e1e8e9;border-radius:16px;padding:16px;margin:0 0 14px;box-shadow:0 2px 8px #102a3308}
+h2{font-size:1.05rem;margin:0 0 14px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+label{display:block;font-size:.85rem;font-weight:650;margin:0 0 6px}
+input,select{width:100%;padding:12px;border:1px solid #cbd5d8;border-radius:10px;font:inherit;background:white;color:inherit}
+.field{margin-bottom:13px}.hint{font-size:.78rem;color:#63727a;margin-top:5px}
+button{border:0;border-radius:10px;padding:12px 14px;font:inherit;font-weight:650;cursor:pointer}
+.primary{background:#0f766e;color:white;width:100%}.secondary{background:#e8f3f2;color:#0f625c}
+.dates{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
+.datebox{background:#eff7f6;border-radius:12px;padding:12px 8px;text-align:center}
+.datebox b{display:block;color:#0f766e;font-size:.82rem}.datebox span{display:block;font-size:.88rem;margin-top:5px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.actions button{flex:1;min-width:125px}
+.patient{border-top:1px solid #edf0f1;padding:13px 0}.patient:first-child{border-top:0}
+.patient strong{display:block}.patient small{color:#63727a}
+.patient .dates{margin:9px 0}.patient .datebox{padding:8px 4px;font-size:.78rem}
+.remove{background:#fff0f0;color:#a12626}.muted{color:#63727a}
+.empty{color:#63727a;text-align:center;padding:12px}.auth-wrap{max-width:440px;margin:9vh auto;padding:16px}.auth-wrap .card{padding:22px}.hidden{display:none!important}.history-tools{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:end}.history-tools .field{margin-bottom:10px}.history-tools label{font-size:.8rem}
+footer{text-align:center;color:#68777d;font-size:.75rem;padding:8px 18px 26px}
+@media(max-width:440px){.grid{grid-template-columns:1fr}.dates{gap:5px}.datebox{padding:10px 4px}.datebox span{font-size:.78rem}}
+</style>
+</head>
+<body>
+<header><h1>ENT Postoperative Follow-up</h1><p>Postoperative scheduling, patient history and secure local records.</p></header>
+<div class="hint" style="margin:12px 16px;padding:10px 12px;background:#fff7e6;border:1px solid #f2d49b;border-radius:10px;color:#76520b">Login is disabled. Anyone who can use this browser profile can open patient records. Keep your device locked and protected.</div>
+<div id="appContent"><main>
+<section class="card">
+<h2>New patient / operation</h2>
+<form id="patientForm">
+<div class="grid">
+<div class="field"><label for="patientName">Patient name</label><input id="patientName" placeholder="Patient name" required></div>
+<div class="field"><label for="phone">WhatsApp number</label><input id="phone" type="tel" inputmode="tel" placeholder="9665XXXXXXXX" required><div class="hint">Country code, numbers only (no + sign).</div></div>
+</div>
+<div class="grid">
+<div class="field"><label for="procedure">Operation</label>
+<select id="procedure">
+<option value="Adenotonsillectomy">Adenotonsillectomy</option>
+<option value="Adenoidectomy">Adenoidectomy</option>
+<option value="Tonsillectomy">Tonsillectomy</option>
+<option value="Septoplasty + Turbinate Reduction">Septoplasty + Turbinate Reduction</option>
+</select></div>
+<div class="field"><label for="operationDate">Date of operation</label><input id="operationDate" type="date" required></div>
+</div>
+<div class="grid">
+<div class="field"><label for="age">Patient age (years)</label><input id="age" type="number" min="0" max="120" step="1" placeholder="Age"></div>
+<div class="field"><label for="ctImage">CT / clinical image (optional)</label><input id="ctImage" type="file" accept="image/*"><div class="hint">Image is saved on this device with the patient record.</div></div>
+</div>
+<div class="field"><label for="notes">Clinical notes</label><textarea id="notes" rows="3" style="width:100%;padding:12px;border:1px solid #cbd5d8;border-radius:10px;font:inherit" placeholder="Enter clinical notes..."></textarea></div>
+<div class="field"><label for="complications">Complications</label><textarea id="complications" rows="3" style="width:100%;padding:12px;border:1px solid #cbd5d8;border-radius:10px;font:inherit" placeholder="Enter complications, or write None"></textarea></div>
+<div id="preview" aria-live="polite"></div>
+<button class="primary" type="submit">Save patient</button>
+</form>
+</section>
+<section class="card">
+<h2>Today's follow-ups</h2>
+<div class="hint" style="margin:-8px 0 10px">Patients whose scheduled postoperative review falls today.</div>
+<div id="todayDashboard"><div class="empty">No follow-ups due today.</div></div>
+</section>
+<section class="card">
+<h2>Patient history</h2>
+<div class="hint" style="margin:-8px 0 12px">Browse all previous patients, filter by operation, and sort by operation date. Select a patient record to review or edit it.</div>
+<div class="history-tools">
+ <div class="field"><label for="historyProcedure">Filter by operation</label><select id="historyProcedure"><option value="all">All operations</option><option>Adenotonsillectomy</option><option>Adenoidectomy</option><option>Tonsillectomy</option><option>Septoplasty + Turbinate Reduction</option></select></div>
+ <div class="field"><label for="historySort">Sort by operation date</label><select id="historySort"><option value="newest">Newest first</option><option value="oldest">Oldest first</option></select></div>
+</div>
+<div class="grid" style="align-items:end">
+ <div class="field"><label for="searchPatients">Search patients</label><input id="searchPatients" type="search" placeholder="Name, phone, notes..."></div>
+ <div class="field"><button type="button" class="secondary" style="width:100%" onclick="exportPatients()">Export for Excel (CSV)</button></div>
+</div>
+<div class="grid" style="align-items:end">
+ <div class="field"><button type="button" class="primary" style="width:100%" onclick="createEncryptedBackup()">Download encrypted backup</button></div>
+ <div class="field"><button type="button" class="secondary" style="width:100%" onclick="document.getElementById('backupFile').click()">Restore backup</button><input id="backupFile" type="file" accept=".json,application/json" class="hidden"></div>
+</div>
+<div class="hint">Manual backup is encrypted with a password you choose when creating it. Keep that password safe; it is required to restore the backup on this or another device.</div>
+<div id="historyCount" class="hint"></div><div id="patientList"><div class="empty">No patients saved yet.</div></div>
+</section>
+<section class="card">
+<h2>Important</h2>
+<div class="hint">The operation date is day 0. Follow-up dates are calculated automatically; appointments falling on Friday are moved to Saturday. You can browse and filter patient history, view patients due today, export CSV, and create encrypted manual backups. WhatsApp opens with a prepared message; you review and tap Send.</div>
+</section>
+</main></div>
+<footer>ENT Follow-up V8 • Local storage • Friday follow-ups move to Saturday</footer>
+<script>
+const $ = id => document.getElementById(id);
+const today = new Date();
+$('operationDate').value = [today.getFullYear(),String(today.getMonth()+1).padStart(2,'0'),String(today.getDate()).padStart(2,'0')].join('-');
+function addDays(iso,n){
+  const [y,m,d]=iso.split('-').map(Number);
+  const dt=new Date(y,m-1,d); dt.setDate(dt.getDate()+n);
+  return [dt.getFullYear(),String(dt.getMonth()+1).padStart(2,'0'),String(dt.getDate()).padStart(2,'0')].join('-');
+}
+function pretty(iso){
+ const [y,m,d]=iso.split('-').map(Number);
+ return new Date(y,m-1,d).toLocaleDateString(undefined,{day:'2-digit',month:'short',year:'numeric',weekday:'short'});
+}
+function followups(iso, procedure){
+  // The operation date is day 0. If a calculated follow-up falls on Friday,
+  // move the appointment to Saturday because Friday is a non-working day.
+  // Keep the postoperative day number unchanged.
+  const days = procedure.startsWith('Septoplasty') ? [7,14,21,28] : [3,7,14];
+  return days.map(n=>{
+    const originalDate=addDays(iso,n);
+    const [y,m,d]=originalDate.split('-').map(Number);
+    const weekday=new Date(y,m-1,d).getDay(); // Friday = 5
+    const date=weekday===5 ? addDays(originalDate,1) : originalDate;
+    return {day:n,date,originalDate,movedFromFriday:weekday===5};
+  });
+}
+function followupDateLabel(item){
+  return pretty(item.date)+(item.movedFromFriday?' (moved from Friday to Saturday)':'');
+}
+function renderPreview(){
+ const iso=$('operationDate').value;
+ if(!iso){$('preview').innerHTML='';return}
+ $('preview').innerHTML='<div class="dates">'+followups(iso,$('procedure').value).map(x=>`<div class="datebox"><b>DAY ${x.day}</b><span>${followupDateLabel(x)}</span></div>`).join('')+'</div>';
+}
+$('operationDate').addEventListener('change',renderPreview);
+$('procedure').addEventListener('change',renderPreview);
+renderPreview();
+let patients=[];
+let sessionKey=null;
+let sessionPassword=null;
+const ENCRYPTED_KEY='entFollowupEncryptedV5';
+const SALT_KEY='entFollowupSaltV5';
+const AUTO_SECRET_KEY='entFollowupAutoSyncSecretV7';
+// Remove obsolete cloud-sync settings left by earlier builds; this version has no Drive integration.
+['entFollowupGoogleClientIdV7','entFollowupGoogleFileIdV7','entFollowupDriveModifiedTimeV7','entFollowupSyncDirtyV7','entFollowupDeviceIdV7'].forEach(k=>localStorage.removeItem(k));
+const LEGACY_KEY='entFollowupPatients';
+const enc = new TextEncoder();
+const dec = new TextDecoder();
+function bytesToB64(bytes){let binary='';bytes.forEach(b=>binary+=String.fromCharCode(b));return btoa(binary);}
+function b64ToBytes(value){return Uint8Array.from(atob(value),c=>c.charCodeAt(0));}
+async function deriveKey(password,salt){
+ const material=await crypto.subtle.importKey('raw',enc.encode(password),'PBKDF2',false,['deriveKey']);
+ return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:310000,hash:'SHA-256'},material,{name:'AES-GCM',length:256},false,['encrypt','decrypt']);
+}
+async function encryptRecords(){
+ if(!sessionKey)throw new Error('The app encryption key is not initialized. Reload the app.');
+ const iv=crypto.getRandomValues(new Uint8Array(12));
+ const cipher=await crypto.subtle.encrypt({name:'AES-GCM',iv},sessionKey,enc.encode(JSON.stringify(patients)));
+ localStorage.setItem(ENCRYPTED_KEY,JSON.stringify({iv:bytesToB64(iv),data:bytesToB64(new Uint8Array(cipher))}));
+}
+async function decryptRecords(key){
+ const packed=JSON.parse(localStorage.getItem(ENCRYPTED_KEY));
+ const plain=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64ToBytes(packed.iv)},key,b64ToBytes(packed.data));
+ return JSON.parse(dec.decode(plain));
+}
+async function save(){ await encryptRecords(); }
+function downloadJsonFile(data, filename){
+ const blob=new Blob([JSON.stringify(data)],{type:'application/json'});
+ const url=URL.createObjectURL(blob);const a=document.createElement('a');
+ a.href=url;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+window.createEncryptedBackup=async()=>{
+ try{
+  if(!sessionKey)throw new Error('The app is still initializing. Reload and try again.');
+  const password=prompt('Create a backup password (at least 10 characters). This is only for this backup file, not an app login. You will need it to restore the file:');
+  if(password===null)return;
+  if(password.length<10)throw new Error('Choose a backup password with at least 10 characters.');
+  const confirmation=prompt('Re-enter the backup password to confirm:');
+  if(confirmation===null)return;
+  if(password!==confirmation)throw new Error('The passwords do not match. No backup was created.');
+  const salt=crypto.getRandomValues(new Uint8Array(16));
+  const key=await deriveKey(password,salt);
+  const iv=crypto.getRandomValues(new Uint8Array(12));
+  const cipher=await crypto.subtle.encrypt({name:'AES-GCM',iv},key,enc.encode(JSON.stringify(patients)));
+  const backup={format:'ENT-FOLLOWUP-ENCRYPTED-BACKUP',version:8,createdAt:new Date().toISOString(),kdf:'PBKDF2-SHA256-310000',salt:bytesToB64(salt),iv:bytesToB64(iv),data:bytesToB64(new Uint8Array(cipher))};
+  downloadJsonFile(backup,'ENT_Followup_Encrypted_Backup_'+localToday()+'.json');
+  alert('Encrypted backup downloaded. Store the file and backup password safely.');
+ }catch(err){alert(err.message||'Could not create the backup.');}
+};
+$('backupFile').addEventListener('change',async e=>{
+ const file=e.target.files?.[0];e.target.value='';if(!file)return;
+ try{
+  const backup=JSON.parse(await file.text());
+  if(backup.format!=='ENT-FOLLOWUP-ENCRYPTED-BACKUP'||!backup.salt||!backup.iv||!backup.data)throw new Error('This is not a valid ENT Follow-up encrypted backup.');
+  if(!confirm('Restore this backup? Your current patient records on this device will be replaced.'))return;
+  let key, restored;
+  if(backup.version>=8){
+   const password=prompt('Enter the backup password:');if(password===null)return;
+   key=await deriveKey(password,b64ToBytes(backup.salt));
+  }else{
+   // Compatibility with Version 7 backups created on this same browser profile.
+   if(!sessionPassword)throw new Error('This older backup can only be restored on the original device profile.');
+   key=await deriveKey(sessionPassword,b64ToBytes(backup.salt));
+  }
+  try{
+   const plain=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64ToBytes(backup.iv)},key,b64ToBytes(backup.data));
+   restored=JSON.parse(dec.decode(plain));
+  }catch(_){throw new Error('The backup password is incorrect, or the backup file is damaged.');}
+  if(!Array.isArray(restored))throw new Error('Backup contents are invalid.');
+  const oldPatients=patients;const oldSalt=localStorage.getItem(SALT_KEY);const oldPacked=localStorage.getItem(ENCRYPTED_KEY);
+  try{
+   patients=restored;
+   // Keep the app's own local encryption key; only the backup's contents are decrypted with its backup password.
+   await encryptRecords();render();
+  }catch(err){patients=oldPatients;if(oldSalt!==null)localStorage.setItem(SALT_KEY,oldSalt);if(oldPacked!==null)localStorage.setItem(ENCRYPTED_KEY,oldPacked);throw err;}
+  alert('Backup restored successfully. Your patient records are now available on this device.');
+ }catch(err){alert(err.message||'Could not restore the backup.');}
+});
+
+let editingIndex = null;
+function localToday(){
+ const d=new Date();
+ return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');
+}
+function whatsappUrl(p, day=null){
+ const all=followups(p.operationDate,p.procedure);
+ const selected=day ? all.filter(x=>x.day===day) : all;
+ const schedule=selected.map(x=>`• Postoperative day ${x.day}: ${followupDateLabel(x)}`).join('\n');
+ const msg=`Dear ${p.name},\n\nYour postoperative follow-up schedule:\nOperation: ${p.procedure}\nDate of surgery: ${pretty(p.operationDate)}\n\n${schedule}\n\nPlease attend as scheduled. Thank you.`;
+ return 'https://wa.me/'+p.phone.replace(/\D/g,'')+'?text='+encodeURIComponent(msg);
+}
+function validPhone(phone){return /^\d{8,15}$/.test(phone.replace(/\D/g,''))}
+function render(){
+ const root=$('patientList');
+ const query=($('searchPatients')?.value||'').trim().toLowerCase();
+ const procedureFilter=$('historyProcedure')?.value||'all';
+ const sortOrder=$('historySort')?.value||'newest';
+ const matches=patients.map((p,i)=>({p,i})).filter(({p})=>
+   (procedureFilter==='all'||p.procedure===procedureFilter) && [p.name,p.phone,p.procedure,p.operationDate,p.age,p.notes,p.complications].join(' ').toLowerCase().includes(query)
+ ).sort((a,b)=>sortOrder==='oldest'?a.p.operationDate.localeCompare(b.p.operationDate):b.p.operationDate.localeCompare(a.p.operationDate));
+ $('historyCount').textContent=`Showing ${matches.length} of ${patients.length} patient records`;
+ if(!patients.length){root.innerHTML='<div class="empty">No patients saved yet.</div>';}
+ else if(!matches.length){root.innerHTML='<div class="empty">No matching patients found.</div>';}
+ else {
+  root.innerHTML=matches.map(({p,i})=>{
+   const ds=followups(p.operationDate,p.procedure);
+   return `<details class="patient"><summary style="cursor:pointer"><strong>${escapeHtml(p.name)}</strong><small>${escapeHtml(p.procedure)} · Surgery: ${pretty(p.operationDate)} · Age: ${p.age ? escapeHtml(String(p.age))+' years' : 'Not entered'} · WhatsApp: ${escapeHtml(p.phone)}</small><span class="hint">Tap to view full patient record</span></summary><div style="padding-top:8px">
+   ${p.ctImage ? `<p><a href="${p.ctImage}" target="_blank" rel="noopener">View saved CT / clinical image</a></p>` : ''}
+   ${p.notes ? `<p><b>Notes:</b> ${escapeHtml(p.notes)}</p>` : ''}
+   ${p.complications ? `<p><b>Complications:</b> ${escapeHtml(p.complications)}</p>` : ''}
+   <div class="dates">${ds.map(x=>`<div class="datebox"><b>DAY ${x.day}</b><span>${followupDateLabel(x)}</span></div>`).join('')}</div>
+   <div class="actions"><button class="secondary" onclick="editPatient(${i})">Edit</button><button class="secondary" onclick="sendAll(${i})">WhatsApp all dates</button>${ds.map(x=>`<button class="secondary" onclick="sendDay(${i},${x.day})">Day ${x.day}</button>`).join('')}<button class="remove" onclick="removePatient(${i})">Delete</button></div></div></details>`;
+  }).join('');
+ }
+ renderDashboard();
+}
+function renderDashboard(){
+ const root=$('todayDashboard');
+ const today=localToday();
+ const due=[];
+ patients.forEach((p,i)=>followups(p.operationDate,p.procedure).forEach(f=>{
+   if(f.date===today) due.push({p,i,day:f.day,movedFromFriday:f.movedFromFriday});
+ }));
+ if(!due.length){root.innerHTML='<div class="empty">No follow-ups due today.</div>';return;}
+ root.innerHTML=due.map(({p,i,day,movedFromFriday})=>`<div class="patient"><strong>${escapeHtml(p.name)}</strong><small>${escapeHtml(p.procedure)} · Postoperative day ${day} · ${escapeHtml(p.phone)}${movedFromFriday?' · Rescheduled from Friday':''}</small><div class="actions"><button class="secondary" onclick="sendDay(${i},${day})">WhatsApp reminder</button><button class="secondary" onclick="editPatient(${i})">Open record</button></div></div>`).join('');
+}
+window.editPatient=i=>{
+ const p=patients[i]; if(!p)return;
+ editingIndex=i;
+ $('patientName').value=p.name||''; $('phone').value=p.phone||'';
+ $('procedure').value=p.procedure||'Adenotonsillectomy';
+ $('operationDate').value=p.operationDate||'';
+ $('age').value=p.age||''; $('notes').value=p.notes||'';
+ $('complications').value=p.complications||'';
+ $('ctImage').value='';
+ $('patientForm').querySelector('button[type="submit"]').textContent='Update patient';
+ $('preview').dataset.existingImage=p.ctImage||'';
+ renderPreview();
+ $('patientForm').scrollIntoView({behavior:'smooth',block:'start'});
+};
+window.exportPatients=()=>{
+ if(!patients.length){alert('There are no patient records to export.');return;}
+ const columns=['Patient name','Age (years)','WhatsApp number','Operation','Operation date','Follow-up day 1','Follow-up date 1','Follow-up day 2','Follow-up date 2','Follow-up day 3','Follow-up date 3','Follow-up day 4','Follow-up date 4','Clinical notes','Complications','CT / clinical image attached'];
+ const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
+ const rows=patients.map(p=>{
+   const fs=followups(p.operationDate,p.procedure);
+   const fvals=[];
+   for(let n=0;n<4;n++){fvals.push(fs[n]?.day||'',fs[n]?.date||'');}
+   return [p.name,p.age,p.phone,p.procedure,p.operationDate,...fvals,p.notes,p.complications,p.ctImage?'Yes':'No'].map(q).join(',');
+ });
+ const csv='\uFEFF'+[columns.map(q).join(','),...rows].join('\r\n');
+ const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+ const url=URL.createObjectURL(blob); const a=document.createElement('a');
+ a.href=url;a.download='ENT_patient_followups_'+localToday()+'.csv';a.click();
+ URL.revokeObjectURL(url);
+};
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+window.sendAll=i=>window.open(whatsappUrl(patients[i]),'_blank','noopener');
+window.sendDay=(i,d)=>window.open(whatsappUrl(patients[i],d),'_blank','noopener');
+window.removePatient=async i=>{if(confirm('Delete this patient record from this device?')){const removed=patients.splice(i,1)[0];if(editingIndex===i){editingIndex=null;$('patientForm').reset();$('patientForm').querySelector('button[type="submit"]').textContent='Save patient';}try{await save();render();}catch(err){patients.splice(i,0,removed);alert('Could not save the deletion. Check available device storage.');render();}}};
+async function imageToDataUrl(file){
+ if(!file) return '';
+ if(!file.type.startsWith('image/')) throw new Error('Please select an image file.');
+ // Resize/compress the selected CT screenshot or clinical image before local storage.
+ const dataUrl = await new Promise((resolve,reject)=>{
+   const reader=new FileReader();
+   reader.onload=()=>resolve(reader.result);
+   reader.onerror=()=>reject(new Error('Could not read image.'));
+   reader.readAsDataURL(file);
+ });
+ const img=await new Promise((resolve,reject)=>{
+   const image=new Image(); image.onload=()=>resolve(image); image.onerror=()=>reject(new Error('Could not load image.'));
+   image.src=dataUrl;
+ });
+ const scale=Math.min(1,1400/Math.max(img.width,img.height));
+ const canvas=document.createElement('canvas');
+ canvas.width=Math.round(img.width*scale); canvas.height=Math.round(img.height*scale);
+ canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);
+ return canvas.toDataURL('image/jpeg',0.72);
+}
+$('patientForm').addEventListener('submit',async e=>{
+ e.preventDefault();
+ const phone=$('phone').value.trim();
+ const operationDate=$('operationDate').value;
+ if(!validPhone(phone)){alert('Enter a valid WhatsApp number with country code (8–15 digits).');return}
+ if(!operationDate){alert('Please select the operation date.');return}
+ const submitButton=$('patientForm').querySelector('button[type="submit"]');
+ submitButton.disabled=true; submitButton.textContent='Saving...';
+ try{
+  const chosenImage=$('ctImage').files[0];
+  const ctImage=chosenImage ? await imageToDataUrl(chosenImage) : (editingIndex!==null ? ($('preview').dataset.existingImage||patients[editingIndex].ctImage||'') : '');
+  const patient={name:$('patientName').value.trim(),phone,procedure:$('procedure').value,operationDate,
+    age:$('age').value,notes:$('notes').value.trim(),complications:$('complications').value.trim(),ctImage};
+  if(editingIndex!==null){
+    const old=patients[editingIndex]; patients[editingIndex]={...old,...patient};
+    try{await save();}catch(storageError){patients[editingIndex]=old;throw new Error('Device storage is full. Use a smaller image or remove the image, then try again.');}
+  } else {
+    patients.unshift(patient);
+    try{await save();}catch(storageError){patients.shift();throw new Error('Device storage is full. Use a smaller image or remove the image, then try again.');}
+  }
+  editingIndex=null;
+  render();
+  $('patientForm').reset();
+  $('preview').dataset.existingImage='';
+  $('patientForm').querySelector('button[type="submit"]').textContent='Save patient';
+  $('operationDate').value=[today.getFullYear(),String(today.getMonth()+1).padStart(2,'0'),String(today.getDate()).padStart(2,'0')].join('-');
+  renderPreview();
+ }catch(err){alert(err.message||'Could not save this patient.');}
+ finally{submitButton.disabled=false;if(editingIndex===null)submitButton.textContent='Save patient';}
+});
+
+async function initializeAuth(){
+ // No login screen: create a random local encryption secret automatically.
+ // The secret is stored in this browser, so this is convenience encryption, not device-user authentication.
+ if(!window.crypto?.subtle){alert('This browser does not support secure encryption. Open the app using HTTPS or a modern browser.');return;}
+ let secret=localStorage.getItem(AUTO_SECRET_KEY);
+ const encrypted=localStorage.getItem(ENCRYPTED_KEY);
+ if(encrypted && !secret){
+  const oldPassword=prompt('Existing encrypted patient records were found. Enter your previous app password once to migrate them. No password will be required afterward.');
+  if(oldPassword===null)return;
+  try{
+   const oldSalt=b64ToBytes(localStorage.getItem(SALT_KEY));
+   const oldKey=await deriveKey(oldPassword,oldSalt);
+   patients=await decryptRecords(oldKey);
+  }catch(_){alert('Could not migrate the existing records: the previous password was incorrect or the data is damaged. Your original records have not been changed.');return;}
+  secret=bytesToB64(crypto.getRandomValues(new Uint8Array(32)));
+  localStorage.setItem(AUTO_SECRET_KEY,secret);
+  const salt=crypto.getRandomValues(new Uint8Array(16));
+  localStorage.setItem(SALT_KEY,bytesToB64(salt));
+  sessionPassword=secret;sessionKey=await deriveKey(secret,salt);
+  await encryptRecords();
+ }else{
+  if(!secret){secret=bytesToB64(crypto.getRandomValues(new Uint8Array(32)));localStorage.setItem(AUTO_SECRET_KEY,secret);}
+  sessionPassword=secret;
+  let saltValue=localStorage.getItem(SALT_KEY);
+  if(!saltValue){saltValue=bytesToB64(crypto.getRandomValues(new Uint8Array(16)));localStorage.setItem(SALT_KEY,saltValue);}
+  sessionKey=await deriveKey(secret,b64ToBytes(saltValue));
+  if(encrypted){
+   try{patients=await decryptRecords(sessionKey);}catch(_){alert('Could not open the locally stored patient records. Do not clear browser data; contact support before proceeding.');return;}
+  }else{
+   const legacy=localStorage.getItem(LEGACY_KEY);
+   try{patients=legacy?JSON.parse(legacy):[];}catch(_){patients=[];}
+   await encryptRecords();
+   if(legacy!==null)localStorage.removeItem(LEGACY_KEY);
+  }
+ }
+ $('appContent').classList.remove('hidden');
+ render();
+ 
+}
+$('searchPatients').addEventListener('input',render);
+$('historyProcedure').addEventListener('change',render);
+$('historySort').addEventListener('change',render);
+initializeAuth().catch(err=>alert(err.message||'Could not initialize the app.'));
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));}
+</script>
+</body></html>
