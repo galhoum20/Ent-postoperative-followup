@@ -40,6 +40,7 @@ footer{text-align:center;color:#68777d;font-size:.75rem;padding:8px 18px 26px}
 <form id="patientForm">
 <div class="grid">
 <div class="field"><label for="patientName">Patient name</label><input id="patientName" placeholder="Patient name" required></div>
+<div class="field"><label for="fileNumber">Hospital file number (manual)</label><input id="fileNumber" inputmode="text" placeholder="Enter file number"></div>
 <div class="field"><label for="phone">WhatsApp number</label><input id="phone" type="tel" inputmode="tel" placeholder="9665XXXXXXXX" required><div class="hint">Country code, numbers only (no + sign).</div></div>
 </div>
 <div class="grid">
@@ -90,7 +91,7 @@ footer{text-align:center;color:#68777d;font-size:.75rem;padding:8px 18px 26px}
 <div class="hint">The operation date is day 0. Follow-up dates are calculated automatically; appointments falling on Friday are moved to Saturday. You can browse and filter patient history, view patients due today, export CSV, and create encrypted manual backups. WhatsApp opens with a prepared message; you review and tap Send.</div>
 </section>
 </main></div>
-<footer>ENT Follow-up V8 • Local storage • Friday follow-ups move to Saturday</footer>
+<footer>ENT Follow-up V9 • Local storage • Friday follow-ups move to Saturday</footer>
 <script>
 const $ = id => document.getElementById(id);
 const today = new Date();
@@ -229,7 +230,7 @@ function render(){
  const procedureFilter=$('historyProcedure')?.value||'all';
  const sortOrder=$('historySort')?.value||'newest';
  const matches=patients.map((p,i)=>({p,i})).filter(({p})=>
-   (procedureFilter==='all'||p.procedure===procedureFilter) && [p.name,p.phone,p.procedure,p.operationDate,p.age,p.notes,p.complications].join(' ').toLowerCase().includes(query)
+   (procedureFilter==='all'||p.procedure===procedureFilter) && [p.name,p.fileNumber,p.phone,p.procedure,p.operationDate,p.age,p.notes,p.complications].join(' ').toLowerCase().includes(query)
  ).sort((a,b)=>sortOrder==='oldest'?a.p.operationDate.localeCompare(b.p.operationDate):b.p.operationDate.localeCompare(a.p.operationDate));
  $('historyCount').textContent=`Showing ${matches.length} of ${patients.length} patient records`;
  if(!patients.length){root.innerHTML='<div class="empty">No patients saved yet.</div>';}
@@ -237,7 +238,7 @@ function render(){
  else {
   root.innerHTML=matches.map(({p,i})=>{
    const ds=followups(p.operationDate,p.procedure);
-   return `<details class="patient"><summary style="cursor:pointer"><strong>${escapeHtml(p.name)}</strong><small>${escapeHtml(p.procedure)} · Surgery: ${pretty(p.operationDate)} · Age: ${p.age ? escapeHtml(String(p.age))+' years' : 'Not entered'} · WhatsApp: ${escapeHtml(p.phone)}</small><span class="hint">Tap to view full patient record</span></summary><div style="padding-top:8px">
+   return `<details class="patient"><summary style="cursor:pointer"><strong>${escapeHtml(p.name)}</strong><small>${p.fileNumber ? 'File No: '+escapeHtml(p.fileNumber)+' · ' : ''}${escapeHtml(p.procedure)} · Surgery: ${pretty(p.operationDate)} · Age: ${p.age ? escapeHtml(String(p.age))+' years' : 'Not entered'} · WhatsApp: ${escapeHtml(p.phone)}</small><span class="hint">Tap to view full patient record</span></summary><div style="padding-top:8px">
    ${p.ctImage ? `<p><a href="${p.ctImage}" target="_blank" rel="noopener">View saved CT / clinical image</a></p>` : ''}
    ${p.notes ? `<p><b>Notes:</b> ${escapeHtml(p.notes)}</p>` : ''}
    ${p.complications ? `<p><b>Complications:</b> ${escapeHtml(p.complications)}</p>` : ''}
@@ -260,7 +261,7 @@ function renderDashboard(){
 window.editPatient=i=>{
  const p=patients[i]; if(!p)return;
  editingIndex=i;
- $('patientName').value=p.name||''; $('phone').value=p.phone||'';
+ $('patientName').value=p.name||''; $('fileNumber').value=p.fileNumber||''; $('phone').value=p.phone||'';
  $('procedure').value=p.procedure||'Adenotonsillectomy';
  $('operationDate').value=p.operationDate||'';
  $('age').value=p.age||''; $('notes').value=p.notes||'';
@@ -273,13 +274,13 @@ window.editPatient=i=>{
 };
 window.exportPatients=()=>{
  if(!patients.length){alert('There are no patient records to export.');return;}
- const columns=['Patient name','Age (years)','WhatsApp number','Operation','Operation date','Follow-up day 1','Follow-up date 1','Follow-up day 2','Follow-up date 2','Follow-up day 3','Follow-up date 3','Follow-up day 4','Follow-up date 4','Clinical notes','Complications','CT / clinical image attached'];
+ const columns=['Patient name','Hospital file number','Age (years)','WhatsApp number','Operation','Operation date','Follow-up day 1','Follow-up date 1','Follow-up day 2','Follow-up date 2','Follow-up day 3','Follow-up date 3','Follow-up day 4','Follow-up date 4','Clinical notes','Complications','CT / clinical image attached'];
  const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
  const rows=patients.map(p=>{
    const fs=followups(p.operationDate,p.procedure);
    const fvals=[];
    for(let n=0;n<4;n++){fvals.push(fs[n]?.day||'',fs[n]?.date||'');}
-   return [p.name,p.age,p.phone,p.procedure,p.operationDate,...fvals,p.notes,p.complications,p.ctImage?'Yes':'No'].map(q).join(',');
+   return [p.name,p.fileNumber||'',p.age,p.phone,p.procedure,p.operationDate,...fvals,p.notes,p.complications,p.ctImage?'Yes':'No'].map(q).join(',');
  });
  const csv='\uFEFF'+[columns.map(q).join(','),...rows].join('\r\n');
  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
@@ -322,7 +323,7 @@ $('patientForm').addEventListener('submit',async e=>{
  try{
   const chosenImage=$('ctImage').files[0];
   const ctImage=chosenImage ? await imageToDataUrl(chosenImage) : (editingIndex!==null ? ($('preview').dataset.existingImage||patients[editingIndex].ctImage||'') : '');
-  const patient={name:$('patientName').value.trim(),phone,procedure:$('procedure').value,operationDate,
+  const patient={name:$('patientName').value.trim(),fileNumber:$('fileNumber').value.trim(),phone,procedure:$('procedure').value,operationDate,
     age:$('age').value,notes:$('notes').value.trim(),complications:$('complications').value.trim(),ctImage};
   if(editingIndex!==null){
     const old=patients[editingIndex]; patients[editingIndex]={...old,...patient};
