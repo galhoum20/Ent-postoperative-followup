@@ -12,7 +12,7 @@ on:
       - 'manifest.webmanifest'
       - 'package.json'
       - 'capacitor.config.json'
-      - 'scripts/**'
+      - 'patch-manifest.py'
       - '.github/workflows/build-android-apk.yml'
 
 jobs:
@@ -56,12 +56,9 @@ jobs:
           ./gradlew assembleDebug --no-daemon
 
       - name: Print APK signing SHA-1
+        continue-on-error: true
         run: |
-          find / -name "debug.keystore" 2>/dev/null
-          for K in $(find / -name "debug.keystore" 2>/dev/null); do
-            keytool -list -v -keystore "$K" -alias androiddebugkey -storepass android -keypass android 2>&1 | grep -E "SHA1|SHA-1"
-          done
-        
+          keytool -list -v -keystore /home/runner/.config/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android 2>&1 | head -30
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
