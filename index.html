@@ -171,8 +171,28 @@ footer{text-align:center;color:#68777d;font-size:.75rem;padding:8px 18px 26px}
 body[dir="rtl"]{text-align:right}
 body[dir="rtl"] .actions{direction:rtl}
 body[dir="rtl"] input,body[dir="rtl"] select,body[dir="rtl"] textarea{text-align:right}
-img.ctThumb{max-width:100%;max-height:220px;border-radius:10px;border:1px solid #cfd8dc;cursor:zoom-in;margin-top:6px;background:#fff}
-#ctPreviewThumb{display:none;max-width:100%;max-height:200px;border-radius:10px;border:1px solid #cfd8dc;margin-top:8px}
+img.ctThumb{height:110px;width:auto;max-width:48vw;border-radius:10px;border:1px solid #cfd8dc;cursor:zoom-in;background:#fff;object-fit:cover}
+.thumbGrid{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.fthumb{position:relative}
+.fthumbX{position:absolute;top:3px;right:3px;background:#b00020;color:#fff;border:0;border-radius:50%;width:26px;height:26px;font-size:.8rem;padding:0;line-height:26px}
+summary.tabBar{cursor:pointer;font-size:1.15rem;font-weight:700;color:var(--purple);list-style:none;padding:2px 0}
+summary.tabBar::-webkit-details-marker{display:none}
+summary.tabBar::before{content:'＋ '}
+details[open]>summary.tabBar::before{content:'－ '}
+details#addPatientTab[open]>summary.tabBar{margin-bottom:12px}
+.visits{margin:10px 0;padding:10px;border:1px solid #d9e3e6;border-radius:10px;background:#fafcfc}
+.visitRow{display:grid;grid-template-columns:1fr;gap:6px;padding:8px 0;border-top:1px dashed #d9e3e6}
+.visitRow:first-of-type{border-top:0}
+.visitHead{font-weight:650;font-size:.9rem}
+select.visitSel.good{border-color:#2e7d32;background:#e8f5e9}
+select.visitSel.still{border-color:#ef6c00;background:#fff3e0}
+.upDate{margin:12px 0 4px;font-weight:700;color:var(--purple)}
+.upRow{padding:8px 10px;border:1px solid #d9e3e6;border-radius:10px;margin-bottom:6px;background:#fff}
+.upRow.overdue{border-color:#b00020;background:#fff5f5}
+.upRow small{display:block;color:#555;margin-top:2px}
+#imgViewerPrev,#imgViewerNext{position:fixed;top:50%;z-index:99991;background:rgba(255,255,255,.85);color:#000;border:0;border-radius:50%;width:44px;height:44px;font-size:1.3rem;padding:0}
+#imgViewerPrev{left:8px}#imgViewerNext{right:8px}
+#imgViewerCount{position:fixed;top:calc(env(safe-area-inset-top,0px) + 14px);left:14px;z-index:99991;color:#fff;font-weight:700}
 #imgViewer{display:none;position:fixed;inset:0;z-index:99990;background:rgba(0,0,0,.92);overflow:auto;-webkit-overflow-scrolling:touch}
 #imgViewer.open{display:block}
 #imgViewer img{display:block;max-width:100%;margin:56px auto 24px;touch-action:pinch-zoom}
@@ -184,10 +204,10 @@ html.locked body > *:not(#lockScreen){visibility:hidden}
 #lockScreen button{background:#650568;color:#fff;border:0;border-radius:10px;padding:14px 22px;font-size:1rem;font-weight:650}
 #lockScreen .lockMsg{color:#b00020;min-height:1.2em}
 </style>
-<script>try{if(JSON.parse(localStorage.getItem('entFollowupV12LockConfig')||'{}').enabled)document.documentElement.classList.add('locked')}catch(e){}</script>
+<script>try{var c=JSON.parse(localStorage.getItem('entFollowupV12LockConfig')||'{}');if(c.enabled){var d=(c.rememberDays===undefined?30:c.rememberDays);var ok=d>0&&c.unlockedAt&&(Date.now()-c.unlockedAt<d*864e5);if(!ok)document.documentElement.classList.add('locked')}}catch(e){}</script>
 </head>
 <body>
-<div id="imgViewer"><button type="button" id="imgViewerClose" aria-label="Close">✕</button><img id="imgViewerImg" alt=""></div>
+<div id="imgViewer"><button type="button" id="imgViewerClose" aria-label="Close">✕</button><span id="imgViewerCount"></span><button type="button" id="imgViewerPrev" aria-label="Previous">‹</button><button type="button" id="imgViewerNext" aria-label="Next">›</button><img id="imgViewerImg" alt=""></div>
 <div id="lockScreen">
   <div style="font-size:2.4rem">🔒</div>
   <h2 id="lockTitle" style="margin:0">App locked</h2>
@@ -223,6 +243,83 @@ html.locked body > *:not(#lockScreen){visibility:hidden}
     <button type="button" class="purple-btn" onclick="resolveSyncConflict('remote')" data-i18n="keepRemoteBtn">اعتماد نسخة Google Drive</button>
     <button type="button" class="secondary" onclick="downloadConflictSnapshot()" data-i18n="downloadConflictBtn">تنزيل نسخة احتياطية للتعارض (JSON)</button>
   </div>
+</section>
+
+<!-- New / Edit Patient Form -->
+<details id="addPatientTab" class="card card-accent-teal">
+<summary class="tabBar"><span data-i18n="newPatientTitle">إضافة مريض / عملية جديدة</span></summary>
+<form id="patientForm">
+<div class="grid">
+<div class="field"><label for="patientName" data-i18n="patientNameLabel">اسم المريض</label><input id="patientName" placeholder="اسم المريض" required></div>
+<div class="field"><label for="fileNumber" data-i18n="fileNumberLabel">رقم ملف المستشفى (يدوي)</label><input id="fileNumber" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder="أرقام فقط"><div class="hint" data-i18n="numbersOnlyHint">أرقام فقط.</div></div>
+<div class="field"><label for="phone" data-i18n="phoneLabel">رقم الواتساب</label><input id="phone" type="tel" inputmode="tel" placeholder="9665XXXXXXXX" required><div class="hint" data-i18n="phoneHint">أدخل رمز الدولة والأرقام فقط (بدون علامة +).</div></div>
+</div>
+<div class="grid">
+<div class="field"><label for="procedure" data-i18n="procedureLabel">العملية</label>
+<select id="procedure">
+<option value="Adenotonsillectomy">Adenotonsillectomy</option>
+<option value="Adenoidectomy">Adenoidectomy</option>
+<option value="Tonsillectomy">Tonsillectomy</option>
+<option value="Septoplasty + Turbinate Reduction">Septoplasty + Turbinate Reduction</option>
+</select></div>
+<div class="field"><label for="operationDate" data-i18n="opDateLabel">تاريخ العملية</label><input id="operationDate" type="date" required></div>
+</div>
+<div class="grid">
+<div class="field"><label for="age" data-i18n="ageLabel">عمر المريض (بالسنوات)</label><input id="age" type="number" min="0" max="120" step="1" placeholder="العمر"></div>
+<div class="field"><label for="ctImage" data-i18n="ctImageLabel">صورة أشعة مقطعية / صورة إكلينيكية (اختياري)</label><input id="ctImage" type="file" accept="image/*" multiple><div id="ctPreviewGrid" class="thumbGrid"></div><div class="hint" data-i18n="ctImageHint">يتم حفظ الصورة على هذا الجهاز مع سجل المريض.</div></div>
+</div>
+<div class="field"><label for="notes" data-i18n="notesLabel">ملاحظات إكلينيكية</label><textarea id="notes" rows="3" placeholder="أدخل الملاحظات الإكلينيكية..."></textarea></div>
+<div class="field"><label for="complications" data-i18n="complicationsLabel">المضاعفات</label><textarea id="complications" rows="3" placeholder="أدخل المضاعفات أو اكتب لا يوجد"></textarea></div>
+<div id="preview" aria-live="polite"></div>
+<button class="primary" type="submit" id="submitPatientBtn" data-i18n="savePatientBtn">حفظ بيانات المريض</button>
+</form>
+</details>
+
+<!-- Today's Follow-ups -->
+<section class="card card-accent-teal">
+<h2 data-i18n="todayTitle">متابعات اليوم</h2>
+<div class="hint" style="margin:-8px 0 10px" data-i18n="todaySubtitle">المرضى الذين يحين موعد متابعتهم بعد العملية اليوم.</div>
+<div id="todayDashboard"><div class="empty">لا توجد متابعات مستحقة اليوم.</div></div>
+</section>
+
+<!-- Tomorrow's Follow-ups -->
+<section class="card card-accent-purple">
+<h2 data-i18n="tomorrowTitle">متابعات الغد</h2>
+<div class="hint" style="margin:-8px 0 10px" data-i18n="tomorrowSubtitle">المرضى الذين يحين موعد متابعتهم بعد العملية غدًا.</div>
+<div id="tomorrowDashboard"><div class="empty">لا توجد متابعات مستحقة غدًا.</div></div>
+</section>
+
+<!-- All remaining follow-ups -->
+<section class="card card-accent-teal">
+<h2 data-i18n="upcomingTitle">كل المتابعات القادمة</h2>
+<div class="hint" style="margin:-8px 0 10px" data-i18n="upcomingSubtitle"></div>
+<div id="upcomingDashboard"></div>
+</section>
+
+<!-- Patient History & Backup -->
+<section class="card">
+<h2 data-i18n="historyTitle">سجل المرضى</h2>
+<div class="hint" style="margin:-8px 0 12px" data-i18n="historySubtitle">تصفح جميع المرضى، والتصفية حسب نوع العملية، والترتيب حسب تاريخ العملية. اختر سجل المريض للمراجعة أو التعديل.</div>
+<div class="history-tools">
+ <div class="field"><label for="historyProcedure" data-i18n="filterOpLabel">تصفية حسب العملية</label><select id="historyProcedure"><option value="all">All operations</option><option>Adenotonsillectomy</option><option>Adenoidectomy</option><option>Tonsillectomy</option><option>Septoplasty + Turbinate Reduction</option></select></div>
+ <div class="field"><label for="historySort" data-i18n="sortDateLabel">الترتيب حسب تاريخ العملية</label><select id="historySort"><option value="newest">Newest first</option><option value="oldest">Oldest first</option></select></div>
+</div>
+<div class="grid" style="align-items:end">
+ <div class="field"><label for="searchPatients" data-i18n="searchLabel">البحث عن المرضى</label><input id="searchPatients" type="search" placeholder="الاسم أو رقم الملف أو الهاتف أو الملاحظات..."></div>
+ <div class="field"><button type="button" class="secondary" style="width:100%" onclick="exportPatients()" data-i18n="exportCsvBtn">تصدير إلى Excel (CSV)</button></div>
+</div>
+<div class="grid" style="align-items:end">
+ <div class="field"><button type="button" class="primary" style="width:100%" onclick="createEncryptedBackup()" data-i18n="downloadBackupBtn">تنزيل نسخة احتياطية مشفرة</button></div>
+ <div class="field"><button type="button" class="secondary-purple" style="width:100%" onclick="document.getElementById('backupFile').click()" data-i18n="restoreBackupBtn">استعادة نسخة احتياطية</button><input id="backupFile" type="file" accept=".json,application/json" class="hidden"></div>
+</div>
+<div class="hint" data-i18n="backupHint">يتم تشفير النسخة الاحتياطية اليدوية بكلمة مرور تختارها عند إنشائها. احتفظ بكلمة المرور؛ ستحتاج إليها لاستعادة النسخة على هذا الجهاز أو جهاز آخر.</div>
+<div id="historyCount" class="hint"></div><div id="patientList"><div class="empty">لا توجد سجلات مرضى محفوظة حتى الآن.</div></div>
+</section>
+
+<!-- Important Notes -->
+<section class="card">
+<h2 data-i18n="importantTitle">مهم</h2>
+<div class="hint" data-i18n="importantBody">يُعتبر يوم العملية هو اليوم صفر. تُحسب مواعيد المتابعة تلقائيًا، وإذا وافق الموعد يوم الجمعة يتم نقله إلى السبت. يمكنك تصفح سجل المرضى والتصفية والاطلاع على متابعات اليوم وتصدير CSV وإنشاء نسخ احتياطية مشفرة والمزامنة المشفرة عبر Google Drive. يفتح واتساب برسالة جاهزة لمراجعتها ثم إرسالها.</div>
 </section>
 
 <!-- Google Drive Encrypted Sync & Daily 11 AM Reminder Card -->
@@ -272,6 +369,8 @@ html.locked body > *:not(#lockScreen){visibility:hidden}
           <button type="button" id="lockEnableBtn" class="secondary" style="width:100%" onclick="enableGoogleLock()">Enable Google sign-in lock</button>
           <button type="button" id="lockDisableBtn" class="remove" style="width:100%;display:none" onclick="disableGoogleLock()">Disable lock (requires sign-in)</button>
           <div id="lockStatusHint" class="hint"></div>
+          <label for="lockRememberSel" style="margin-top:8px">البقاء مسجّلًا / Stay signed in</label>
+          <select id="lockRememberSel" onchange="setLockRemember(this.value)"><option value="0">Ask every time (after 5 min away)</option><option value="1">1 day</option><option value="7">7 days</option><option value="30">30 days</option><option value="90">90 days</option></select>
         </div>
       </div>
 
@@ -283,75 +382,6 @@ html.locked body > *:not(#lockScreen){visibility:hidden}
   </details>
 </section>
 
-<!-- New / Edit Patient Form -->
-<section class="card card-accent-teal">
-<h2 data-i18n="newPatientTitle">إضافة مريض / عملية جديدة</h2>
-<form id="patientForm">
-<div class="grid">
-<div class="field"><label for="patientName" data-i18n="patientNameLabel">اسم المريض</label><input id="patientName" placeholder="اسم المريض" required></div>
-<div class="field"><label for="fileNumber" data-i18n="fileNumberLabel">رقم ملف المستشفى (يدوي)</label><input id="fileNumber" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder="أرقام فقط"><div class="hint" data-i18n="numbersOnlyHint">أرقام فقط.</div></div>
-<div class="field"><label for="phone" data-i18n="phoneLabel">رقم الواتساب</label><input id="phone" type="tel" inputmode="tel" placeholder="9665XXXXXXXX" required><div class="hint" data-i18n="phoneHint">أدخل رمز الدولة والأرقام فقط (بدون علامة +).</div></div>
-</div>
-<div class="grid">
-<div class="field"><label for="procedure" data-i18n="procedureLabel">العملية</label>
-<select id="procedure">
-<option value="Adenotonsillectomy">Adenotonsillectomy</option>
-<option value="Adenoidectomy">Adenoidectomy</option>
-<option value="Tonsillectomy">Tonsillectomy</option>
-<option value="Septoplasty + Turbinate Reduction">Septoplasty + Turbinate Reduction</option>
-</select></div>
-<div class="field"><label for="operationDate" data-i18n="opDateLabel">تاريخ العملية</label><input id="operationDate" type="date" required></div>
-</div>
-<div class="grid">
-<div class="field"><label for="age" data-i18n="ageLabel">عمر المريض (بالسنوات)</label><input id="age" type="number" min="0" max="120" step="1" placeholder="العمر"></div>
-<div class="field"><label for="ctImage" data-i18n="ctImageLabel">صورة أشعة مقطعية / صورة إكلينيكية (اختياري)</label><input id="ctImage" type="file" accept="image/*"><img id="ctPreviewThumb" alt=""><div class="hint" data-i18n="ctImageHint">يتم حفظ الصورة على هذا الجهاز مع سجل المريض.</div></div>
-</div>
-<div class="field"><label for="notes" data-i18n="notesLabel">ملاحظات إكلينيكية</label><textarea id="notes" rows="3" placeholder="أدخل الملاحظات الإكلينيكية..."></textarea></div>
-<div class="field"><label for="complications" data-i18n="complicationsLabel">المضاعفات</label><textarea id="complications" rows="3" placeholder="أدخل المضاعفات أو اكتب لا يوجد"></textarea></div>
-<div id="preview" aria-live="polite"></div>
-<button class="primary" type="submit" id="submitPatientBtn" data-i18n="savePatientBtn">حفظ بيانات المريض</button>
-</form>
-</section>
-
-<!-- Today's Follow-ups -->
-<section class="card card-accent-teal">
-<h2 data-i18n="todayTitle">متابعات اليوم</h2>
-<div class="hint" style="margin:-8px 0 10px" data-i18n="todaySubtitle">المرضى الذين يحين موعد متابعتهم بعد العملية اليوم.</div>
-<div id="todayDashboard"><div class="empty">لا توجد متابعات مستحقة اليوم.</div></div>
-</section>
-
-<!-- Tomorrow's Follow-ups -->
-<section class="card card-accent-purple">
-<h2 data-i18n="tomorrowTitle">متابعات الغد</h2>
-<div class="hint" style="margin:-8px 0 10px" data-i18n="tomorrowSubtitle">المرضى الذين يحين موعد متابعتهم بعد العملية غدًا.</div>
-<div id="tomorrowDashboard"><div class="empty">لا توجد متابعات مستحقة غدًا.</div></div>
-</section>
-
-<!-- Patient History & Backup -->
-<section class="card">
-<h2 data-i18n="historyTitle">سجل المرضى</h2>
-<div class="hint" style="margin:-8px 0 12px" data-i18n="historySubtitle">تصفح جميع المرضى، والتصفية حسب نوع العملية، والترتيب حسب تاريخ العملية. اختر سجل المريض للمراجعة أو التعديل.</div>
-<div class="history-tools">
- <div class="field"><label for="historyProcedure" data-i18n="filterOpLabel">تصفية حسب العملية</label><select id="historyProcedure"><option value="all">All operations</option><option>Adenotonsillectomy</option><option>Adenoidectomy</option><option>Tonsillectomy</option><option>Septoplasty + Turbinate Reduction</option></select></div>
- <div class="field"><label for="historySort" data-i18n="sortDateLabel">الترتيب حسب تاريخ العملية</label><select id="historySort"><option value="newest">Newest first</option><option value="oldest">Oldest first</option></select></div>
-</div>
-<div class="grid" style="align-items:end">
- <div class="field"><label for="searchPatients" data-i18n="searchLabel">البحث عن المرضى</label><input id="searchPatients" type="search" placeholder="الاسم أو رقم الملف أو الهاتف أو الملاحظات..."></div>
- <div class="field"><button type="button" class="secondary" style="width:100%" onclick="exportPatients()" data-i18n="exportCsvBtn">تصدير إلى Excel (CSV)</button></div>
-</div>
-<div class="grid" style="align-items:end">
- <div class="field"><button type="button" class="primary" style="width:100%" onclick="createEncryptedBackup()" data-i18n="downloadBackupBtn">تنزيل نسخة احتياطية مشفرة</button></div>
- <div class="field"><button type="button" class="secondary-purple" style="width:100%" onclick="document.getElementById('backupFile').click()" data-i18n="restoreBackupBtn">استعادة نسخة احتياطية</button><input id="backupFile" type="file" accept=".json,application/json" class="hidden"></div>
-</div>
-<div class="hint" data-i18n="backupHint">يتم تشفير النسخة الاحتياطية اليدوية بكلمة مرور تختارها عند إنشائها. احتفظ بكلمة المرور؛ ستحتاج إليها لاستعادة النسخة على هذا الجهاز أو جهاز آخر.</div>
-<div id="historyCount" class="hint"></div><div id="patientList"><div class="empty">لا توجد سجلات مرضى محفوظة حتى الآن.</div></div>
-</section>
-
-<!-- Important Notes -->
-<section class="card">
-<h2 data-i18n="importantTitle">مهم</h2>
-<div class="hint" data-i18n="importantBody">يُعتبر يوم العملية هو اليوم صفر. تُحسب مواعيد المتابعة تلقائيًا، وإذا وافق الموعد يوم الجمعة يتم نقله إلى السبت. يمكنك تصفح سجل المرضى والتصفية والاطلاع على متابعات اليوم وتصدير CSV وإنشاء نسخ احتياطية مشفرة والمزامنة المشفرة عبر Google Drive. يفتح واتساب برسالة جاهزة لمراجعتها ثم إرسالها.</div>
-</section>
 </main></div>
 
 <footer>مستشفى الفريح • ENT Follow-up V12 • العربية / English</footer>
@@ -405,10 +435,12 @@ const I18N = {
     procedureLabel: 'العملية',
     opDateLabel: 'تاريخ العملية',
     ageLabel: 'عمر المريض (بالسنوات)',
-    ctImageLabel: 'صورة أشعة مقطعية / صورة إكلينيكية (اختياري)',
+    ctImageLabel: 'صور أشعة / صور إكلينيكية (اختياري - يمكن اختيار عدة صور)',
     ctImageHint: 'يتم حفظ الصورة على هذا الجهاز مع سجل المريض.',
     notesLabel: 'ملاحظات إكلينيكية',
     complicationsLabel: 'المضاعفات',
+    upcomingTitle: 'كل المتابعات القادمة',
+    upcomingSubtitle: 'جميع زيارات المتابعة المتبقية لكل المرضى، مرتبة حسب التاريخ.',
     savePatientBtn: 'حفظ بيانات المريض',
     updatePatientBtn: 'تحديث بيانات المريض',
     savingBtn: 'جارٍ الحفظ...',
@@ -483,10 +515,12 @@ const I18N = {
     procedureLabel: 'Operation',
     opDateLabel: 'Date of operation',
     ageLabel: 'Patient age (years)',
-    ctImageLabel: 'CT / clinical image (optional)',
+    ctImageLabel: 'CT / clinical images (optional - you can select several)',
     ctImageHint: 'Image is saved on this device with the patient record.',
     notesLabel: 'Clinical notes',
     complicationsLabel: 'Complications',
+    upcomingTitle: 'All upcoming follow-ups',
+    upcomingSubtitle: 'Every remaining follow-up visit across all patients, sorted by date.',
     savePatientBtn: 'Save patient',
     updatePatientBtn: 'Update patient',
     savingBtn: 'Saving...',
@@ -756,14 +790,31 @@ async function save(markDirty = true) {
   }
 }
 
-function downloadJsonFile(data, filename) {
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+// Save a text file. In the Android app, blob/anchor downloads silently do nothing, so the
+// file is written to the cache and the Android share sheet opens (choose Files / Drive / WhatsApp).
+async function saveOrShareFile(filename, text, mime) {
+  const Filesystem = window.Capacitor?.Plugins?.Filesystem;
+  const Share = window.Capacitor?.Plugins?.Share;
+  if (isNativeApp()) {
+    if (!Filesystem || !Share) throw new Error('Native file plugins are missing in this build.');
+    const w = await Filesystem.writeFile({ path: filename, data: text, directory: 'CACHE', encoding: 'utf8' });
+    await Share.share({ title: filename, url: w.uri, dialogTitle: appLanguage === 'ar' ? 'اختر مكان حفظ الملف' : 'Choose where to save the file' });
+    return 'shared';
+  }
+  const blob = new Blob([text], { type: mime });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
   a.download = filename;
+  document.body.appendChild(a);
   a.click();
-  setTimeout(() => URL.revokeObjectURL(url), 1500);
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 4000);
+  return 'downloaded';
+}
+
+async function downloadJsonFile(data, filename) {
+  return saveOrShareFile(filename, JSON.stringify(data, null, 2), 'application/json');
 }
 
 // Manual encrypted backup (100% compatible with V11 / V8 format)
@@ -794,8 +845,10 @@ window.createEncryptedBackup = async () => {
       iv: bytesToB64(iv),
       data: bytesToB64(new Uint8Array(cipher))
     };
-    downloadJsonFile(backup, 'ENT_Followup_Encrypted_Backup_' + localToday() + '.json');
-    alert(appLanguage === 'ar' ? 'تم تنزيل النسخة الاحتياطية المشفرة بنجاح.' : 'Encrypted backup downloaded. Store the file and backup password safely.');
+    const how = await downloadJsonFile(backup, 'ENT_Followup_Encrypted_Backup_' + localToday() + '.json');
+    alert(how === 'shared'
+      ? (appLanguage === 'ar' ? 'تم فتح قائمة المشاركة. تأكد أنك اخترت مكانًا لحفظ الملف (الملفات أو Google Drive) ثم تحقق من وجوده. احفظ كلمة المرور.' : 'The share sheet opened. Make sure you picked a place to save the file (Files or Google Drive), then check that it is there. Keep the backup password safe.')
+      : (appLanguage === 'ar' ? 'تم تنزيل النسخة الاحتياطية المشفرة بنجاح.' : 'Encrypted backup downloaded. Store the file and backup password safely.'));
   } catch (err) {
     alert(err.message || 'Could not create the backup.');
   }
@@ -1277,8 +1330,8 @@ function summarizeRecordDiff(localList, remoteList) {
       diffs.push({ type: 'only-local', label: `${lp.name} (${lp.operationDate})` });
     } else {
       const rp = remoteMap.get(key);
-      const lClean = JSON.stringify({ ...lp, ctImage: lp.ctImage ? '[image]' : '' });
-      const rClean = JSON.stringify({ ...rp, ctImage: rp.ctImage ? '[image]' : '' });
+      const lClean = JSON.stringify({ ...lp, ctImage: lp.ctImage ? '[image]' : '', ctImages: (lp.ctImages || []).length });
+      const rClean = JSON.stringify({ ...rp, ctImage: rp.ctImage ? '[image]' : '', ctImages: (rp.ctImages || []).length });
       if (lClean !== rClean) {
         diffs.push({ type: 'modified', label: `${lp.name} (${lp.operationDate})` });
       }
@@ -1472,8 +1525,8 @@ async function triggerDriveSync(reason = 'auto') {
 
     // CASE A: Both local and remote changed independently -> KEEP BOTH & ASK USER
     if (localChangedSinceLastSync && remoteChangedSinceLastSync) {
-      const localClean = JSON.stringify(patients.map(p => ({ ...p, ctImage: p.ctImage ? 'img' : '' })));
-      const remoteClean = JSON.stringify(remoteRecords.map(p => ({ ...p, ctImage: p.ctImage ? 'img' : '' })));
+      const localClean = JSON.stringify(patients.map(p => ({ ...p, ctImage: p.ctImage ? 'img' : '', ctImages: (p.ctImages || []).length })));
+      const remoteClean = JSON.stringify(remoteRecords.map(p => ({ ...p, ctImage: p.ctImage ? 'img' : '', ctImages: (p.ctImages || []).length })));
       if (localClean !== remoteClean) {
         setUnresolvedConflict({
           detectedAt: new Date().toISOString(),
@@ -1567,9 +1620,17 @@ const LOCK_RELOCK_MS = 5 * 60 * 1000;   // re-lock after 5 min in the background
 let lockHiddenAt = 0;
 
 function getLockConfig() {
-  try { return Object.assign({ enabled: false, email: '' }, JSON.parse(localStorage.getItem(LOCK_CONFIG_KEY)) || {}); }
-  catch (_) { return { enabled: false, email: '' }; }
+  const base = { enabled: false, email: '', rememberDays: 30, unlockedAt: 0 };
+  try { return Object.assign(base, JSON.parse(localStorage.getItem(LOCK_CONFIG_KEY)) || {}); }
+  catch (_) { return base; }
 }
+function lockIsRequired() {
+  const c = getLockConfig();
+  if (!c.enabled) return false;
+  const d = Number(c.rememberDays) || 0;
+  return !(d > 0 && c.unlockedAt && (Date.now() - c.unlockedAt) < d * 86400000);
+}
+window.setLockRemember = v => { const c = getLockConfig(); c.rememberDays = Number(v) || 0; setLockConfig(c); };
 function setLockConfig(c) { localStorage.setItem(LOCK_CONFIG_KEY, JSON.stringify(c)); }
 
 function lockMsg(ar, en) { return appLanguage === 'ar' ? ar : en; }
@@ -1615,7 +1676,7 @@ async function unlockWithGoogle() {
   if (btn) btn.disabled = true;
   try {
     const email = await googleIdentityEmail();
-    if (email === getLockConfig().email) { hideLockScreen(); return; }
+    if (email === getLockConfig().email) { const c = getLockConfig(); c.unlockedAt = Date.now(); setLockConfig(c); hideLockScreen(); return; }
     showLockScreen(lockMsg('هذا الحساب غير مصرّح له بفتح التطبيق.', 'This Google account is not authorized to open the app.'));
   } catch (err) {
     showLockScreen(String(err.message || err));
@@ -1631,7 +1692,7 @@ async function enableGoogleLock() {
       'تفعيل القفل: لن يفتح التطبيق إلا بحساب ' + email + ' ويحتاج إلى اتصال بالإنترنت. هل تريد المتابعة؟',
       'Enable lock: only ' + email + ' will be able to open the app, and internet is required. Continue?'));
     if (!ok) return;
-    setLockConfig({ enabled: true, email });
+    setLockConfig({ enabled: true, email, rememberDays: 30, unlockedAt: Date.now() });
     updateLockUI();
   } catch (err) {
     alert(lockMsg('تعذر تفعيل القفل: ', 'Could not enable lock: ') + (err.message || err));
@@ -1645,7 +1706,7 @@ async function disableGoogleLock() {
       alert(lockMsg('هذا الحساب غير مصرّح له.', 'This account is not authorized.'));
       return;
     }
-    setLockConfig({ enabled: false, email: '' });
+    setLockConfig({ enabled: false, email: '', rememberDays: 30, unlockedAt: 0 });
     updateLockUI();
   } catch (err) {
     alert(lockMsg('تعذر إيقاف القفل: ', 'Could not disable lock: ') + (err.message || err));
@@ -1658,6 +1719,7 @@ function updateLockUI() {
   if (st) st.textContent = c.enabled
     ? lockMsg('القفل مفعّل للحساب: ', 'Lock enabled for: ') + c.email
     : lockMsg('القفل غير مفعّل.', 'Lock is off.');
+  const rs = $('lockRememberSel'); if (rs) rs.value = String(c.rememberDays);
   const on = $('lockEnableBtn'), off = $('lockDisableBtn');
   if (on) on.style.display = c.enabled ? 'none' : '';
   if (off) off.style.display = c.enabled ? '' : 'none';
@@ -1665,12 +1727,16 @@ function updateLockUI() {
 
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) { lockHiddenAt = Date.now(); return; }
-  if (getLockConfig().enabled && lockHiddenAt && Date.now() - lockHiddenAt > LOCK_RELOCK_MS) {
+  const c = getLockConfig();
+  if (!c.enabled) return;
+  if ((Number(c.rememberDays) || 0) === 0) {
+    if (lockHiddenAt && Date.now() - lockHiddenAt > LOCK_RELOCK_MS) showLockScreen('');
+  } else if (lockIsRequired()) {
     showLockScreen('');
   }
 });
 
-if (getLockConfig().enabled) showLockScreen('');
+if (lockIsRequired()) showLockScreen('');
 updateLockUI();
 
 // ============================================================================
@@ -1852,11 +1918,12 @@ function render() {
       const ds = followups(p.operationDate, p.procedure);
       const fileLabel = p.fileNumber ? (appLanguage === 'ar' ? `رقم الملف: ${escapeHtml(p.fileNumber)} · ` : `File No: ${escapeHtml(p.fileNumber)} · `) : '';
       const ageLabel = p.age ? (appLanguage === 'ar' ? `${escapeHtml(String(p.age))} سنوات` : `${escapeHtml(String(p.age))} years`) : (appLanguage === 'ar' ? 'غير مدخل' : 'Not entered');
-      return `<details class="patient"><summary style="cursor:pointer"><strong>${escapeHtml(p.name)}</strong><small>${fileLabel}${escapeHtml(tProc(p.procedure))} · ${appLanguage === 'ar' ? 'العملية:' : 'Surgery:'} ${pretty(p.operationDate)} · ${appLanguage === 'ar' ? 'العمر:' : 'Age:'} ${ageLabel} · WhatsApp: ${escapeHtml(p.phone)}</small><span class="hint">${appLanguage === 'ar' ? 'اضغط لعرض سجل المريض كاملًا' : 'Tap to view full patient record'}</span></summary><div style="padding-top:8px">
-      ${p.ctImage ? `<p><b>${appLanguage === 'ar' ? 'صورة الأشعة / الصورة الإكلينيكية (اضغط للتكبير):' : 'CT / clinical image (tap to enlarge):'}</b><br><img class="ctThumb" src="${p.ctImage}" alt="CT / clinical image" loading="lazy"></p>` : ''}
+      return `<details class="patient" id="pt_${i}"><summary style="cursor:pointer"><strong>${escapeHtml(p.name)}</strong><small>${fileLabel}${escapeHtml(tProc(p.procedure))} · ${appLanguage === 'ar' ? 'العملية:' : 'Surgery:'} ${pretty(p.operationDate)} · ${appLanguage === 'ar' ? 'العمر:' : 'Age:'} ${ageLabel} · WhatsApp: ${escapeHtml(p.phone)}</small><span class="hint">${appLanguage === 'ar' ? 'اضغط لعرض سجل المريض كاملًا' : 'Tap to view full patient record'}</span></summary><div style="padding-top:8px">
+      ${getImages(p).length ? `<div><b>${appLanguage === 'ar' ? 'الصور (اضغط للتكبير):' : 'Images (tap to enlarge):'} ${getImages(p).length}</b><div class="thumbGrid">${getImages(p).map(src => `<img class="ctThumb" src="${src}" alt="" loading="lazy">`).join('')}</div></div>` : ''}
       ${p.notes ? `<p><b>${appLanguage === 'ar' ? 'الملاحظات:' : 'Notes:'}</b> ${escapeHtml(p.notes)}</p>` : ''}
       ${p.complications ? `<p><b>${appLanguage === 'ar' ? 'المضاعفات:' : 'Complications:'}</b> ${escapeHtml(p.complications)}</p>` : ''}
       <div class="dates">${ds.map(x => `<div class="datebox"><b>${dayWord} ${x.day}</b><span>${followupDateLabel(x)}</span></div>`).join('')}</div>
+      <div class="visits"><b>${appLanguage === 'ar' ? 'حالة المريض في كل زيارة متابعة:' : 'Patient condition at each follow-up visit:'}</b>${ds.map(x => visitRowHtml(p, i, x)).join('')}</div>
       <div class="actions">
         <button class="secondary" onclick="editPatient(${i})">${appLanguage === 'ar' ? 'تعديل' : 'Edit'}</button>
         <button class="secondary" onclick="sendAll(${i})">${appLanguage === 'ar' ? 'واتساب - كل المواعيد' : 'WhatsApp all dates'}</button>
@@ -1873,6 +1940,7 @@ function renderDashboard() {
   const tomorrowStr = addDays(todayStr, 1);
   renderDueList('todayDashboard', todayStr, 'today');
   renderDueList('tomorrowDashboard', tomorrowStr, 'tomorrow');
+  renderUpcoming();
 }
 
 function renderDueList(elementId, targetDate, kind) {
@@ -1910,9 +1978,10 @@ window.editPatient = i => {
   $('complications').value = p.complications || '';
   $('ctImage').value = '';
   $('submitPatientBtn').textContent = t('updatePatientBtn');
-  $('preview').dataset.existingImage = p.ctImage || '';
-  showCtPreview(p.ctImage || '');
+  formImages = getImages(p).slice();
+  renderFormImages();
   renderPreview();
+  $('addPatientTab').open = true;
   $('patientForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
 };
 
@@ -1921,22 +1990,17 @@ window.exportPatients = () => {
     alert(appLanguage === 'ar' ? 'لا توجد سجلات مرضى لتصديرها.' : 'There are no patient records to export.');
     return;
   }
-  const columns = ['Patient name', 'Hospital file number', 'Age (years)', 'WhatsApp number', 'Operation', 'Operation date', 'Follow-up day 1', 'Follow-up date 1', 'Follow-up day 2', 'Follow-up date 2', 'Follow-up day 3', 'Follow-up date 3', 'Follow-up day 4', 'Follow-up date 4', 'Clinical notes', 'Complications', 'CT / clinical image attached'];
+  const columns = ['Patient name', 'Hospital file number', 'Age (years)', 'WhatsApp number', 'Operation', 'Operation date', 'Follow-up day 1', 'Follow-up date 1', 'Follow-up day 2', 'Follow-up date 2', 'Follow-up day 3', 'Follow-up date 3', 'Follow-up day 4', 'Follow-up date 4', 'Clinical notes', 'Complications', 'CT / clinical images attached', 'Visit conditions'];
   const q = v => '"' + String(v ?? '').replace(/"/g, '""') + '"';
   const rows = patients.map(p => {
     const fs = followups(p.operationDate, p.procedure);
     const fvals = [];
     for (let n = 0; n < 4; n++) { fvals.push(fs[n]?.day || '', fs[n]?.date || ''); }
-    return [p.name, p.fileNumber || '', p.age, p.phone, p.procedure, p.operationDate, ...fvals, p.notes, p.complications, p.ctImage ? 'Yes' : 'No'].map(q).join(',');
+    return [p.name, p.fileNumber || '', p.age, p.phone, p.procedure, p.operationDate, ...fvals, p.notes, p.complications, (getImages(p).length ? 'Yes (' + getImages(p).length + ')' : 'No'), visitSummary(p)].map(q).join(',');
   });
   const csv = '\uFEFF' + [columns.map(q).join(','), ...rows].join('\r\n');
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'ENT_patient_followups_' + localToday() + '.csv';
-  a.click();
-  URL.revokeObjectURL(url);
+  saveOrShareFile('ENT_patient_followups_' + localToday() + '.csv', csv, 'text/csv;charset=utf-8;')
+    .catch(err => alert('Export failed: ' + (err.message || err)));
 };
 
 window.sendAll = i => window.open(whatsappUrl(patients[i]), '_blank', 'noopener');
@@ -1962,30 +2026,153 @@ window.removePatient = async i => {
 };
 
 
-// ---- Image viewer & form preview (data: URLs cannot be opened via links in Chrome/WebView) ----
-function openImageViewer(src) {
-  const v = $('imgViewer'), im = $('imgViewerImg');
+// ---- Multi-image helpers, viewer, form gallery ----
+function getImages(p) {
+  if (p && Array.isArray(p.ctImages) && p.ctImages.length) return p.ctImages;
+  return p && p.ctImage ? [p.ctImage] : [];
+}
+let viewerList = [], viewerIdx = 0;
+function showViewerImage() {
+  const im = $('imgViewerImg');
   im.classList.remove('zoomed');
-  im.src = src;
-  v.classList.add('open');
+  im.src = viewerList[viewerIdx];
+  const multi = viewerList.length > 1;
+  $('imgViewerCount').textContent = multi ? (viewerIdx + 1) + ' / ' + viewerList.length : '';
+  $('imgViewerPrev').style.display = multi ? '' : 'none';
+  $('imgViewerNext').style.display = multi ? '' : 'none';
 }
+function openImageViewer(list, idx) { viewerList = list; viewerIdx = idx; showViewerImage(); $('imgViewer').classList.add('open'); }
 function closeImageViewer() { $('imgViewer').classList.remove('open'); $('imgViewerImg').removeAttribute('src'); }
-function showCtPreview(src) {
-  const el = $('ctPreviewThumb');
-  if (!el) return;
-  if (src) { el.src = src; el.style.display = 'block'; } else { el.removeAttribute('src'); el.style.display = 'none'; }
-}
 document.addEventListener('click', e => {
   const th = e.target.closest && e.target.closest('img.ctThumb');
-  if (th) { openImageViewer(th.src); return; }
+  if (th) {
+    const grid = th.closest('.thumbGrid');
+    const imgs = grid ? [...grid.querySelectorAll('img.ctThumb')] : [th];
+    openImageViewer(imgs.map(x => x.src), Math.max(0, imgs.indexOf(th)));
+    return;
+  }
   if (e.target.id === 'imgViewerClose') { closeImageViewer(); return; }
+  if (e.target.id === 'imgViewerPrev') { viewerIdx = (viewerIdx - 1 + viewerList.length) % viewerList.length; showViewerImage(); return; }
+  if (e.target.id === 'imgViewerNext') { viewerIdx = (viewerIdx + 1) % viewerList.length; showViewerImage(); return; }
   if (e.target.id === 'imgViewerImg') { e.target.classList.toggle('zoomed'); }
 });
-$('ctImage').addEventListener('change', () => {
-  const f = $('ctImage').files[0];
-  if (f && f.type.startsWith('image/')) showCtPreview(URL.createObjectURL(f));
-  else showCtPreview($('preview').dataset.existingImage || '');
+
+let formImages = [];
+let imagesBusy = false;
+const MAX_IMAGES = 12;
+function renderFormImages() {
+  const g = $('ctPreviewGrid');
+  if (!g) return;
+  g.innerHTML = formImages.map((src, k) =>
+    `<div class="fthumb"><img class="ctThumb" src="${src}" alt=""><button type="button" class="fthumbX" onclick="removeFormImage(${k})" aria-label="Remove">✕</button></div>`
+  ).join('');
+}
+window.removeFormImage = k => { formImages.splice(k, 1); renderFormImages(); };
+$('ctImage').addEventListener('change', async () => {
+  const files = [...$('ctImage').files];
+  if (!files.length) return;
+  imagesBusy = true;
+  try {
+    for (const f of files) {
+      if (formImages.length >= MAX_IMAGES) {
+        alert(appLanguage === 'ar' ? 'الحد الأقصى ' + MAX_IMAGES + ' صورة لكل مريض.' : 'Maximum ' + MAX_IMAGES + ' images per patient.');
+        break;
+      }
+      if (!f.type.startsWith('image/')) continue;
+      formImages.push(await imageToDataUrl(f));
+      renderFormImages();
+    }
+  } catch (err) {
+    alert(err.message || 'Image error');
+  } finally {
+    imagesBusy = false;
+    $('ctImage').value = '';
+  }
 });
+
+// ---- Per-visit condition (Good / Still + comment) ----
+function visitRowHtml(p, i, x) {
+  const ar = appLanguage === 'ar';
+  const v = (p.visits || {})[x.day] || {};
+  return `<div class="visitRow"><div class="visitHead">${ar ? 'اليوم' : 'Day'} ${x.day} · ${pretty(x.date)}</div>
+    <select id="vs_${i}_${x.day}" class="visitSel ${v.status || ''}" onchange="saveVisit(${i},${x.day})">
+      <option value="">${ar ? '— لم تُسجَّل الحالة —' : '— condition not recorded —'}</option>
+      <option value="good" ${v.status === 'good' ? 'selected' : ''}>${ar ? 'جيد' : 'Good'}</option>
+      <option value="still" ${v.status === 'still' ? 'selected' : ''}>${ar ? 'لا يزال (أعراض مستمرة)' : 'Still (symptoms persist)'}</option>
+    </select>
+    <input id="vc_${i}_${x.day}" type="text" value="${escapeHtml(v.comment || '')}" placeholder="${ar ? 'تعليق' : 'Comment'}" onchange="saveVisit(${i},${x.day})"></div>`;
+}
+window.saveVisit = async (i, day) => {
+  const p = patients[i];
+  if (!p) return;
+  const sel = $('vs_' + i + '_' + day), inp = $('vc_' + i + '_' + day);
+  const status = sel.value;
+  const comment = inp.value.trim();
+  const visits = Object.assign({}, p.visits || {});
+  if (!status && !comment) delete visits[day];
+  else visits[day] = { status, comment, updatedAt: new Date().toISOString() };
+  const old = p;
+  patients[i] = Object.assign({}, p, { visits, updatedAt: new Date().toISOString() });
+  sel.className = 'visitSel ' + status;
+  try { await save(true); }
+  catch (_) {
+    patients[i] = old;
+    alert(appLanguage === 'ar' ? 'مساحة تخزين الجهاز ممتلئة.' : 'Device storage is full.');
+  }
+  renderDashboard();
+};
+function visitSummary(p) {
+  return Object.keys(p.visits || {}).sort((a, b) => a - b).map(d => {
+    const v = p.visits[d];
+    return 'D' + d + ': ' + (v.status || '-') + (v.comment ? ' (' + v.comment + ')' : '');
+  }).join('; ');
+}
+
+// ---- All remaining follow-ups bar ----
+window.openPatientFile = i => {
+  let d = $('pt_' + i);
+  if (!d) {
+    if ($('searchPatients')) $('searchPatients').value = '';
+    if ($('historyProcedure')) $('historyProcedure').value = 'all';
+    render();
+    d = $('pt_' + i);
+  }
+  if (d) { d.open = true; d.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+};
+function renderUpcoming() {
+  const root = $('upcomingDashboard');
+  if (!root) return;
+  const ar = appLanguage === 'ar';
+  const today = localToday();
+  const overdueFrom = addDays(today, -7);
+  const rows = [];
+  patients.forEach((p, i) => followups(p.operationDate, p.procedure).forEach(f => {
+    const rec = (p.visits || {})[f.day];
+    if (rec && rec.status) return;                       // already recorded
+    if (f.date >= today) rows.push({ p, i, f, overdue: false });
+    else if (f.date >= overdueFrom) rows.push({ p, i, f, overdue: true });
+  }));
+  rows.sort((a, b) => a.f.date.localeCompare(b.f.date) || String(a.p.name).localeCompare(String(b.p.name)));
+  const h2 = document.querySelector('[data-i18n="upcomingTitle"]');
+  if (h2) h2.textContent = t('upcomingTitle') + ' (' + rows.length + ')';
+  if (!rows.length) { root.innerHTML = `<div class="empty">${ar ? 'لا توجد متابعات متبقية.' : 'No remaining follow-ups.'}</div>`; return; }
+  let html = '', lastDate = '';
+  rows.slice(0, 150).forEach(({ p, i, f, overdue }) => {
+    if (f.date !== lastDate) {
+      lastDate = f.date;
+      const diff = Math.round((new Date(f.date + 'T00:00:00') - new Date(today + 'T00:00:00')) / 86400000);
+      const rel = diff === 0 ? (ar ? 'اليوم' : 'Today') : diff === 1 ? (ar ? 'غدًا' : 'Tomorrow')
+        : diff > 1 ? (ar ? 'بعد ' + diff + ' أيام' : 'in ' + diff + ' days') : (ar ? 'متأخر' : 'Overdue');
+      html += `<div class="upDate">${pretty(f.date)} · ${rel}</div>`;
+    }
+    const file = p.fileNumber ? (ar ? 'رقم الملف: ' : 'File No: ') + escapeHtml(p.fileNumber) + ' · ' : '';
+    html += `<div class="upRow ${overdue ? 'overdue' : ''}"><strong>${escapeHtml(p.name)}</strong>
+      <small>${file}${escapeHtml(tProc(p.procedure))} · ${ar ? 'اليوم ' + f.day + ' بعد العملية' : 'Postoperative day ' + f.day}${overdue ? (ar ? ' · لم تُسجَّل الحالة' : ' · not recorded') : ''}</small>
+      <div class="actions"><button class="secondary" onclick="openPatientFile(${i})">${ar ? 'فتح الملف / تسجيل الحالة' : 'Open file / record condition'}</button>
+      <button class="secondary" onclick="sendDay(${i},${f.day})">${ar ? 'تذكير واتساب' : 'WhatsApp reminder'}</button></div></div>`;
+  });
+  root.innerHTML = html;
+}
 
 async function imageToDataUrl(file) {
   if (!file) return '';
@@ -2023,14 +2210,16 @@ $('patientForm').addEventListener('submit', async e => {
     alert(appLanguage === 'ar' ? 'يرجى تحديد تاريخ العملية.' : 'Please select the operation date.');
     return;
   }
+  if (imagesBusy) {
+    alert(appLanguage === 'ar' ? 'يرجى الانتظار حتى تنتهي معالجة الصور.' : 'Please wait until the images finish processing.');
+    return;
+  }
   const submitButton = $('submitPatientBtn');
   submitButton.disabled = true;
   submitButton.textContent = t('savingBtn');
   try {
-    const chosenImage = $('ctImage').files[0];
-    const ctImage = chosenImage
-      ? await imageToDataUrl(chosenImage)
-      : (editingIndex !== null ? ($('preview').dataset.existingImage || patients[editingIndex].ctImage || '') : '');
+    const ctImages = formImages.slice();
+    const ctImage = ctImages[0] || '';
     const existingId = editingIndex !== null ? patients[editingIndex].id : ('pt_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 7));
     const patient = {
       id: existingId,
@@ -2043,6 +2232,7 @@ $('patientForm').addEventListener('submit', async e => {
       notes: $('notes').value.trim(),
       complications: $('complications').value.trim(),
       ctImage,
+      ctImages,
       updatedAt: new Date().toISOString()
     };
     if (editingIndex !== null) {
@@ -2066,8 +2256,9 @@ $('patientForm').addEventListener('submit', async e => {
     editingIndex = null;
     render();
     $('patientForm').reset();
-    $('preview').dataset.existingImage = '';
-    showCtPreview('');
+    formImages = [];
+    renderFormImages();
+    $('addPatientTab').open = false;
     submitButton.textContent = t('savePatientBtn');
     $('operationDate').value = localToday();
     renderPreview();
