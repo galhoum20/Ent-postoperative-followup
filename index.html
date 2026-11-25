@@ -171,9 +171,30 @@ footer{text-align:center;color:#68777d;font-size:.75rem;padding:8px 18px 26px}
 body[dir="rtl"]{text-align:right}
 body[dir="rtl"] .actions{direction:rtl}
 body[dir="rtl"] input,body[dir="rtl"] select,body[dir="rtl"] textarea{text-align:right}
+img.ctThumb{max-width:100%;max-height:220px;border-radius:10px;border:1px solid #cfd8dc;cursor:zoom-in;margin-top:6px;background:#fff}
+#ctPreviewThumb{display:none;max-width:100%;max-height:200px;border-radius:10px;border:1px solid #cfd8dc;margin-top:8px}
+#imgViewer{display:none;position:fixed;inset:0;z-index:99990;background:rgba(0,0,0,.92);overflow:auto;-webkit-overflow-scrolling:touch}
+#imgViewer.open{display:block}
+#imgViewer img{display:block;max-width:100%;margin:56px auto 24px;touch-action:pinch-zoom}
+#imgViewer img.zoomed{max-width:none;width:250%}
+#imgViewerClose{position:fixed;top:calc(env(safe-area-inset-top,0px) + 10px);right:12px;z-index:99991;background:#fff;color:#000;border:0;border-radius:20px;padding:8px 16px;font-size:1rem;font-weight:700}
+#lockScreen{display:none;position:fixed;inset:0;z-index:99999;background:#f4f7f8;color:#222;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;text-align:center}
+html.locked #lockScreen{display:flex}
+html.locked body > *:not(#lockScreen){visibility:hidden}
+#lockScreen button{background:#650568;color:#fff;border:0;border-radius:10px;padding:14px 22px;font-size:1rem;font-weight:650}
+#lockScreen .lockMsg{color:#b00020;min-height:1.2em}
 </style>
+<script>try{if(JSON.parse(localStorage.getItem('entFollowupV12LockConfig')||'{}').enabled)document.documentElement.classList.add('locked')}catch(e){}</script>
 </head>
 <body>
+<div id="imgViewer"><button type="button" id="imgViewerClose" aria-label="Close">✕</button><img id="imgViewerImg" alt=""></div>
+<div id="lockScreen">
+  <div style="font-size:2.4rem">🔒</div>
+  <h2 id="lockTitle" style="margin:0">App locked</h2>
+  <div id="lockSub"></div>
+  <button type="button" id="lockSignInBtn" onclick="unlockWithGoogle()">Sign in with Google</button>
+  <div id="lockMessage" class="lockMsg"></div>
+</div>
 <header>
   <div class="header-top">
     <span class="hospital-badge" data-i18n="hospitalName">مستشفى الفريح</span>
@@ -247,6 +268,10 @@ body[dir="rtl"] input,body[dir="rtl"] select,body[dir="rtl"] textarea{text-align
           <label data-i18n="dailyNotifLabel">تذكير المتابعات اليومي (11:00 صباحًا)</label>
           <button type="button" id="notifSetupBtn" class="secondary" style="width:100%" onclick="configureDailyReminder()" data-i18n="enableNotifBtn">تفعيل / اختبار إشعار 11:00 ص</button>
           <div id="notifStatusHint" class="hint" data-i18n="notifHintWeb">يعمل الإشعار المجدول في الخلفية عبر تطبيق Android (Capacitor).</div>
+          <label style="margin-top:10px">قفل التطبيق بحساب Google / App lock with Google</label>
+          <button type="button" id="lockEnableBtn" class="secondary" style="width:100%" onclick="enableGoogleLock()">Enable Google sign-in lock</button>
+          <button type="button" id="lockDisableBtn" class="remove" style="width:100%;display:none" onclick="disableGoogleLock()">Disable lock (requires sign-in)</button>
+          <div id="lockStatusHint" class="hint"></div>
         </div>
       </div>
 
@@ -279,7 +304,7 @@ body[dir="rtl"] input,body[dir="rtl"] select,body[dir="rtl"] textarea{text-align
 </div>
 <div class="grid">
 <div class="field"><label for="age" data-i18n="ageLabel">عمر المريض (بالسنوات)</label><input id="age" type="number" min="0" max="120" step="1" placeholder="العمر"></div>
-<div class="field"><label for="ctImage" data-i18n="ctImageLabel">صورة أشعة مقطعية / صورة إكلينيكية (اختياري)</label><input id="ctImage" type="file" accept="image/*"><div class="hint" data-i18n="ctImageHint">يتم حفظ الصورة على هذا الجهاز مع سجل المريض.</div></div>
+<div class="field"><label for="ctImage" data-i18n="ctImageLabel">صورة أشعة مقطعية / صورة إكلينيكية (اختياري)</label><input id="ctImage" type="file" accept="image/*"><img id="ctPreviewThumb" alt=""><div class="hint" data-i18n="ctImageHint">يتم حفظ الصورة على هذا الجهاز مع سجل المريض.</div></div>
 </div>
 <div class="field"><label for="notes" data-i18n="notesLabel">ملاحظات إكلينيكية</label><textarea id="notes" rows="3" placeholder="أدخل الملاحظات الإكلينيكية..."></textarea></div>
 <div class="field"><label for="complications" data-i18n="complicationsLabel">المضاعفات</label><textarea id="complications" rows="3" placeholder="أدخل المضاعفات أو اكتب لا يوجد"></textarea></div>
@@ -997,7 +1022,7 @@ async function nativeSilentRefresh() {
   }
 }
 
-async function nativeInteractiveAuth() {
+async function nativeInteractiveAuth(opts = {}) {
   const cfg = getSyncConfig();
   const App = window.Capacitor?.Plugins?.App;
   const Browser = window.Capacitor?.Plugins?.Browser;
@@ -1014,12 +1039,11 @@ async function nativeInteractiveAuth() {
     client_id: cfg.nativeClientId,
     redirect_uri: NATIVE_REDIRECT_URI,
     response_type: 'code',
-    scope: DRIVE_SCOPE,
+    scope: opts.identity ? 'openid email' : DRIVE_SCOPE,
     code_challenge: challenge,
     code_challenge_method: 'S256',
     state,
-    access_type: 'offline',
-    prompt: 'consent'
+    ...(opts.identity ? { prompt: 'select_account' } : { access_type: 'offline', prompt: 'consent' })
   }).toString();
 
   return new Promise(async (resolve, reject) => {
@@ -1048,7 +1072,7 @@ async function nativeInteractiveAuth() {
             grant_type: 'authorization_code',
             redirect_uri: NATIVE_REDIRECT_URI
           });
-          finish(null, applyNativeToken(j));
+          finish(null, opts.identity ? j.access_token : applyNativeToken(j));
         } catch (e) { finish(e); }
       }));
       // User closed the browser tab without finishing (give the redirect a moment to arrive first)
@@ -1534,6 +1558,122 @@ window.addEventListener('online', () => {
 window.addEventListener('offline', () => updateSyncStatusUI('syncOffline', 'status-warn'));
 
 // ============================================================================
+// GOOGLE SIGN-IN APP LOCK (only the enrolled Google account can open the app)
+// NOTE: this is a screen gate. It needs internet to unlock and is not a
+// substitute for the phone's own screen lock or for the data encryption.
+// ============================================================================
+const LOCK_CONFIG_KEY = 'entFollowupV12LockConfig';
+const LOCK_RELOCK_MS = 5 * 60 * 1000;   // re-lock after 5 min in the background
+let lockHiddenAt = 0;
+
+function getLockConfig() {
+  try { return Object.assign({ enabled: false, email: '' }, JSON.parse(localStorage.getItem(LOCK_CONFIG_KEY)) || {}); }
+  catch (_) { return { enabled: false, email: '' }; }
+}
+function setLockConfig(c) { localStorage.setItem(LOCK_CONFIG_KEY, JSON.stringify(c)); }
+
+function lockMsg(ar, en) { return appLanguage === 'ar' ? ar : en; }
+
+function showLockScreen(message) {
+  document.documentElement.classList.add('locked');
+  const el = $('lockMessage');
+  if (el) el.textContent = message || '';
+  const t1 = $('lockTitle'); if (t1) t1.textContent = lockMsg('التطبيق مقفل', 'App locked');
+  const t2 = $('lockSub'); if (t2) t2.textContent = lockMsg('سجّل الدخول بحساب Google المصرّح به لفتح التطبيق.', 'Sign in with the authorized Google account to open the app.');
+  const b = $('lockSignInBtn'); if (b) b.textContent = lockMsg('تسجيل الدخول بحساب Google', 'Sign in with Google');
+}
+function hideLockScreen() { document.documentElement.classList.remove('locked'); }
+
+// Returns the verified email of the Google account the user picks (identity only; no Drive scope).
+async function googleIdentityEmail() {
+  if (!navigator.onLine) throw new Error(lockMsg('يلزم الاتصال بالإنترنت لتسجيل الدخول.', 'Internet is required to sign in.'));
+  let token;
+  if (isNativeApp()) {
+    token = await nativeInteractiveAuth({ identity: true });
+  } else {
+    const cfg = getSyncConfig();
+    if (!window.google?.accounts?.oauth2) throw new Error('Google library not loaded.');
+    token = await new Promise((resolve, reject) => {
+      const tc = window.google.accounts.oauth2.initTokenClient({
+        client_id: cfg.clientId,
+        scope: 'openid email',
+        callback: r => r.error ? reject(new Error(r.error_description || r.error)) : resolve(r.access_token),
+        error_callback: e => reject(new Error(e?.type || 'Sign-in cancelled.'))
+      });
+      tc.requestAccessToken({ prompt: 'select_account' });
+    });
+  }
+  const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', { headers: { Authorization: 'Bearer ' + token } });
+  if (!res.ok) throw new Error('Could not verify Google account (' + res.status + ').');
+  const info = await res.json();
+  if (!info.email || info.email_verified === false) throw new Error('Google account email not verified.');
+  return String(info.email).toLowerCase();
+}
+
+async function unlockWithGoogle() {
+  const btn = $('lockSignInBtn');
+  if (btn) btn.disabled = true;
+  try {
+    const email = await googleIdentityEmail();
+    if (email === getLockConfig().email) { hideLockScreen(); return; }
+    showLockScreen(lockMsg('هذا الحساب غير مصرّح له بفتح التطبيق.', 'This Google account is not authorized to open the app.'));
+  } catch (err) {
+    showLockScreen(String(err.message || err));
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+async function enableGoogleLock() {
+  try {
+    const email = await googleIdentityEmail();
+    const ok = confirm(lockMsg(
+      'تفعيل القفل: لن يفتح التطبيق إلا بحساب ' + email + ' ويحتاج إلى اتصال بالإنترنت. هل تريد المتابعة؟',
+      'Enable lock: only ' + email + ' will be able to open the app, and internet is required. Continue?'));
+    if (!ok) return;
+    setLockConfig({ enabled: true, email });
+    updateLockUI();
+  } catch (err) {
+    alert(lockMsg('تعذر تفعيل القفل: ', 'Could not enable lock: ') + (err.message || err));
+  }
+}
+
+async function disableGoogleLock() {
+  try {
+    const email = await googleIdentityEmail();
+    if (email !== getLockConfig().email) {
+      alert(lockMsg('هذا الحساب غير مصرّح له.', 'This account is not authorized.'));
+      return;
+    }
+    setLockConfig({ enabled: false, email: '' });
+    updateLockUI();
+  } catch (err) {
+    alert(lockMsg('تعذر إيقاف القفل: ', 'Could not disable lock: ') + (err.message || err));
+  }
+}
+
+function updateLockUI() {
+  const c = getLockConfig();
+  const st = $('lockStatusHint');
+  if (st) st.textContent = c.enabled
+    ? lockMsg('القفل مفعّل للحساب: ', 'Lock enabled for: ') + c.email
+    : lockMsg('القفل غير مفعّل.', 'Lock is off.');
+  const on = $('lockEnableBtn'), off = $('lockDisableBtn');
+  if (on) on.style.display = c.enabled ? 'none' : '';
+  if (off) off.style.display = c.enabled ? '' : 'none';
+}
+
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) { lockHiddenAt = Date.now(); return; }
+  if (getLockConfig().enabled && lockHiddenAt && Date.now() - lockHiddenAt > LOCK_RELOCK_MS) {
+    showLockScreen('');
+  }
+});
+
+if (getLockConfig().enabled) showLockScreen('');
+updateLockUI();
+
+// ============================================================================
 // 5. ANDROID CAPACITOR DAILY 11:00 AM LOCAL NOTIFICATION SCHEDULER
 // ============================================================================
 function buildDailySummaryNotificationPayload(forDate) {
@@ -1713,7 +1853,7 @@ function render() {
       const fileLabel = p.fileNumber ? (appLanguage === 'ar' ? `رقم الملف: ${escapeHtml(p.fileNumber)} · ` : `File No: ${escapeHtml(p.fileNumber)} · `) : '';
       const ageLabel = p.age ? (appLanguage === 'ar' ? `${escapeHtml(String(p.age))} سنوات` : `${escapeHtml(String(p.age))} years`) : (appLanguage === 'ar' ? 'غير مدخل' : 'Not entered');
       return `<details class="patient"><summary style="cursor:pointer"><strong>${escapeHtml(p.name)}</strong><small>${fileLabel}${escapeHtml(tProc(p.procedure))} · ${appLanguage === 'ar' ? 'العملية:' : 'Surgery:'} ${pretty(p.operationDate)} · ${appLanguage === 'ar' ? 'العمر:' : 'Age:'} ${ageLabel} · WhatsApp: ${escapeHtml(p.phone)}</small><span class="hint">${appLanguage === 'ar' ? 'اضغط لعرض سجل المريض كاملًا' : 'Tap to view full patient record'}</span></summary><div style="padding-top:8px">
-      ${p.ctImage ? `<p><a href="${p.ctImage}" target="_blank" rel="noopener">${appLanguage === 'ar' ? 'عرض صورة الأشعة / الصورة الإكلينيكية المحفوظة' : 'View saved CT / clinical image'}</a></p>` : ''}
+      ${p.ctImage ? `<p><b>${appLanguage === 'ar' ? 'صورة الأشعة / الصورة الإكلينيكية (اضغط للتكبير):' : 'CT / clinical image (tap to enlarge):'}</b><br><img class="ctThumb" src="${p.ctImage}" alt="CT / clinical image" loading="lazy"></p>` : ''}
       ${p.notes ? `<p><b>${appLanguage === 'ar' ? 'الملاحظات:' : 'Notes:'}</b> ${escapeHtml(p.notes)}</p>` : ''}
       ${p.complications ? `<p><b>${appLanguage === 'ar' ? 'المضاعفات:' : 'Complications:'}</b> ${escapeHtml(p.complications)}</p>` : ''}
       <div class="dates">${ds.map(x => `<div class="datebox"><b>${dayWord} ${x.day}</b><span>${followupDateLabel(x)}</span></div>`).join('')}</div>
@@ -1771,6 +1911,7 @@ window.editPatient = i => {
   $('ctImage').value = '';
   $('submitPatientBtn').textContent = t('updatePatientBtn');
   $('preview').dataset.existingImage = p.ctImage || '';
+  showCtPreview(p.ctImage || '');
   renderPreview();
   $('patientForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
 };
@@ -1819,6 +1960,32 @@ window.removePatient = async i => {
     render();
   }
 };
+
+
+// ---- Image viewer & form preview (data: URLs cannot be opened via links in Chrome/WebView) ----
+function openImageViewer(src) {
+  const v = $('imgViewer'), im = $('imgViewerImg');
+  im.classList.remove('zoomed');
+  im.src = src;
+  v.classList.add('open');
+}
+function closeImageViewer() { $('imgViewer').classList.remove('open'); $('imgViewerImg').removeAttribute('src'); }
+function showCtPreview(src) {
+  const el = $('ctPreviewThumb');
+  if (!el) return;
+  if (src) { el.src = src; el.style.display = 'block'; } else { el.removeAttribute('src'); el.style.display = 'none'; }
+}
+document.addEventListener('click', e => {
+  const th = e.target.closest && e.target.closest('img.ctThumb');
+  if (th) { openImageViewer(th.src); return; }
+  if (e.target.id === 'imgViewerClose') { closeImageViewer(); return; }
+  if (e.target.id === 'imgViewerImg') { e.target.classList.toggle('zoomed'); }
+});
+$('ctImage').addEventListener('change', () => {
+  const f = $('ctImage').files[0];
+  if (f && f.type.startsWith('image/')) showCtPreview(URL.createObjectURL(f));
+  else showCtPreview($('preview').dataset.existingImage || '');
+});
 
 async function imageToDataUrl(file) {
   if (!file) return '';
@@ -1900,6 +2067,7 @@ $('patientForm').addEventListener('submit', async e => {
     render();
     $('patientForm').reset();
     $('preview').dataset.existingImage = '';
+    showCtPreview('');
     submitButton.textContent = t('savePatientBtn');
     $('operationDate').value = localToday();
     renderPreview();
