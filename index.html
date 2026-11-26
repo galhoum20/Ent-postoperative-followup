@@ -194,6 +194,20 @@ header .docLine{display:flex;align-items:center;gap:12px;margin:10px 0 4px}
 header .hospLogo{width:58px;height:58px;border-radius:12px;background:#fff;padding:3px;flex:none;box-shadow:0 2px 8px rgba(0,0,0,.25)}
 header .docName{font-weight:800;font-size:1.02rem;line-height:1.3}
 header .docTitle{font-size:.88rem;opacity:.95}
+.card-red{border-top:6px solid #c62828}
+details#missedTab>summary.tabBar{color:#c62828}
+details#missedTab.has{background:#fff5f5;border:2px solid #c62828}
+details#missedTab[open]>summary.tabBar{margin-bottom:12px}
+.numBadge.red{background:#c62828}
+button.redBtn{background:#c62828;color:#fff;border:0;border-radius:10px;padding:10px 14px;font-weight:700}
+.missBadge{display:inline-block;background:#c62828;color:#fff;border-radius:8px;padding:6px 10px;font-weight:700}
+.plusBtn{background:#eef6f7;color:#0b7f89;border:1px dashed #10a2ae;border-radius:10px;padding:9px 12px;font-weight:700;text-align:start}
+.condChip{display:inline-block;border-radius:8px;padding:6px 10px;font-weight:700;width:fit-content}
+.condChip.good{background:#e8f5e9;color:#1b5e20}
+.condChip.still{background:#fff3e0;color:#e65100}
+.vComment{background:#f4f7f8;border-radius:8px;padding:8px 10px}
+.otherRow{border:1px dashed #c62828;border-radius:10px;padding:10px;display:grid;gap:8px;margin-top:8px}
+.closedNote{color:#666;font-style:italic}
 .numBadge{display:inline-block;min-width:26px;text-align:center;background:#650568;color:#fff;border-radius:13px;padding:1px 8px;margin-inline-end:8px;font-size:.85rem;font-weight:700}
 #patientPage{display:none;position:fixed;inset:0;z-index:9000;background:#f4f7f8;overflow:auto;-webkit-overflow-scrolling:touch}
 #patientPage.open{display:block}
@@ -296,6 +310,12 @@ html.locked body > *:not(#lockScreen){visibility:hidden}
 <div id="preview" aria-live="polite"></div>
 <button class="primary" type="submit" id="submitPatientBtn" data-i18n="savePatientBtn">حفظ بيانات المريض</button>
 </form>
+</details>
+
+<!-- Patients who did not attend (red tab) -->
+<details id="missedTab" class="card card-red">
+<summary class="tabBar"><span id="missedTitle">Patients who missed follow-up (0)</span></summary>
+<div id="missedDashboard"></div>
 </details>
 
 <!-- Today's Follow-ups -->
@@ -464,6 +484,7 @@ const I18N = {
     complicationsLabel: 'المضاعفات',
     upcomingTitle: 'كل المتابعات القادمة',
     doctorHeadline: 'عمليات د. عبد الرحمن جلهوم',
+    missedTitle: 'مرضى لم يحضروا لموعد المتابعة',
     doctorTitle: 'أخصائي أول الأنف والأذن',
     upcomingSubtitle: 'جميع زيارات المتابعة المتبقية لكل المرضى، مرتبة حسب التاريخ.',
     savePatientBtn: 'حفظ بيانات المريض',
@@ -546,6 +567,7 @@ const I18N = {
     complicationsLabel: 'Complications',
     upcomingTitle: 'All upcoming follow-ups',
     doctorHeadline: 'Surgery by Dr. Abdelrahman Galhoum',
+    missedTitle: 'Patients who missed follow-up',
     doctorTitle: 'ENT Specialist',
     upcomingSubtitle: 'Every remaining follow-up visit across all patients, sorted by date.',
     savePatientBtn: 'Save patient',
@@ -1958,6 +1980,7 @@ function renderDashboard() {
   renderDueList('todayDashboard', todayStr, 'today');
   renderDueList('tomorrowDashboard', tomorrowStr, 'tomorrow');
   renderUpcoming();
+  renderMissed();
 }
 
 function renderDueList(elementId, targetDate, kind) {
@@ -1981,7 +2004,7 @@ function renderDueList(elementId, targetDate, kind) {
     const fileTxt = p.fileNumber ? (appLanguage === 'ar' ? `رقم الملف: ${escapeHtml(p.fileNumber)} · ` : `File No: ${escapeHtml(p.fileNumber)} · `) : '';
     const dayTxt = appLanguage === 'ar' ? `اليوم ${day} بعد العملية` : `Postoperative day ${day}`;
     const friTxt = movedFromFriday ? (appLanguage === 'ar' ? ' · تم تغيير الموعد من الجمعة' : ' · Rescheduled from Friday') : '';
-    return `<div class="patient"><strong><span class="numBadge">${n + 1}</span>${escapeHtml(p.name)}</strong><small>${fileTxt}${escapeHtml(tProc(p.procedure))} · ${dayTxt} · ${escapeHtml(p.phone)}${friTxt}</small><div class="actions"><button class="secondary" onclick="sendDay(${i},${day})">${appLanguage === 'ar' ? 'تذكير واتساب' : 'WhatsApp reminder'}</button><button class="secondary" onclick="openPatientPage(${i})">${appLanguage === 'ar' ? 'فتح السجل' : 'Open record'}</button></div>${kind === 'today' ? visitControlsHtml(p, i, day, 'd') : ''}</div>`;
+    return `<div class="patient"><strong><span class="numBadge">${n + 1}</span>${escapeHtml(p.name)}</strong><small>${fileTxt}${escapeHtml(tProc(p.procedure))} · ${dayTxt} · ${escapeHtml(p.phone)}${friTxt}</small><div class="actions"><button class="secondary" onclick="sendDay(${i},${day})">${appLanguage === 'ar' ? 'تذكير واتساب' : 'WhatsApp reminder'}</button><button class="secondary" onclick="openPatientPage(${i})">${appLanguage === 'ar' ? 'فتح السجل' : 'Open record'}</button></div>${kind === 'today' ? visitControlsHtml(p, i, day, 'd', targetDate) : ''}</div>`;
   }).join('');
 }
 
@@ -2112,43 +2135,107 @@ $('ctImage').addEventListener('change', async () => {
   }
 });
 
-// ---- Per-visit attendance + condition (default Good) + comment ----
+// ---- Per-visit attendance: locks once attended (change only via Edit), missed visits, other-day visits ----
 let ppIdx = null;
+const visitEdit = new Set();    // attended visits currently unlocked for editing
+const visitOther = new Set();   // missed visits showing the "came on another day" row
+
 function isAttended(p, day) {
   const v = (p.visits || {})[day];
   if (!v) return false;
-  return v.attended !== undefined ? !!v.attended : !!v.status;   // legacy records: a status meant "seen"
+  return v.attended !== undefined ? !!v.attended : !!v.status;   // legacy: a status meant "seen"
 }
-function visitControlsHtml(p, i, day, ctx) {
+function isDismissed(p, day) { const v = (p.visits || {})[day]; return !!(v && v.dismissed); }
+function missedList() {
+  const today = localToday(), from = addDays(today, -30), out = [];
+  patients.forEach((p, i) => followups(p.operationDate, p.procedure).forEach(f => {
+    if (f.date < today && f.date >= from && !isAttended(p, f.day) && !isDismissed(p, f.day)) out.push({ p, i, f });
+  }));
+  out.sort((a, b) => a.f.date.localeCompare(b.f.date) || String(a.p.name).localeCompare(String(b.p.name)));
+  return out;
+}
+function condLabel(st) {
+  const ar = appLanguage === 'ar';
+  return st === 'still' ? (ar ? 'لا يزال (أعراض مستمرة)' : 'Still (symptoms persist)') : (ar ? 'جيد' : 'Good');
+}
+function condOptions(st) {
+  const ar = appLanguage === 'ar';
+  return `<option value="good" ${st !== 'still' ? 'selected' : ''}>${ar ? 'الحالة: جيد' : 'Condition: Good'}</option>
+    <option value="still" ${st === 'still' ? 'selected' : ''}>${ar ? 'الحالة: لا يزال (أعراض مستمرة)' : 'Condition: Still (symptoms persist)'}</option>`;
+}
+function commentBlock(key, val, forceShow) {
+  const ar = appLanguage === 'ar';
+  const show = forceShow || !!val;
+  return `<button type="button" class="plusBtn" id="vp_${key}" style="${show ? 'display:none' : ''}" onclick="showVisitComment('${key}')">＋ ${ar ? 'تعليق' : 'Comment'}</button>
+    <input id="vm_${key}" type="text" value="${escapeHtml(val || '')}" placeholder="${ar ? 'تعليق' : 'Comment'}" style="${show ? '' : 'display:none'}">`;
+}
+window.showVisitComment = key => {
+  const b = $('vp_' + key), inp = $('vm_' + key);
+  if (b) b.style.display = 'none';
+  if (inp) { inp.style.display = ''; inp.focus(); }
+};
+
+function visitControlsHtml(p, i, day, ctx, date) {
   const ar = appLanguage === 'ar';
   const v = (p.visits || {})[day] || {};
-  const att = isAttended(p, day);
-  const status = v.status || 'good';
   const key = ctx + '_' + i + '_' + day;
-  return `<div class="visitCtl">
-    <label class="attendLbl ${att ? 'on' : ''}"><input type="checkbox" id="va_${key}" ${att ? 'checked' : ''} onchange="saveVisit(${i},${day},'${ctx}','a')"> ✓ ${ar ? 'حضر المريض' : 'Patient attended'}</label>
-    <select id="vs_${key}" class="visitSel ${att ? status : ''}" onchange="saveVisit(${i},${day},'${ctx}','s')">
-      <option value="good" ${status === 'good' ? 'selected' : ''}>${ar ? 'الحالة: جيد' : 'Condition: Good'}</option>
-      <option value="still" ${status === 'still' ? 'selected' : ''}>${ar ? 'الحالة: لا يزال (أعراض مستمرة)' : 'Condition: Still (symptoms persist)'}</option>
-    </select>
-    <input id="vm_${key}" type="text" value="${escapeHtml(v.comment || '')}" placeholder="${ar ? 'تعليق' : 'Comment'}" onchange="saveVisit(${i},${day},'${ctx}','c')">
-  </div>`;
+  const args = `${i},${day},'${ctx}'`;
+  const st = v.status === 'still' ? 'still' : 'good';
+  const att = isAttended(p, day);
+
+  if (att && !visitEdit.has(key)) {        // LOCKED: shown read-only, only the Edit button can change it
+    const when = v.actualDate && v.actualDate !== date ? ` · ${ar ? 'حضر بتاريخ' : 'came on'} ${pretty(v.actualDate)}` : '';
+    return `<div class="visitCtl"><div class="attendLbl on">✓ ${ar ? 'حضر المريض' : 'Patient attended'}${when}</div>
+      <div class="condChip ${st}">${ar ? 'الحالة: ' : 'Condition: '}${condLabel(st)}</div>
+      ${v.comment ? `<div class="vComment">💬 ${escapeHtml(v.comment)}</div>` : ''}
+      <button type="button" class="secondary" onclick="editVisit('${key}')">✏️ ${ar ? 'تعديل' : 'Edit'}</button></div>`;
+  }
+  if (att) {                               // EDIT MODE
+    return `<div class="visitCtl"><div class="attendLbl on">✏️ ${ar ? 'تعديل الزيارة' : 'Editing visit'}</div>
+      <label class="hint" for="vd_${key}">${ar ? 'تاريخ الزيارة' : 'Visit date'}</label>
+      <input id="vd_${key}" type="date" value="${escapeHtml(v.actualDate || localToday())}">
+      <select id="vs_${key}" class="visitSel ${st}">${condOptions(st)}</select>
+      ${commentBlock(key, v.comment, true)}
+      <div class="actions"><button type="button" class="primary" onclick="saveVisitEdit(${args})">${ar ? 'حفظ' : 'Save'}</button>
+      <button type="button" class="secondary" onclick="cancelVisitEdit('${key}')">${ar ? 'إلغاء' : 'Cancel'}</button></div></div>`;
+  }
+  if (v.dismissed) {
+    return `<div class="visitCtl"><div class="closedNote">${ar ? 'أُغلقت الزيارة بدون حضور.' : 'Closed without a visit.'}</div>
+      <button type="button" class="secondary" onclick="undoDismiss(${args})">${ar ? 'تراجع' : 'Undo'}</button></div>`;
+  }
+  if (date < localToday()) {               // MISSED
+    return `<div class="visitCtl"><div class="missBadge">⚠ ${ar ? 'لم يحضر' : 'Did not appear'}</div>
+      <div class="actions">
+        <button type="button" class="secondary" onclick="visitOtherDay('${key}')">＋ ${ar ? 'حضر في يوم آخر' : 'Came on another day'}</button>
+        <button type="button" class="redBtn" onclick="sendMissedReminder(${i},${day})">${ar ? 'واتساب: يرجى الحضور' : 'WhatsApp: come ASAP'}</button>
+        <button type="button" class="secondary" onclick="dismissVisit(${args})">${ar ? 'إغلاق (بدون زيارة)' : 'Dismiss'}</button>
+      </div>
+      ${visitOther.has(key) ? `<div class="otherRow">
+        <label class="hint" for="vd_${key}">${ar ? 'تاريخ حضور المريض' : 'Date the patient came'}</label>
+        <input id="vd_${key}" type="date" value="${localToday()}" max="${localToday()}">
+        <select id="vs_${key}" class="visitSel good">${condOptions('good')}</select>
+        ${commentBlock(key, '', false)}
+        <div class="actions"><button type="button" class="primary" onclick="saveOtherDay(${args})">${ar ? 'حفظ' : 'Save'}</button>
+        <button type="button" class="secondary" onclick="visitOtherDay('${key}')">${ar ? 'إلغاء' : 'Cancel'}</button></div></div>` : ''}
+    </div>`;
+  }
+  return `<div class="visitCtl">                    <!-- PENDING (today or upcoming) -->
+    <select id="vs_${key}" class="visitSel good">${condOptions('good')}</select>
+    ${commentBlock(key, '', false)}
+    <button type="button" class="primary" onclick="attendVisit(${args})">✓ ${ar ? 'حضر المريض' : 'Patient attended'}</button></div>`;
 }
-window.saveVisit = async (i, day, ctx, src) => {
+
+function refreshVisitUI() {
+  renderDashboard();
+  if (ppIdx !== null) renderPatientPage();
+}
+async function commitVisit(i, day, fn) {
   const p = patients[i];
   if (!p) return;
-  const key = ctx + '_' + i + '_' + day;
-  const cb = $('va_' + key), sel = $('vs_' + key), inp = $('vm_' + key);
-  if (!cb || !sel || !inp) return;
-  let attended = cb.checked;
-  if (src !== 'a') attended = true;        // changing the condition or adding a comment means the patient was seen
-  const status = sel.value || 'good';
-  const comment = inp.value.trim();
   const now = new Date().toISOString();
   const visits = Object.assign({}, p.visits || {});
-  const prev = visits[day] || {};
-  if (!attended && !comment) delete visits[day];
-  else visits[day] = { attended, status, comment, attendedAt: attended ? (prev.attendedAt || now) : '', updatedAt: now };
+  const next = fn(Object.assign({}, visits[day] || {}), now);
+  if (next === null) delete visits[day]; else visits[day] = Object.assign(next, { updatedAt: now });
   const old = p;
   patients[i] = Object.assign({}, p, { visits, updatedAt: now });
   try { await save(true); }
@@ -2156,16 +2243,79 @@ window.saveVisit = async (i, day, ctx, src) => {
     patients[i] = old;
     alert(appLanguage === 'ar' ? 'مساحة تخزين الجهاز ممتلئة.' : 'Device storage is full.');
   }
-  renderDashboard();
-  if (ppIdx !== null) renderPatientPage();
+  refreshVisitUI();
+}
+function readVisitFields(key) {
+  return {
+    status: ($('vs_' + key)?.value) === 'still' ? 'still' : 'good',
+    comment: ($('vm_' + key)?.value || '').trim(),
+    date: $('vd_' + key)?.value || ''
+  };
+}
+window.attendVisit = (i, day, ctx) => {
+  const f = readVisitFields(ctx + '_' + i + '_' + day);
+  return commitVisit(i, day, (v, now) => Object.assign(v, { attended: true, status: f.status, comment: f.comment, actualDate: localToday(), attendedAt: now, dismissed: false }));
+};
+window.editVisit = key => { visitEdit.add(key); refreshVisitUI(); };
+window.cancelVisitEdit = key => { visitEdit.delete(key); refreshVisitUI(); };
+window.saveVisitEdit = (i, day, ctx) => {
+  const key = ctx + '_' + i + '_' + day;
+  const f = readVisitFields(key);
+  visitEdit.delete(key);
+  return commitVisit(i, day, v => Object.assign(v, { attended: true, status: f.status, comment: f.comment, actualDate: f.date || v.actualDate || localToday() }));
+};
+window.visitOtherDay = key => { if (visitOther.has(key)) visitOther.delete(key); else visitOther.add(key); refreshVisitUI(); };
+window.saveOtherDay = (i, day, ctx) => {
+  const key = ctx + '_' + i + '_' + day;
+  const f = readVisitFields(key);
+  if (!f.date) { alert(appLanguage === 'ar' ? 'اختر تاريخ حضور المريض.' : 'Choose the date the patient came.'); return; }
+  visitOther.delete(key);
+  return commitVisit(i, day, (v, now) => Object.assign(v, { attended: true, status: f.status, comment: f.comment, actualDate: f.date, attendedAt: now, dismissed: false }));
+};
+window.dismissVisit = (i, day) => {
+  if (!confirm(appLanguage === 'ar' ? 'إغلاق هذه الزيارة بدون حضور؟ ستختفي من قائمة من لم يحضروا.' : 'Close this visit without attendance? It will leave the missed list.')) return;
+  return commitVisit(i, day, v => Object.assign(v, { dismissed: true }));
+};
+window.undoDismiss = (i, day) => commitVisit(i, day, v => {
+  const n = Object.assign({}, v); delete n.dismissed;
+  return (n.attended || n.comment) ? n : null;
+});
+window.sendMissedReminder = (i, day) => {
+  const p = patients[i];
+  if (!p) return;
+  const f = followups(p.operationDate, p.procedure).find(x => x.day === day);
+  const when = f ? pretty(f.date) : '';
+  const msg = appLanguage === 'ar'
+    ? `عزيزي/عزيزتي ${p.name}،\n\nلم تحضر لموعد المتابعة بعد العملية المحدد بتاريخ ${when} (اليوم ${day} بعد العملية) في مستشفى الفريح.\nيرجى الحضور في أقرب وقت ممكن.\n\nشكرًا لكم.`
+    : `Dear ${p.name},\n\nYou did not attend your scheduled postoperative follow-up on ${when} (day ${day}) at Al Fereh Hospital.\nPlease come as soon as possible.\n\nThank you.`;
+  window.open('https://wa.me/' + String(p.phone).replace(/\D/g, '') + '?text=' + encodeURIComponent(msg), '_blank', 'noopener');
 };
 function visitSummary(p) {
   return Object.keys(p.visits || {}).sort((a, b) => a - b).map(d => {
     const v = p.visits[d];
     const att = isAttended(p, d);
-    if (!att && !v.comment) return '';
-    return 'D' + d + ': ' + (att ? 'attended, ' + (v.status || 'good') : 'not attended') + (v.comment ? ' (' + v.comment + ')' : '');
+    if (!att && !v.comment && !v.dismissed) return '';
+    const state = att ? 'attended' + (v.actualDate ? ' ' + v.actualDate : '') + ', ' + (v.status || 'good') : (v.dismissed ? 'closed' : 'not attended');
+    return 'D' + d + ': ' + state + (v.comment ? ' (' + v.comment + ')' : '');
   }).filter(Boolean).join('; ');
+}
+
+function renderMissed() {
+  const root = $('missedDashboard');
+  if (!root) return;
+  const ar = appLanguage === 'ar';
+  const list = missedList();
+  $('missedTitle').textContent = t('missedTitle') + ' (' + list.length + ')';
+  $('missedTab').classList.toggle('has', list.length > 0);
+  if (!list.length) { root.innerHTML = `<div class="empty">${ar ? 'لا يوجد مرضى لم يحضروا.' : 'No missed follow-ups.'}</div>`; return; }
+  root.innerHTML = list.map(({ p, i, f }, n) => {
+    const file = p.fileNumber ? (ar ? 'رقم الملف: ' : 'File No: ') + escapeHtml(p.fileNumber) + ' · ' : '';
+    return `<div class="upRow overdue"><strong><span class="numBadge red">${n + 1}</span>${escapeHtml(p.name)}</strong>
+      <small>${file}${escapeHtml(tProc(p.procedure))} · ${ar ? 'اليوم ' + f.day + ' بعد العملية' : 'Postoperative day ' + f.day} · ${ar ? 'الموعد:' : 'Scheduled:'} ${pretty(f.date)}</small>
+      <div class="actions"><button type="button" class="redBtn" onclick="sendMissedReminder(${i},${f.day})">${ar ? 'واتساب: يرجى الحضور' : 'WhatsApp: come ASAP'}</button>
+      <button type="button" class="secondary" onclick="openPatientPage(${i})">${ar ? 'فتح السجل' : 'Open record'}</button>
+      <button type="button" class="secondary" onclick="dismissVisit(${i},${f.day})">${ar ? 'إغلاق' : 'Dismiss'}</button></div></div>`;
+  }).join('');
 }
 
 // ---- Separate patient record page ----
@@ -2204,7 +2354,7 @@ function renderPatientPage() {
       ${p.complications ? `<p style="margin:0"><b>${ar ? 'المضاعفات:' : 'Complications:'}</b> ${escapeHtml(p.complications)}</p>` : ''}</div>` : ''}
     ${imgs.length ? `<div class="ppCard"><h3>${ar ? 'الصور' : 'Images'} (${imgs.length})</h3><div class="thumbGrid">${imgs.map(src => `<img class="ctThumb" src="${src}" alt="">`).join('')}</div></div>` : ''}
     <div class="ppCard"><h3>${ar ? 'زيارات المتابعة' : 'Follow-up visits'}</h3>
-      ${ds.map(x => `<div class="visitBox"><div class="visitHead">${ar ? 'اليوم' : 'Day'} ${x.day} · ${followupDateLabel(x)}</div>${visitControlsHtml(p, i, x.day, 'p')}</div>`).join('')}
+      ${ds.map(x => `<div class="visitBox"><div class="visitHead">${ar ? 'اليوم' : 'Day'} ${x.day} · ${followupDateLabel(x)}</div>${visitControlsHtml(p, i, x.day, 'p', x.date)}</div>`).join('')}
     </div>
     <div class="actions">
       <button class="secondary" onclick="sendAll(${i})">${ar ? 'واتساب - كل المواعيد' : 'WhatsApp all dates'}</button>
@@ -2239,7 +2389,6 @@ function renderUpcoming() {
   patients.forEach((p, i) => followups(p.operationDate, p.procedure).forEach(f => {
     if (isAttended(p, f.day)) return;                    // already attended
     if (f.date >= today) rows.push({ p, i, f, overdue: false });
-    else if (f.date >= overdueFrom) rows.push({ p, i, f, overdue: true });
   }));
   rows.sort((a, b) => a.f.date.localeCompare(b.f.date) || String(a.p.name).localeCompare(String(b.p.name)));
   const h2 = document.querySelector('[data-i18n="upcomingTitle"]');
