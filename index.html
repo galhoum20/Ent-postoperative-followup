@@ -208,6 +208,18 @@ button.redBtn{background:#c62828;color:#fff;border:0;border-radius:10px;padding:
 .vComment{background:#f4f7f8;border-radius:8px;padding:8px 10px}
 .otherRow{border:1px dashed #c62828;border-radius:10px;padding:10px;display:grid;gap:8px;margin-top:8px}
 .closedNote{color:#666;font-style:italic}
+.penBtn{background:none;border:0;color:#8a949a;padding:0;width:32px;height:32px;max-width:32px;min-width:0;display:inline-flex;align-items:center;justify-content:center;border-radius:8px;flex:none;cursor:pointer;box-shadow:none}
+.penBtn:active{background:#eceff1}
+.cornerPen{position:absolute;top:6px;inset-inline-end:6px}
+.histRow{position:relative}
+.histRow>div:first-child{padding-inline-end:38px}
+.ppHead #ppEdit{background:none;width:34px;height:34px;max-width:34px;padding:0;color:#d4d9dc;display:inline-flex;align-items:center;justify-content:center}
+.attendLbl .penBtn{margin-inline-start:auto}
+.dueRow{display:flex;justify-content:space-between;align-items:center;gap:10px;cursor:pointer}
+.dueRow strong{flex:1}
+.statusChip{flex:none;border-radius:8px;padding:5px 10px;font-weight:700;font-size:.85rem}
+.statusChip.ok{background:#e8f5e9;color:#1b5e20}
+.statusChip.miss{background:#fdecea;color:#c62828}
 .successMsg{background:#e8f5e9;border:2px solid #2e7d32;color:#1b5e20;border-radius:12px;padding:16px;text-align:center;font-size:1.15rem;font-weight:800;margin:6px 0 10px}
 .missInfo{color:#c62828;font-size:.9rem;font-weight:600}
 .noteBox{background:#f4f7f8;border-radius:10px;padding:10px;color:#444;margin:6px 0 10px}
@@ -250,7 +262,7 @@ html.locked body > *:not(#lockScreen){visibility:hidden}
 </head>
 <body>
 <div id="imgViewer"><button type="button" id="imgViewerClose" aria-label="Close">✕</button><span id="imgViewerCount"></span><button type="button" id="imgViewerPrev" aria-label="Previous">‹</button><button type="button" id="imgViewerNext" aria-label="Next">›</button><img id="imgViewerImg" alt=""></div>
-<div id="patientPage"><div class="ppHead"><button type="button" id="ppBack">‹ Back</button><h2 id="ppTitle"></h2><button type="button" id="ppEdit" aria-label="Edit">✏️</button></div><div class="ppBody" id="ppBody"></div></div>
+<div id="patientPage"><div class="ppHead"><button type="button" id="ppBack">‹ Back</button><h2 id="ppTitle"></h2><button type="button" id="ppEdit" class="penBtn" aria-label="Edit"><svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor" aria-hidden="true"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button></div><div class="ppBody" id="ppBody"></div></div>
 <div id="lockScreen">
   <div style="font-size:2.4rem">🔒</div>
   <h2 id="lockTitle" style="margin:0">App locked</h2>
@@ -1965,7 +1977,7 @@ function render() {
       const fileLabel = p.fileNumber ? (appLanguage === 'ar' ? `رقم الملف: ${escapeHtml(p.fileNumber)} · ` : `File No: ${escapeHtml(p.fileNumber)} · `) : '';
       const ageLabel = p.age ? (appLanguage === 'ar' ? `${escapeHtml(String(p.age))} سنوات` : `${escapeHtml(String(p.age))} years`) : (appLanguage === 'ar' ? 'غير مدخل' : 'Not entered');
       return `<div class="patient histRow" id="pt_${i}"><div><strong><span class="numBadge">${n + 1}</span>${escapeHtml(p.name)}</strong><small>${fileLabel}${escapeHtml(tProc(p.procedure))} · ${appLanguage === 'ar' ? 'العملية:' : 'Surgery:'} ${pretty(p.operationDate)} · ${appLanguage === 'ar' ? 'العمر:' : 'Age:'} ${ageLabel} · WhatsApp: ${escapeHtml(p.phone)}${getImages(p).length ? ' · 📷 ' + getImages(p).length : ''}</small></div>
-      <div class="actions"><button class="secondary" onclick="openPatientPage(${i})">${appLanguage === 'ar' ? 'فتح السجل' : 'Open record'}</button><button class="secondary" onclick="editPatient(${i})" aria-label="Edit">✏️</button></div></div>`;
+      <div class="actions"><button class="secondary" onclick="openPatientPage(${i})">${appLanguage === 'ar' ? 'فتح السجل' : 'Open record'}</button></div><button type="button" class="penBtn cornerPen" onclick="editPatient(${i})" aria-label="Edit">${PEN_SVG}</button></div>`;
     }).join('');
   }
   renderDashboard();
@@ -2000,7 +2012,18 @@ function renderDueList(elementId, targetDate, kind) {
     const fileTxt = p.fileNumber ? (appLanguage === 'ar' ? `رقم الملف: ${escapeHtml(p.fileNumber)} · ` : `File No: ${escapeHtml(p.fileNumber)} · `) : '';
     const dayTxt = appLanguage === 'ar' ? `اليوم ${day} بعد العملية` : `Postoperative day ${day}`;
     const friTxt = movedFromFriday ? (appLanguage === 'ar' ? ' · تم تغيير الموعد من الجمعة' : ' · Rescheduled from Friday') : '';
-    return `<div class="patient"><strong><span class="numBadge">${n + 1}</span>${escapeHtml(p.name)}</strong><small>${fileTxt}${escapeHtml(tProc(p.procedure))} · ${dayTxt} · ${escapeHtml(p.phone)}${friTxt}</small><div class="actions"><button class="secondary" onclick="sendDay(${i},${day})">${appLanguage === 'ar' ? 'تذكير واتساب' : 'WhatsApp reminder'}</button><button class="secondary" onclick="openPatientPage(${i})">${appLanguage === 'ar' ? 'فتح السجل' : 'Open record'}</button></div>${kind === 'today' ? visitControlsHtml(p, i, day, 'd', targetDate) : ''}</div>`;
+    const ar = appLanguage === 'ar';
+    const attendedNow = kind === 'today' && isAttended(p, day);
+    const missedNow = kind === 'today' && isMissedV(p, day);
+    const handled = attendedNow || missedNow;
+    const dkey = i + '_' + day;
+    const chip = handled ? `<span class="statusChip ${attendedNow ? 'ok' : 'miss'}">${attendedNow ? '✓ ' + (ar ? 'حضر' : 'Attended') : '✗ ' + (ar ? 'لم يحضر' : 'Missed')}</span>` : '';
+    const nameHtml = `<span class="numBadge${missedNow ? ' red' : ''}">${n + 1}</span>${escapeHtml(p.name)}`;
+    if (handled && !dueExpanded.has(dkey)) {         // collapsed: just name + status; tap to open options
+      return `<div class="patient dueRow" onclick="toggleDue('${dkey}')"><strong>${nameHtml}</strong>${chip}</div>`;
+    }
+    const head = handled ? `<div class="dueRow" onclick="toggleDue('${dkey}')"><strong>${nameHtml}</strong>${chip}</div>` : `<strong>${nameHtml}</strong>`;
+    return `<div class="patient">${head}<small>${fileTxt}${escapeHtml(tProc(p.procedure))} · ${dayTxt} · ${escapeHtml(p.phone)}${friTxt}</small><div class="actions"><button class="secondary" onclick="sendDay(${i},${day})">${ar ? 'تذكير واتساب' : 'WhatsApp reminder'}</button><button class="secondary" onclick="openPatientPage(${i})">${ar ? 'فتح السجل' : 'Open record'}</button></div>${kind === 'today' ? visitControlsHtml(p, i, day, 'd', targetDate) : ''}</div>`;
   }).join('');
 }
 
@@ -2132,6 +2155,9 @@ $('ctImage').addEventListener('change', async () => {
 });
 
 // ---- Visits: attended (locks; change via Edit) / missed (explicit, red) / came later / extra visits ----
+const PEN_SVG = '<svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor" aria-hidden="true"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>';
+const dueExpanded = new Set();   // handled (attended/missed) rows in Today's list that are expanded
+window.toggleDue = key => { if (dueExpanded.has(key)) dueExpanded.delete(key); else dueExpanded.add(key); renderDashboard(); };
 let ppIdx = null;
 let extraFormOpen = false;
 const visitEdit = new Set();    // attended visits unlocked for editing
@@ -2190,13 +2216,12 @@ function visitControlsHtml(p, i, day, ctx, date) {
 
   if (att && !visitEdit.has(key)) {        // LOCKED: read-only, only Edit can change it
     const when = v.actualDate && v.actualDate !== date ? ` · ${ar ? 'حضر بتاريخ' : 'came on'} ${pretty(v.actualDate)}` : '';
-    return `<div class="visitCtl">${missedNote}<div class="attendLbl on">✓ ${ar ? 'حضر المريض' : 'Patient attended'}${when}</div>
+    return `<div class="visitCtl">${missedNote}<div class="attendLbl on"><span>✓ ${ar ? 'حضر المريض' : 'Patient attended'}${when}</span><button type="button" class="penBtn" onclick="editVisit('${key}')" aria-label="Edit">${PEN_SVG}</button></div>
       <div class="condChip ${st}">${ar ? 'الحالة: ' : 'Condition: '}${condLabel(st)}</div>
-      ${v.comment ? `<div class="vComment">💬 ${escapeHtml(v.comment)}</div>` : ''}
-      <button type="button" class="secondary" onclick="editVisit('${key}')">✏️ ${ar ? 'تعديل' : 'Edit'}</button></div>`;
+      ${v.comment ? `<div class="vComment">💬 ${escapeHtml(v.comment)}</div>` : ''}</div>`;
   }
   if (att) {                               // EDIT MODE
-    return `<div class="visitCtl"><div class="attendLbl on">✏️ ${ar ? 'تعديل الزيارة' : 'Editing visit'}</div>
+    return `<div class="visitCtl"><div class="attendLbl on">${ar ? 'تعديل الزيارة' : 'Editing visit'}</div>
       <label class="hint" for="vd_${key}">${ar ? 'تاريخ الزيارة' : 'Visit date'}</label>
       <input id="vd_${key}" type="date" value="${escapeHtml(v.actualDate || localToday())}">
       <select id="vs_${key}" class="visitSel ${st}">${condOptions(st)}</select>
@@ -2257,10 +2282,12 @@ function readVisitFields(key) {
   };
 }
 window.attendVisit = (i, day, ctx) => {
+  dueExpanded.delete(i + '_' + day);
   const f = readVisitFields(ctx + '_' + i + '_' + day);
   return commitVisit(i, day, (v, now) => Object.assign(v, { attended: true, status: f.status, comment: f.comment, actualDate: localToday(), attendedAt: now }));
 };
 window.markMissed = (i, day, ctx) => {
+  dueExpanded.delete(i + '_' + day);
   const f = readVisitFields(ctx + '_' + i + '_' + day);
   return commitVisit(i, day, (v, now) => Object.assign(v, { attended: false, missed: true, missedAt: now, comment: f.comment || v.comment || '' }));
 };
@@ -2272,6 +2299,7 @@ window.undoMissed = (i, day) => commitVisit(i, day, v => {
 window.editVisit = key => { visitEdit.add(key); refreshVisitUI(); };
 window.cancelVisitEdit = key => { visitEdit.delete(key); refreshVisitUI(); };
 window.saveVisitEdit = (i, day, ctx) => {
+  dueExpanded.delete(i + '_' + day);
   const key = ctx + '_' + i + '_' + day;
   const f = readVisitFields(key);
   visitEdit.delete(key);
@@ -2279,6 +2307,7 @@ window.saveVisitEdit = (i, day, ctx) => {
 };
 window.visitOtherDay = key => { if (visitOther.has(key)) visitOther.delete(key); else visitOther.add(key); refreshVisitUI(); };
 window.saveOtherDay = (i, day, ctx) => {
+  dueExpanded.delete(i + '_' + day);
   const key = ctx + '_' + i + '_' + day;
   const f = readVisitFields(key);
   if (!f.date) { alert(appLanguage === 'ar' ? 'اختر تاريخ الزيارة الجديد.' : 'Choose the new visit date.'); return; }
